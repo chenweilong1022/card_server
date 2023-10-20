@@ -11,3 +11,14 @@
 2023-10-21 00:32:01.497 DEBUG 13256 --- [http-nio-8880-exec-5] o.s.web.servlet.DispatcherServlet        : Successfully completed request
 2023-10-21 00:35:28.866  INFO 13256 --- [SessionValidationThread-1] a.s.s.m.AbstractValidatingSessionManager : Validating all active sessions...
 2023-10-21 00:35:28.866  INFO 13256 --- [SessionValidationThread-1] a.s.s.m.AbstractValidatingSessionManager : Finished session validation.  No sessions were stopped.
+2023-10-21 01:35:28.868  INFO 13256 --- [SessionValidationThread-1] a.s.s.m.AbstractValidatingSessionManager : Validating all active sessions...
+2023-10-21 01:35:28.869  INFO 13256 --- [SessionValidationThread-1] a.s.s.m.AbstractValidatingSessionManager : Finished session validation.  [1] sessions were stopped.
+2023-10-21 01:51:06.985  INFO 13256 --- [Thread-3] ConfigServletWebServerApplicationContext : Closing org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@13d0107: startup date [Fri Oct 20 01:34:57 GMT+08:00 2023]; root of context hierarchy
+2023-10-21 01:51:06.990  INFO 13256 --- [Thread-3] o.s.c.support.DefaultLifecycleProcessor  : Stopping beans in phase 2147483647
+2023-10-21 01:51:06.991  INFO 13256 --- [Thread-3] o.s.j.e.a.AnnotationMBeanExporter        : Unregistering JMX-exposed beans on shutdown
+2023-10-21 01:51:06.992  INFO 13256 --- [Thread-3] o.s.j.e.a.AnnotationMBeanExporter        : Unregistering JMX-exposed beans
+2023-10-21 01:51:07.003  INFO 13256 --- [Thread-3] a.s.s.m.AbstractValidatingSessionManager : Disabled session validation scheduler.
+2023-10-21 01:51:07.004  INFO 13256 --- [Thread-3] c.b.d.d.DynamicRoutingDataSource         : dynamic-datasource start closing ....
+2023-10-21 01:51:07.005  INFO 13256 --- [Thread-3] com.alibaba.druid.pool.DruidDataSource   : {dataSource-2} closed
+2023-10-21 01:51:07.006  INFO 13256 --- [Thread-3] com.alibaba.druid.pool.DruidDataSource   : {dataSource-1} closed
+2023-10-21 01:51:07.006  INFO 13256 --- [Thread-3] c.b.d.d.DynamicRoutingDataSource         : dynamic-datasource all closed success,bye

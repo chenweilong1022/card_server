@@ -1,15 +1,15 @@
 version: '3'
 services:
-  sweat:
-    container_name: sweat
+  cardserver:
+    container_name: cardserver
     build:
-      context: ./sweat_x/admin/
+      context: ./card_server/admin/
       dockerfile: Dockerfile
-    image: sweat:1.0.0
+    image: cardserver:1.0.0
     env_file:
       - ./app.env
     volumes:
-      - /Users/chenweilong/sweat/home/webfile:/home/webfile
+      - /home/webfile:/home/webfile
     ports:
       - "8880:8880"
     restart: always
