@@ -95,3 +95,7 @@ swagger:
   termsOfServiceUrl: 127.0.0.1:8080
   version: 1.0
   contact: 陈伟龙
+
+renren:
+  jwt:
+    header: "token"

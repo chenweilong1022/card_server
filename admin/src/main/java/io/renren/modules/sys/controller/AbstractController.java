@@ -1,5 +1,7 @@
 package io.renren.modules.sys.controller;
 
+import io.renren.modules.app.annotation.LoginUser;
+import io.renren.modules.ltt.entity.CdUserEntity;
 import io.renren.modules.sys.entity.SysUserEntity;
 import org.apache.shiro.SecurityUtils;
 import org.slf4j.Logger;
@@ -24,6 +26,8 @@ public abstract class AbstractController {
 	protected HttpServletRequest request;
 	protected HttpServletResponse response;
 	protected HttpSession session;
+	protected CdUserEntity cdUserEntity;
+
 
 	/**
 	 * 注入程序参数
@@ -33,11 +37,13 @@ public abstract class AbstractController {
 	@ModelAttribute
 	public void init(
 			HttpServletRequest request,
-			HttpServletResponse response
+			HttpServletResponse response,
+			@LoginUser CdUserEntity cdUserEntity
 			) {
 		this.request = request;
 		this.response = response;
 		this.session = request.getSession();
+		this.cdUserEntity = cdUserEntity;
 	}
 
 	protected SysUserEntity getUser() {

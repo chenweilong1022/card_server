@@ -1,6 +1,7 @@
 package io.renren.modules.app.interceptor;
 
 
+import cn.hutool.core.util.ObjectUtil;
 import io.jsonwebtoken.Claims;
 import io.renren.common.exception.RRException;
 import io.renren.modules.app.annotation.Login;
@@ -38,14 +39,10 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
             return true;
         }
 
-
-//
-//
-//        //获取用户凭证
-//        String token = request.getHeader(jwtUtils.getHeader());
-//        if(StringUtils.isBlank(token)){
-//            token = request.getParameter(jwtUtils.getHeader());
-//        }
+        String token = request.getHeader(jwtUtils.getHeader());
+        if(StringUtils.isBlank(token)){
+            token = request.getParameter(jwtUtils.getHeader());
+        }
 //
 //        if(annotation == null){
 //            /**
@@ -58,12 +55,10 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
 //        }
 //
 //        //凭证为空
-//        if(StringUtils.isBlank(token)){
-//            throw new RRException(jwtUtils.getHeader() + "不能为空", HttpStatus.UNAUTHORIZED.value());
-//        }
-//
-//        check(token,request);
-
+        if(StringUtils.isBlank(token) && ObjectUtil.isNotNull(annotation)){
+            throw new RRException(jwtUtils.getHeader() + "不能为空", HttpStatus.UNAUTHORIZED.value());
+        }
+        request.setAttribute(USER_KEY, token);
         return true;
     }
 

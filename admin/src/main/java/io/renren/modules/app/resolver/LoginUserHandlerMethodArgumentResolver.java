@@ -1,7 +1,11 @@
 package io.renren.modules.app.resolver;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.renren.modules.app.annotation.LoginUser;
 import io.renren.modules.app.interceptor.AuthorizationInterceptor;
+import io.renren.modules.ltt.entity.CdUserEntity;
+import io.renren.modules.ltt.service.CdUserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -24,6 +28,10 @@ public class LoginUserHandlerMethodArgumentResolver implements HandlerMethodArgu
         return parameter.hasParameterAnnotation(LoginUser.class);
     }
 
+
+    @Autowired
+    private CdUserService cdUserService;
+
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer container,
                                   NativeWebRequest request, WebDataBinderFactory factory) throws Exception {
@@ -32,6 +40,9 @@ public class LoginUserHandlerMethodArgumentResolver implements HandlerMethodArgu
         if(object == null){
             return null;
         }
-        return null;
+
+        return cdUserService.getOne(new QueryWrapper<CdUserEntity>().lambda()
+                .eq(CdUserEntity::getToken,String.valueOf(object))
+        );
     }
 }
