@@ -5,7 +5,7 @@
   window.SITE_CONFIG = {};
 
   // api接口请求地址
-  window.SITE_CONFIG['baseUrl'] = 'http://localhost:8880';
+  window.SITE_CONFIG['baseUrl'] = 'http://124.220.235.81:8880/';
   // window.SITE_CONFIG['baseUrl'] = 'http://tongcheng.xiaoyuancms.cn';
 
   // cdn地址 = 域名 + 版本号
