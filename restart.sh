@@ -9,6 +9,3 @@ docker run -i --rm --name my-maven-project -v "$(pwd)":/usr/src/mymaven -v maven
 
 docker-compose -f docker-compose.yml down
 docker-compose -f docker-compose.yml up --force-recreate --build -d
-
-docker-compose -f docker-compose-data.yml down
-docker-compose -f docker-compose-data.yml up --force-recreate --build -d
