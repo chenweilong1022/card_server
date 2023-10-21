@@ -7,10 +7,9 @@ services:
       MYSQL_ROOT_PASSWORD: SEW2018!
       MYSQL_ROOT_HOST: "%"
     volumes:
-      - /Users/chenweilong/mysql/home/mysql:/var/lib/mysql
-      - /Users/chenweilong/mysql/var/lib/mysql-files:/var/lib/mysql-files
-      - /Users/chenweilong/mysql/etc/mysql:/etc/mysql
-      - /Users/chenweilong/mysql/etc/localtime:/etc/localtime
+      - /home/webfile/mysql/home/mysql:/var/lib/mysql
+      - /home/webfile/mysql/var/lib/mysql-files:/var/lib/mysql-files
+      - /home/webfile/mysql/etc/mysql:/etc/mysql
     ports:
       - "3308:3306"
     restart: always
@@ -21,7 +20,7 @@ services:
     privileged: true
     command: redis-server --requirepass Jz123456
     volumes:
-      - /Users/chenweilong/redis/home/redis:/data
+      - /home/webfile/redis/home/redis:/data
     ports:
       - "6379:6379"
   minio:
@@ -36,4 +35,4 @@ services:
       MINIO_ROOT_USER: admin
       MINIO_ROOT_PASSWORD: password
     volumes:
-      - /Users/chenweilong/minio/home/webfile/wk/file/:/data
+      - /home/webfile/minio/home/webfile/wk/file/:/data
