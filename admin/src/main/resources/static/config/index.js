@@ -5,11 +5,12 @@
   window.SITE_CONFIG = {};
 
   // api接口请求地址
-  window.SITE_CONFIG['baseUrl'] = 'http://124.220.235.81:8880/';
+  // window.SITE_CONFIG['baseUrl'] = 'http://124.220.235.81:8880/';
+  window.SITE_CONFIG['baseUrl'] = 'http://localhost:8880/'
 
   // cdn地址 = 域名 + 版本号
   window.SITE_CONFIG['domain']  = './'; // 域名
-  window.SITE_CONFIG['version'] = '2310221457';   // 版本号(年月日时分)
+  window.SITE_CONFIG['version'] = '2310221747';   // 版本号(年月日时分)
   window.SITE_CONFIG['cdnUrl']  = window.SITE_CONFIG.domain + window.SITE_CONFIG.version;
 })();
 

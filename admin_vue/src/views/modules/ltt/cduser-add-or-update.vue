@@ -4,23 +4,11 @@
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-    <el-form-item label="秘钥" prop="token">
-      <el-input v-model="dataForm.token" placeholder="秘钥"></el-input>
-    </el-form-item>
-    <el-form-item label="余额" prop="balance">
-      <el-input v-model="dataForm.balance" placeholder="余额"></el-input>
-    </el-form-item>
     <el-form-item label="密码" prop="password">
       <el-input v-model="dataForm.password" placeholder="密码"></el-input>
     </el-form-item>
     <el-form-item label="账号" prop="account">
       <el-input v-model="dataForm.account" placeholder="账号"></el-input>
-    </el-form-item>
-    <el-form-item label="删除标志" prop="deleteFlag">
-      <el-input v-model="dataForm.deleteFlag" placeholder="删除标志"></el-input>
-    </el-form-item>
-    <el-form-item label="创建时间" prop="createTime">
-      <el-input v-model="dataForm.createTime" placeholder="创建时间"></el-input>
     </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -79,12 +67,12 @@
               params: this.$http.adornParams()
             }).then(({data}) => {
               if (data && data.code === 0) {
-                this.dataForm.token = data.cduser.token
-                this.dataForm.balance = data.cduser.balance
-                this.dataForm.password = data.cduser.password
-                this.dataForm.account = data.cduser.account
-                this.dataForm.deleteFlag = data.cduser.deleteFlag
-                this.dataForm.createTime = data.cduser.createTime
+                this.dataForm.token = data.cdUser.token
+                this.dataForm.balance = data.cdUser.balance
+                this.dataForm.password = data.cdUser.password
+                this.dataForm.account = data.cdUser.account
+                this.dataForm.deleteFlag = data.cdUser.deleteFlag
+                this.dataForm.createTime = data.cdUser.createTime
               }
             })
           }

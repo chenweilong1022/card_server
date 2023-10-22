@@ -4,7 +4,7 @@ import io.renren.common.base.interfaces.BaseEnum;
 import lombok.Getter;
 
 @Getter
-public enum Online {
+public enum Online implements BaseEnum{
 
     YES(0,"在线"),
     NO(1,"离线"),
@@ -18,7 +18,7 @@ public enum Online {
     private final int key;
     private final String value;
 
-    public int getKey() {
+    public Integer getKey() {
         return key;
     }
 

@@ -3,6 +3,8 @@ package io.renren.modules.ltt.vo;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.renren.common.utils.EnumUtil;
+import io.renren.modules.ltt.enums.Online;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -41,6 +43,11 @@ public class CdDevicesVO implements Serializable {
 	@ApiModelProperty(required=false,value="是否在线")
 	private Integer online;
 	/**
+	 * 是否在线
+	 */
+	@ApiModelProperty(required=false,value="是否在线")
+	private String onlineStr;
+	/**
 	 * 删除标志
 	 */
 	@ApiModelProperty(required=false,value="删除标志")
@@ -51,4 +58,7 @@ public class CdDevicesVO implements Serializable {
 	@ApiModelProperty(required=false,value="创建时间")
 	private Date createTime;
 
+	public String getOnlineStr() {
+		return EnumUtil.queryValueByKey(this.online,Online.values());
+	}
 }
