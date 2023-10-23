@@ -52,6 +52,16 @@ public class AppCdCardLockController extends AbstractController {
     }
 
     /**
+     * 释放手机号
+     * @param cdCardLock
+     * @return
+     */
+    @RequestMapping("/releaseMobileAll")
+    public R releaseMobileAll(@RequestBody CdCardLockDTO cdCardLock){
+        return R.data(cdCardLockService.releaseMobileAll(cdCardLock,this.cdUserEntity));
+    }
+
+    /**
      * 获取验证码
      * @param cdCardLock
      * @return

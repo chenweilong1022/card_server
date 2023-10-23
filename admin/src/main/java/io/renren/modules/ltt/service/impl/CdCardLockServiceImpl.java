@@ -165,6 +165,26 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    public boolean releaseMobileAll(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity) {
+        List<CdCardLockEntity> list = this.list(new QueryWrapper<CdCardLockEntity>().lambda()
+                .eq(CdCardLockEntity::getUserId,cdUserEntity.getId())
+        );
+        for (CdCardLockEntity cdCardLockEntity : list) {
+            cdCardLockEntity.setId(cdCardLockEntity.getId());
+            cdCardLockEntity.setUserId(null);
+            cdCardLockEntity.setProjectId(null);
+            cdCardLockEntity.setCode(null);
+            cdCardLockEntity.setLock(Lock.NO.getKey());
+            cdCardLockEntity.setPhone(null);
+            cdCardLockEntity.setIccid(null);
+            cdCardLockEntity.setDeleteFlag(DeleteFlag.NO.getKey());
+            cdCardLockEntity.setCreateTime(DateUtil.date());
+        }
+        return this.updateBatchById(list);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
     public String getSms(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity) {
         //获取当前手机号占用的设备
         CdCardLockEntity cdCardLockEntity = this.getOne(new QueryWrapper<CdCardLockEntity>().lambda()

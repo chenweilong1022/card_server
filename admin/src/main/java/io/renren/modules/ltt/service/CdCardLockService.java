@@ -74,7 +74,13 @@ public interface CdCardLockService extends IService<CdCardLockEntity> {
      * @return
      */
     boolean releaseMobile(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity);
-
+    /**
+     * 释放用户的所有号码
+     * @param cdCardLock
+     * @param cdUserEntity
+     * @return
+     */
+    boolean releaseMobileAll(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity);
     /**
      * 获取短信
      * @param cdCardLock
