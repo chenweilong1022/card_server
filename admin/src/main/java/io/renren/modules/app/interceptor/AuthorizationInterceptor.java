@@ -4,6 +4,7 @@ package io.renren.modules.app.interceptor;
 import cn.hutool.core.util.ObjectUtil;
 import io.jsonwebtoken.Claims;
 import io.renren.common.exception.RRException;
+import io.renren.common.validator.Assert;
 import io.renren.modules.app.annotation.Login;
 import io.renren.modules.app.utils.JwtUtils;
 import org.apache.commons.lang.StringUtils;
@@ -31,6 +32,12 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+        response.setHeader("Access-Control-Max-Age", "3600");
+        response.setHeader("Access-Control-Allow-Headers", "*");
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+
 
         Login annotation;
         if(handler instanceof HandlerMethod) {
@@ -56,7 +63,9 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
 //
 //        //凭证为空
         if(StringUtils.isBlank(token) && ObjectUtil.isNotNull(annotation)){
-            throw new RRException(jwtUtils.getHeader() + "不能为空", HttpStatus.UNAUTHORIZED.value());
+//            throw new RRException(jwtUtils.getHeader() + "不能为空", HttpStatus.UNAUTHORIZED.value());
+            Assert.isTrue(505,true,"PleaseLogIn");
+            return false;
         }
         request.setAttribute(USER_KEY, token);
         return true;

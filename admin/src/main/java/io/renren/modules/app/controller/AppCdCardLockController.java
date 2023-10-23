@@ -2,6 +2,7 @@ package io.renren.modules.app.controller;
 
 import io.renren.common.utils.PageUtils;
 import io.renren.common.utils.R;
+import io.renren.modules.app.annotation.Login;
 import io.renren.modules.ltt.dto.CdCardLockDTO;
 import io.renren.modules.ltt.service.CdCardLockService;
 import io.renren.modules.ltt.vo.CdCardLockVO;
@@ -36,6 +37,7 @@ public class AppCdCardLockController extends AbstractController {
      * @return
      */
     @RequestMapping("/getMobile")
+    @Login
     public R getMobile(@RequestBody CdCardLockDTO cdCardLock){
         return R.data(cdCardLockService.getMobile(cdCardLock,this.cdUserEntity));
     }
@@ -47,6 +49,7 @@ public class AppCdCardLockController extends AbstractController {
      * @return
      */
     @RequestMapping("/releaseMobile")
+    @Login
     public R releaseMobile(@RequestBody CdCardLockDTO cdCardLock){
         return R.data(cdCardLockService.releaseMobile(cdCardLock,this.cdUserEntity));
     }
@@ -57,6 +60,7 @@ public class AppCdCardLockController extends AbstractController {
      * @return
      */
     @RequestMapping("/releaseMobileAll")
+    @Login
     public R releaseMobileAll(@RequestBody CdCardLockDTO cdCardLock){
         return R.data(cdCardLockService.releaseMobileAll(cdCardLock,this.cdUserEntity));
     }
@@ -67,6 +71,7 @@ public class AppCdCardLockController extends AbstractController {
      * @return
      */
     @RequestMapping("/getSms")
+    @Login
     public R getSms(@RequestBody CdCardLockDTO cdCardLock){
         return R.data(cdCardLockService.getSms(cdCardLock,this.cdUserEntity));
     }

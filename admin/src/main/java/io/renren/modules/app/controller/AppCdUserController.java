@@ -2,6 +2,7 @@ package io.renren.modules.app.controller;
 
 import io.renren.common.utils.PageUtils;
 import io.renren.common.utils.R;
+import io.renren.modules.app.annotation.Login;
 import io.renren.modules.ltt.conver.CdUserConver;
 import io.renren.modules.ltt.dto.CdUserDTO;
 import io.renren.modules.ltt.service.CdUserService;
@@ -53,6 +54,7 @@ public class AppCdUserController extends AbstractController {
      * info
      */
     @RequestMapping("/info")
+    @Login
     public R info(CdUserDTO cdUser){
         return R.data(CdUserConver.MAPPER.conver1(cdUserEntity));
     }
