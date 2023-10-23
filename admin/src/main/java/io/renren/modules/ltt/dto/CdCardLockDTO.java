@@ -67,7 +67,13 @@ public class CdCardLockDTO extends PageParam implements Serializable {
 	@ApiModelProperty(required=false,value="卡的iccid")
 	private String iccid;
 	/**
-	 * 删除标志
+	 * 指定号段
+	 */
+	@ApiModelProperty(required=false,value="卡的iccid")
+	private String numberSegment;
+
+	/**
+	 *删除标志
 	 */
 	@ApiModelProperty(required=false,value="删除标志")
 	private Integer deleteFlag;

@@ -31,6 +31,7 @@ import javax.annotation.Resource;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service("cdCardLockService")
@@ -99,29 +100,42 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
         );
         //没有可用的设备
         Assert.isTrue(CollUtil.isEmpty(list),"NoEquipmentAvailable");
-        //获取第一个可用的设备
-        CdCardLockEntity first = CollUtil.getFirst(list);
-        //获取设备下所有的信息列表
-        List<CdCardEntity> cdDevicesEntities = cdCardService.list(new QueryWrapper<CdCardEntity>().lambda()
-                .eq(CdCardEntity::getDeviceId,first.getDeviceId())
-        );
         //设备没有初始化
         Assert.isTrue(CollUtil.isEmpty(list),"DeviceIsNotInitialized");
-        //获取第一个可以用的卡
-        CdCardEntity first1 = CollUtil.getFirst(cdDevicesEntities);
-        //将当前手机上锁
-        CdCardLockEntity update = new CdCardLockEntity();
-        update.setId(first.getId());
-        update.setUserId(cdUserEntity.getId());
-        update.setProjectId(cdCardLock.getProjectId());
-        update.setDeviceId(first1.getDeviceId());
-        update.setLock(Lock.YES.getKey());
-        update.setPhone(first1.getPhone());
-        update.setIccid(first1.getIccid());
-        update.setDeleteFlag(DeleteFlag.NO.getKey());
-        update.setCreateTime(DateUtil.date());
-        this.updateById(update);
-        return update.getIccid();
+        //循环可以使用的设备
+        for (CdCardLockEntity cdCardLockEntity : list) {
+            //获取设备下所有的信息列表 所有卡的信息
+            List<CdCardEntity> cdDevicesEntities = cdCardService.list(new QueryWrapper<CdCardEntity>().lambda()
+                    .eq(CdCardEntity::getDeviceId,cdCardLockEntity.getDeviceId())
+            );
+            //获取这个设备下这个项目所有记录
+            List<CdProjectSmsRecordEntity> cdProjectSmsRecordEntities = cdProjectSmsRecordService.list(new QueryWrapper<CdProjectSmsRecordEntity>().lambda()
+                    .eq(CdProjectSmsRecordEntity::getProjectId,cdCardLock.getProjectId())
+                    .eq(CdProjectSmsRecordEntity::getDeviceId,cdCardLockEntity.getDeviceId())
+            );
+            //已经使用的id
+            List<String> iccids = cdProjectSmsRecordEntities.stream().map(CdProjectSmsRecordEntity::getIccid).collect(Collectors.toList());
+            for (CdCardEntity cdDevicesEntity : cdDevicesEntities) {
+                if (iccids.contains(cdDevicesEntity.getIccid())) {
+                    continue;
+                }else {
+                    //将当前手机上锁
+                    CdCardLockEntity update = new CdCardLockEntity();
+                    update.setId(cdCardLockEntity.getId());
+                    update.setUserId(cdUserEntity.getId());
+                    update.setProjectId(cdCardLock.getProjectId());
+                    update.setDeviceId(cdDevicesEntity.getDeviceId());
+                    update.setLock(Lock.YES.getKey());
+                    update.setPhone(cdDevicesEntity.getPhone());
+                    update.setIccid(cdDevicesEntity.getIccid());
+                    update.setDeleteFlag(DeleteFlag.NO.getKey());
+                    update.setCreateTime(DateUtil.date());
+                    this.updateById(update);
+                    return update.getIccid();
+                }
+            }
+        }
+        return null;
     }
 
     @Override
