@@ -107,7 +107,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
             //获取设备下所有的信息列表 所有卡的信息
             List<CdCardEntity> cdDevicesEntities = cdCardService.list(new QueryWrapper<CdCardEntity>().lambda()
                     .eq(CdCardEntity::getDeviceId,cdCardLockEntity.getDeviceId())
-                    .notIn(CdCardEntity::getDeviceId,"无卡")
+                    .notIn(CdCardEntity::getIccid,"无卡")
             );
             //获取这个设备下这个项目所有记录
             List<CdProjectSmsRecordEntity> cdProjectSmsRecordEntities = cdProjectSmsRecordService.list(new QueryWrapper<CdProjectSmsRecordEntity>().lambda()
