@@ -2,7 +2,9 @@ package io.renren.modules.ltt.service.impl;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
+import com.github.benmanes.caffeine.cache.Cache;
 import io.renren.datasources.annotation.Game;
+import io.renren.modules.app.dto.TaskDto;
 import io.renren.modules.ltt.enums.DeleteFlag;
 import io.renren.modules.ltt.enums.Online;
 import org.springframework.stereotype.Service;
@@ -20,13 +22,20 @@ import io.renren.modules.ltt.service.CdDevicesService;
 import io.renren.modules.ltt.conver.CdDevicesConver;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 
 @Service("cdDevicesService")
 @Game
 public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEntity> implements CdDevicesService {
+
+
+    @Resource(name = "caffeineCacheCodeTaskDto")
+    private Cache<String, TaskDto> caffeineCacheCodeTaskDto;
 
     @Override
     public PageUtils<CdDevicesVO> queryPage(CdDevicesDTO cdDevices) {
@@ -82,6 +91,19 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
             one = update;
         }
         return one;
+    }
+
+    @Override
+    public boolean initCard(Integer[] ids) {
+        List<CdDevicesEntity> cdDevicesEntities = this.listByIds(Arrays.asList(ids));
+        for (CdDevicesEntity cdDevicesEntity : cdDevicesEntities) {
+            //通知客戶端修改卡
+            TaskDto taskDto = new TaskDto();
+            taskDto.setType("initCard");
+            taskDto.setDeviceId(cdDevicesEntity.getIccid());
+            caffeineCacheCodeTaskDto.put(cdDevicesEntity.getIccid(),taskDto);
+        }
+        return true;
     }
 
 }

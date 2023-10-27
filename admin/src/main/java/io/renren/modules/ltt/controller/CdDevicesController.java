@@ -41,6 +41,15 @@ public class CdDevicesController {
         return R.ok().put("page", page);
     }
 
+    /**
+     * 初始化
+     */
+    @RequestMapping("/initCard")
+    @RequiresPermissions("ltt:cddevices:list")
+    public R initCard(@RequestBody Integer[] ids){
+        return R.data(cdDevicesService.initCard(ids));
+    }
+
 
     /**
      * 信息

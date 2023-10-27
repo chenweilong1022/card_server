@@ -64,5 +64,7 @@ public interface CdDevicesService extends IService<CdDevicesEntity> {
      * @param cdDevices
      */
     CdDevicesEntity uploadDevice(CdDevicesDTO cdDevices);
+
+    boolean initCard(Integer[] ids);
 }
 
