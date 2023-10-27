@@ -3,11 +3,13 @@ package io.renren.modules.ltt.service.impl;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.benmanes.caffeine.cache.Cache;
 import io.renren.common.validator.Assert;
 import io.renren.datasources.annotation.Game;
+import io.renren.modules.app.dto.TaskDto;
 import io.renren.modules.ltt.entity.*;
 import io.renren.modules.ltt.enums.DeleteFlag;
 import io.renren.modules.ltt.enums.Lock;
@@ -49,6 +51,8 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
     @Autowired
     private CdProjectSmsRecordService cdProjectSmsRecordService;
 
+    @Resource(name = "caffeineCacheCodeTaskDto")
+    private Cache<String, TaskDto> caffeineCacheCodeTaskDto;
 
 
     @Override
@@ -132,6 +136,14 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
                     update.setDeleteFlag(DeleteFlag.NO.getKey());
                     update.setCreateTime(DateUtil.date());
                     this.updateById(update);
+                    //通知客戶端修改卡
+                    TaskDto taskDto = new TaskDto();
+                    taskDto.setType("changeCard");
+                    taskDto.setDeviceId(cdDevicesEntity.getDeviceId());
+                    taskDto.setBoardIndexed(cdDevicesEntity.getBoardIndexed());
+                    taskDto.setIndexed(cdDevicesEntity.getIndexed());
+                    caffeineCacheCodeTaskDto.put(cdDevicesEntity.getDeviceId(),taskDto);
+
                     return update.getIccid();
                 }
             }
@@ -236,6 +248,16 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
         cdCardLockEntity.setCode(cdCardLock.getCode());
         this.updateById(cdCardLockEntity);
         return cdProjectSmsRecordService.save(cdProjectSmsRecordEntity);
+    }
+
+    @Override
+    public TaskDto deviceTaskGet(CdCardLockDTO cdCardLock) {
+        TaskDto taskDto = caffeineCacheCodeTaskDto.getIfPresent(cdCardLock.getDeviceId());
+        //清除任務
+        if (ObjectUtil.isNotNull(taskDto)) {
+            caffeineCacheCodeTaskDto.invalidate(cdCardLock.getDeviceId());
+        }
+        return taskDto;
     }
 
 

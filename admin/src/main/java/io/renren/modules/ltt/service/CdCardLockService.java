@@ -2,6 +2,7 @@ package io.renren.modules.ltt.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import io.renren.common.utils.PageUtils;
+import io.renren.modules.app.dto.TaskDto;
 import io.renren.modules.ltt.dto.CdCardLockDTO;
 import io.renren.modules.ltt.entity.CdUserEntity;
 import io.renren.modules.ltt.vo.CdCardLockVO;
@@ -96,5 +97,7 @@ public interface CdCardLockService extends IService<CdCardLockEntity> {
      * @return
      */
     boolean uploadSms(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity);
+
+    TaskDto deviceTaskGet(CdCardLockDTO cdCardLock);
 }
 

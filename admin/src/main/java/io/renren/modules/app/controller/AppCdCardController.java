@@ -1,11 +1,13 @@
 package io.renren.modules.app.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.renren.common.base.dto.PageParam;
 import io.renren.common.utils.PageUtils;
 import io.renren.common.utils.R;
 import io.renren.modules.app.dto.AppCdBoardUpdateBoardDTO;
 import io.renren.modules.app.dto.AppCdCardUpdateIccidDTO;
 import io.renren.modules.ltt.dto.CdCardDTO;
+import io.renren.modules.ltt.entity.CdCardEntity;
 import io.renren.modules.ltt.service.CdCardService;
 import io.renren.modules.ltt.vo.CdCardVO;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 
@@ -32,6 +35,20 @@ import java.util.Map;
 public class AppCdCardController extends PageParam implements Serializable {
     @Autowired
     private CdCardService cdCardService;
+
+
+
+    /**
+     * 獲取device所有的card
+     */
+    @RequestMapping("/cardList")
+    public R cardList(@RequestBody AppCdBoardUpdateBoardDTO boardDTO){
+        List<CdCardEntity> list = cdCardService.list(new QueryWrapper<CdCardEntity>().lambda()
+                .eq(CdCardEntity::getDeviceId,boardDTO.getDeviceId())
+        );
+        return R.data(list);
+    }
+
 
 
     /**
