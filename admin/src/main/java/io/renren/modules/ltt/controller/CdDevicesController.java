@@ -42,6 +42,15 @@ public class CdDevicesController {
     }
 
     /**
+     * 切换卡
+     */
+    @RequestMapping("/changeCard")
+    @RequiresPermissions("ltt:cddevices:list")
+    public R changeCard(@RequestBody CdDevicesDTO cdDevices){
+        return R.data(cdDevicesService.changeCard(cdDevices));
+    }
+
+    /**
      * 初始化
      */
     @RequestMapping("/initCard")

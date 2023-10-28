@@ -52,6 +52,7 @@
         label="操作">
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="initHandle(scope.row.id)">初始化</el-button>
+          <el-button type="text" size="small" @click="cddevicesChangeCardHandle(scope.row.id)">修改</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -66,11 +67,13 @@
     </el-pagination>
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
+    <cddevices-change-card v-if="cddevicesChangeCardVisible" ref="cddevicesChangeCard" @refreshDataList="getDataList"></cddevices-change-card>
   </div>
 </template>
 
 <script>
   import AddOrUpdate from './cddevices-add-or-update'
+  import CddevicesChangeCard from './cddevices-change-card'
   export default {
     data () {
       return {
@@ -83,11 +86,13 @@
         totalPage: 0,
         dataListLoading: false,
         dataListSelections: [],
-        addOrUpdateVisible: false
+        addOrUpdateVisible: false,
+        cddevicesChangeCardVisible: false
       }
     },
     components: {
-      AddOrUpdate
+      AddOrUpdate,
+      CddevicesChangeCard
     },
     activated () {
       this.getDataList()
@@ -164,6 +169,13 @@
         this.addOrUpdateVisible = true
         this.$nextTick(() => {
           this.$refs.addOrUpdate.init(id)
+        })
+      },
+      // 新增 / 修改
+      cddevicesChangeCardHandle (id) {
+        this.cddevicesChangeCardVisible = true
+        this.$nextTick(() => {
+          this.$refs.cddevicesChangeCard.init(id)
         })
       },
       // 删除

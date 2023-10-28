@@ -106,4 +106,16 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
         return true;
     }
 
+    @Override
+    public boolean changeCard(CdDevicesDTO cdDevices) {
+        //通知客戶端修改卡
+        TaskDto taskDto = new TaskDto();
+        taskDto.setType("changeCard");
+        taskDto.setBoardIndexed(cdDevices.getBoardIndexed());
+        taskDto.setIndexed(cdDevices.getIndexed());
+        taskDto.setDeviceId(cdDevices.getIccid());
+        caffeineCacheCodeTaskDto.put(cdDevices.getIccid(),taskDto);
+        return true;
+    }
+
 }

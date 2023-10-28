@@ -51,5 +51,14 @@ public class CdDevicesDTO extends PageParam implements Serializable {
 	 */
 	@ApiModelProperty(required=false,value="创建时间")
 	private Date createTime;
-
+	/**
+	 * 板子
+	 */
+	@ApiModelProperty(required=false,value="板子")
+	private Integer boardIndexed;
+	/**
+	 * 卡下标
+	 */
+	@ApiModelProperty(required=false,value="卡下标")
+	private Integer indexed;
 }
