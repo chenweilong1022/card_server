@@ -5,8 +5,12 @@ import cn.hutool.core.util.ObjectUtil;
 import com.github.benmanes.caffeine.cache.Cache;
 import io.renren.datasources.annotation.Game;
 import io.renren.modules.app.dto.TaskDto;
+import io.renren.modules.ltt.entity.CdCardLockEntity;
 import io.renren.modules.ltt.enums.DeleteFlag;
+import io.renren.modules.ltt.enums.Lock;
 import io.renren.modules.ltt.enums.Online;
+import io.renren.modules.ltt.service.CdCardLockService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -36,6 +40,8 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
 
     @Resource(name = "caffeineCacheCodeTaskDto")
     private Cache<String, TaskDto> caffeineCacheCodeTaskDto;
+    @Autowired
+    private CdCardLockService cdCardLockService;
 
     @Override
     public PageUtils<CdDevicesVO> queryPage(CdDevicesDTO cdDevices) {
@@ -89,6 +95,20 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
             update.setCreateTime(DateUtil.date());
             this.save(update);
             one = update;
+        }
+
+
+        CdCardLockEntity cdCardLockEntity = cdCardLockService.getOne(new QueryWrapper<CdCardLockEntity>().lambda()
+                .eq(CdCardLockEntity::getDeviceId,cdDevices.getIccid())
+        );
+        //如果不存在上传设备id
+        if (ObjectUtil.isNull(cdCardLockEntity)) {
+            CdCardLockEntity update = new CdCardLockEntity();
+            update.setDeviceId(cdDevices.getIccid());
+            update.setLock(Lock.NO.getKey());
+            update.setDeleteFlag(DeleteFlag.NO.getKey());
+            update.setCreateTime(DateUtil.date());
+            cdCardLockService.save(update);
         }
         return one;
     }

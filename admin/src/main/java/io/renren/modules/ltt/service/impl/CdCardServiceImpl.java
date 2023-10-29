@@ -1,11 +1,15 @@
 package io.renren.modules.ltt.service.impl;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.ObjectUtil;
 import io.renren.datasources.annotation.Game;
 import io.renren.modules.app.dto.AppCdBoardUpdateBoardDTO;
 import io.renren.modules.app.dto.AppCdCardUpdateIccidDTO;
 import io.renren.modules.ltt.entity.CdBoardEntity;
+import io.renren.modules.ltt.entity.CdIccidPhoneEntity;
 import io.renren.modules.ltt.enums.DeleteFlag;
+import io.renren.modules.ltt.service.CdIccidPhoneService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -31,6 +35,10 @@ import java.util.Map;
 @Service("cdCardService")
 @Game
 public class CdCardServiceImpl extends ServiceImpl<CdCardDao, CdCardEntity> implements CdCardService {
+
+    @Autowired
+    private CdIccidPhoneService cdIccidPhoneService;
+
 
     @Override
     public PageUtils<CdCardVO> queryPage(CdCardDTO cdCard) {
@@ -120,7 +128,13 @@ public class CdCardServiceImpl extends ServiceImpl<CdCardDao, CdCardEntity> impl
             appCdCardUpdateIccidDTO.setBoardIndexed(boardIndexed - 1);
             appCdCardUpdateIccidDTO.setIndexed(indexed - 1);
             appCdCardUpdateIccidDTO.setIccid(iccid);
+            CdIccidPhoneEntity one = cdIccidPhoneService.getOne(new QueryWrapper<CdIccidPhoneEntity>().lambda()
+                    .eq(CdIccidPhoneEntity::getIccid,iccid)
+            );
             appCdCardUpdateIccidDTO.setPhone("");
+            if (ObjectUtil.isNotNull(one)) {
+                appCdCardUpdateIccidDTO.setPhone(one.getPhone());
+            }
             uploadIccid(appCdCardUpdateIccidDTO);
         }
     }

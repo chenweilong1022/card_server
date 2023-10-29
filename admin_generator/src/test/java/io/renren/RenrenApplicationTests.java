@@ -17,14 +17,14 @@ public class RenrenApplicationTests {
 	@Test
 	public void contextLoads() {
 		sysGeneratorService.generatorCode(new String[]{
-				"cd_project_sms_record",
+				"cd_iccid_phone",
 		});
 	}
 
 	@Test
 	public void contextLoadsUpdate() {
 		sysGeneratorService.generatorCodeUpdate(new String[]{
-				"cd_card_lock",
+				"cd_iccid_phone",
 		});
 	}
 
