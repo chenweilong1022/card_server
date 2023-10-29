@@ -50,6 +50,8 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
 
     @Autowired
     private CdProjectSmsRecordService cdProjectSmsRecordService;
+    @Autowired
+    private CdIccidPhoneService cdIccidPhoneService;
 
     @Resource(name = "caffeineCacheCodeTaskDto")
     private Cache<String, TaskDto> caffeineCacheCodeTaskDto;
@@ -126,12 +128,18 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
                 }else {
                     //将当前手机上锁
                     CdCardLockEntity update = new CdCardLockEntity();
+                    if (StrUtil.isEmpty(cdDevicesEntity.getPhone())) {
+                        CdIccidPhoneEntity one = cdIccidPhoneService.getOne(new QueryWrapper<CdIccidPhoneEntity>().lambda()
+                                .eq(CdIccidPhoneEntity::getIccid,cdDevicesEntity.getIccid())
+                        );
+                        update.setPhone(one.getPhone());
+                    }
+
                     update.setId(cdCardLockEntity.getId());
                     update.setUserId(cdUserEntity.getId());
                     update.setProjectId(cdCardLock.getProjectId());
                     update.setDeviceId(cdDevicesEntity.getDeviceId());
                     update.setLock(Lock.YES.getKey());
-                    update.setPhone(cdDevicesEntity.getPhone());
                     update.setIccid(cdDevicesEntity.getIccid());
                     update.setDeleteFlag(DeleteFlag.NO.getKey());
                     update.setCreateTime(DateUtil.date());
