@@ -239,12 +239,17 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
         Assert.isNull(cdCardLockEntity,"NoAssociatedDevices");
         //获取验证码的key
         String key = String.format("code_%s_%s", cdCardLockEntity.getIccid(), cdCardLockEntity.getProjectId());
+
+        CdProjectVO cdProjectVO = cdProjectService.getById(cdCardLockEntity.getProjectId());
+
         //保存短信的记录
         CdProjectSmsRecordEntity cdProjectSmsRecordEntity = new CdProjectSmsRecordEntity();
         cdProjectSmsRecordEntity.setKey(key);
         cdProjectSmsRecordEntity.setCode(cdCardLock.getCode());
-        cdProjectSmsRecordEntity.setUserId(cdCardLockEntity.getUserId());
-        cdProjectSmsRecordEntity.setProjectId(cdCardLockEntity.getProjectId());
+        if (cdCardLock.getCode().contains(cdProjectVO.getName())) {
+            cdProjectSmsRecordEntity.setUserId(cdCardLockEntity.getUserId());
+            cdProjectSmsRecordEntity.setProjectId(cdCardLockEntity.getProjectId());
+        }
         cdProjectSmsRecordEntity.setDeviceId(cdCardLockEntity.getDeviceId());
         cdProjectSmsRecordEntity.setPhone(cdCardLockEntity.getPhone());
         cdProjectSmsRecordEntity.setIccid(cdCardLockEntity.getIccid());
@@ -252,9 +257,11 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
         cdProjectSmsRecordEntity.setCreateTime(DateUtil.date());
 
 
-        cdCardLockEntity.setId(cdCardLockEntity.getId());
-        cdCardLockEntity.setCode(cdCardLock.getCode());
-        this.updateById(cdCardLockEntity);
+        if (cdCardLock.getCode().contains(cdProjectVO.getName())) {
+            cdCardLockEntity.setId(cdCardLockEntity.getId());
+            cdCardLockEntity.setCode(cdCardLock.getCode());
+            this.updateById(cdCardLockEntity);
+        }
         return cdProjectSmsRecordService.save(cdProjectSmsRecordEntity);
     }
 
