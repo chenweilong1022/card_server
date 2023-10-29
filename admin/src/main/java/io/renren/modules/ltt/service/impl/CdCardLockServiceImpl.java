@@ -92,7 +92,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
     }
 
     @Override
-    public String getMobile(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity) {
+    public CdCardLockVO getMobile(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity) {
         //获取项目
         CdProjectVO cdProjectVO = cdProjectService.getById(cdCardLock.getProjectId());
         Assert.isNull(cdProjectVO,"ProjectDoesNotExist");
@@ -144,7 +144,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
                     taskDto.setIndexed(cdDevicesEntity.getIndexed());
                     caffeineCacheCodeTaskDto.put(cdDevicesEntity.getDeviceId(),taskDto);
 
-                    return update.getPhone();
+                    return new CdCardLockVO().setPhone(update.getPhone()).setIccid(update.getIccid());
                 }
             }
         }
