@@ -144,7 +144,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
                     taskDto.setIndexed(cdDevicesEntity.getIndexed());
                     caffeineCacheCodeTaskDto.put(cdDevicesEntity.getDeviceId(),taskDto);
 
-                    return update.getIccid();
+                    return update.getPhone();
                 }
             }
         }
