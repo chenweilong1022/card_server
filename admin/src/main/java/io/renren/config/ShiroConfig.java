@@ -63,6 +63,7 @@ public class ShiroConfig {
         filterMap.put("/swagger/**", "anon");
         filterMap.put("/index.html", "anon");
         filterMap.put("/23*/**", "anon");
+        filterMap.put("/web/**", "anon");
         filterMap.put("/config/**", "anon");
         filterMap.put("/h5/**", "anon");
         filterMap.put("/ops/v1/**", "anon");
