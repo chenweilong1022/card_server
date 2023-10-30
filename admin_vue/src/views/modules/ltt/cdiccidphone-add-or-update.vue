@@ -10,12 +10,6 @@
     <el-form-item label="卡的iccid" prop="iccid">
       <el-input v-model="dataForm.iccid" placeholder="卡的iccid"></el-input>
     </el-form-item>
-    <el-form-item label="删除标志" prop="deleteFlag">
-      <el-input v-model="dataForm.deleteFlag" placeholder="删除标志"></el-input>
-    </el-form-item>
-    <el-form-item label="创建时间" prop="createTime">
-      <el-input v-model="dataForm.createTime" placeholder="创建时间"></el-input>
-    </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>
@@ -65,10 +59,10 @@
               params: this.$http.adornParams()
             }).then(({data}) => {
               if (data && data.code === 0) {
-                this.dataForm.phone = data.cdiccidphone.phone
-                this.dataForm.iccid = data.cdiccidphone.iccid
-                this.dataForm.deleteFlag = data.cdiccidphone.deleteFlag
-                this.dataForm.createTime = data.cdiccidphone.createTime
+                this.dataForm.phone = data.cdIccidPhone.phone
+                this.dataForm.iccid = data.cdIccidPhone.iccid
+                this.dataForm.deleteFlag = data.cdIccidPhone.deleteFlag
+                this.dataForm.createTime = data.cdIccidPhone.createTime
               }
             })
           }
