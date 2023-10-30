@@ -133,6 +133,8 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
                                 .eq(CdIccidPhoneEntity::getIccid,cdDevicesEntity.getIccid())
                         );
                         update.setPhone(one.getPhone());
+                    }else {
+                        update.setPhone(cdDevicesEntity.getPhone());
                     }
 
                     update.setId(cdCardLockEntity.getId());
