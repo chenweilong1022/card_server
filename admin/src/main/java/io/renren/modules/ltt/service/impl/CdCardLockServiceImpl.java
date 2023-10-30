@@ -13,6 +13,7 @@ import io.renren.modules.app.dto.TaskDto;
 import io.renren.modules.ltt.entity.*;
 import io.renren.modules.ltt.enums.DeleteFlag;
 import io.renren.modules.ltt.enums.Lock;
+import io.renren.modules.ltt.enums.Online;
 import io.renren.modules.ltt.service.*;
 import io.renren.modules.ltt.vo.CdProjectVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -274,6 +275,11 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
         if (ObjectUtil.isNotNull(taskDto)) {
             caffeineCacheCodeTaskDto.invalidate(cdCardLock.getDeviceId());
         }
+        CdDevicesEntity cdDevicesEntity = new CdDevicesEntity();
+        cdDevicesEntity.setOnline(Online.YES.getKey());
+        cdDevicesService.update(cdDevicesEntity,new QueryWrapper<CdDevicesEntity>().lambda()
+                .eq(CdDevicesEntity::getIccid,cdCardLock.getDeviceId())
+        );
         return taskDto;
     }
 
