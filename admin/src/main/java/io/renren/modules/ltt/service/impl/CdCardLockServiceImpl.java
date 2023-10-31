@@ -112,7 +112,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
         //循环可以使用的设备
         for (CdCardLockEntity cdCardLockEntity : list) {
             //获取设备下所有的信息列表 所有卡的信息
-            List<CdCardEntity> cdDevicesEntities = cdCardService.list(new QueryWrapper<CdCardEntity>().lambda()
+            List<CdCardEntity> cdCardEntities = cdCardService.list(new QueryWrapper<CdCardEntity>().lambda()
                     .eq(CdCardEntity::getDeviceId,cdCardLockEntity.getDeviceId())
                     .notIn(CdCardEntity::getIccid,"无卡")
             );
@@ -121,9 +121,13 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
                     .eq(CdProjectSmsRecordEntity::getProjectId,cdCardLock.getProjectId())
                     .eq(CdProjectSmsRecordEntity::getDeviceId,cdCardLockEntity.getDeviceId())
             );
+
+
+            cdCardEntities = cdCardEntities.stream().filter(cdCardEntity -> cdCardEntity.getPhone().startsWith(cdCardLock.getNumberSegment())).collect(Collectors.toList());
+
             //已经使用的id
             List<String> iccids = cdProjectSmsRecordEntities.stream().map(CdProjectSmsRecordEntity::getIccid).collect(Collectors.toList());
-            for (CdCardEntity cdDevicesEntity : cdDevicesEntities) {
+            for (CdCardEntity cdDevicesEntity : cdCardEntities) {
                 if (iccids.contains(cdDevicesEntity.getIccid())) {
                     continue;
                 }else {
