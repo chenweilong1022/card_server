@@ -99,6 +99,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
         //获取项目
         CdProjectVO cdProjectVO = cdProjectService.getById(cdCardLock.getProjectId());
         Assert.isNull(cdProjectVO,"ProjectDoesNotExist");
+        Assert.isNull(cdUserEntity,"PleaseLogIn");
         //判断用户余额是否充足
         Assert.isTrue(cdProjectVO.getPrice().doubleValue() > cdUserEntity.getBalance().doubleValue(),"InsufficientBalance");
         //获取可以使用的设备
