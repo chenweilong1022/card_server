@@ -1,12 +1,12 @@
 project:
     host:
-        name: ${PROJECT_HOST_NAME:127.0.0.1}
+        name: ${PROJECT_HOST_NAME:124.220.235.81}
     mysql:
-        hostname: ${PROJECT_MYSQL_HOSTNAME:127.0.0.1}
-        port: ${PROJECT_MYSQL_PORT:3306}
+        hostname: ${PROJECT_MYSQL_HOSTNAME:124.220.235.81}
+        port: ${PROJECT_MYSQL_PORT:3308}
         url: ${project.mysql.hostname}:${project.mysql.port}
         username: ${PROJECT_MYSQL_USERNAME:root}
-        password: ${PROJECT_MYSQL_PASSWORD:123456}
+        password: ${PROJECT_MYSQL_PASSWORD:SEW2018!}
     admin:
         mysql:
             hostname: ${PROJECT_ADMIN_MYSQL_HOSTNAME:${project.mysql.hostname}}

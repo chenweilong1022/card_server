@@ -2,6 +2,7 @@ package io.renren.modules.ltt.service.impl;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import io.renren.datasources.annotation.Game;
 import io.renren.modules.app.dto.AppCdBoardUpdateBoardDTO;
 import io.renren.modules.app.dto.AppCdCardUpdateIccidDTO;
@@ -118,11 +119,15 @@ public class CdCardServiceImpl extends ServiceImpl<CdCardDao, CdCardEntity> impl
         for (String s : params.keySet()) {
             if (s.contains("deviceId")){
                 continue;
+            }else if (s.contains("phoneNumber")) {
+                continue;
             }
             String[] rs = s.split("R");
             int boardIndexed = Integer.parseInt(rs[0], 16);
             int indexed = Integer.parseInt(rs[1], 16);
             String iccid = params.get(s);
+            String phoneNumber = params.get(s + "phoneNumber");
+
             AppCdCardUpdateIccidDTO appCdCardUpdateIccidDTO = new AppCdCardUpdateIccidDTO();
             appCdCardUpdateIccidDTO.setDeviceId(deviceId);
             appCdCardUpdateIccidDTO.setBoardIndexed(boardIndexed - 1);
@@ -134,6 +139,9 @@ public class CdCardServiceImpl extends ServiceImpl<CdCardDao, CdCardEntity> impl
             appCdCardUpdateIccidDTO.setPhone("");
             if (ObjectUtil.isNotNull(one)) {
                 appCdCardUpdateIccidDTO.setPhone(one.getPhone());
+            }
+            if (StrUtil.isNotEmpty(phoneNumber)) {
+                appCdCardUpdateIccidDTO.setPhone(phoneNumber);
             }
             uploadIccid(appCdCardUpdateIccidDTO);
         }
