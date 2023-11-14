@@ -34,8 +34,7 @@ public class AppCdDevicesNumberController {
     /**
      * 信息
      */
-    @RequestMapping("/info/{id}")
-    @RequiresPermissions("ltt:cddevicesnumber:info")
+    @RequestMapping("/info")
     public R info(@RequestBody CdDevicesNumberDTO cdDevicesNumber){
         CdDevicesNumberEntity one = cdDevicesNumberService.getOne(new QueryWrapper<CdDevicesNumberEntity>().lambda()
                 .eq(CdDevicesNumberEntity::getDeviceId,cdDevicesNumber.getDeviceId())
