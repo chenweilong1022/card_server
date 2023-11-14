@@ -73,5 +73,9 @@ public interface CdDevicesService extends IService<CdDevicesEntity> {
      * @return
      */
     boolean changeCard(CdDevicesDTO cdDevices);
+
+    boolean updateApp(CdDevicesDTO cdDevices);
+
+    boolean reboot(Integer[] ids);
 }
 

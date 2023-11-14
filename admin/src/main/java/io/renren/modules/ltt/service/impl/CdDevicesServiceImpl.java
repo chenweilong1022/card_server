@@ -6,10 +6,12 @@ import com.github.benmanes.caffeine.cache.Cache;
 import io.renren.datasources.annotation.Game;
 import io.renren.modules.app.dto.TaskDto;
 import io.renren.modules.ltt.entity.CdCardLockEntity;
+import io.renren.modules.ltt.entity.CdDevicesNumberEntity;
 import io.renren.modules.ltt.enums.DeleteFlag;
 import io.renren.modules.ltt.enums.Lock;
 import io.renren.modules.ltt.enums.Online;
 import io.renren.modules.ltt.service.CdCardLockService;
+import io.renren.modules.ltt.service.CdDevicesNumberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -31,6 +33,8 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service("cdDevicesService")
@@ -42,6 +46,10 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
     private Cache<String, TaskDto> caffeineCacheCodeTaskDto;
     @Autowired
     private CdCardLockService cdCardLockService;
+    @Autowired
+    private CdDevicesService cdDevicesService;
+    @Autowired
+    private CdDevicesNumberService cdDevicesNumberService;
 
     @Override
     public PageUtils<CdDevicesVO> queryPage(CdDevicesDTO cdDevices) {
@@ -49,8 +57,16 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
                 new Query<CdDevicesEntity>(cdDevices).getPage(),
                 new QueryWrapper<CdDevicesEntity>()
         );
-
-        return PageUtils.<CdDevicesVO>page(page).setList(CdDevicesConver.MAPPER.conver(page.getRecords()));
+        //获取number
+        List<CdDevicesNumberEntity> list = cdDevicesNumberService.list();
+        //转为map
+        Map<String, String> collect = list.stream().collect(Collectors.toMap(CdDevicesNumberEntity::getDeviceId, CdDevicesNumberEntity::getNumber));
+        List<CdDevicesVO> cdDevicesVOS = CdDevicesConver.MAPPER.conver(page.getRecords());
+        //设置number
+        for (CdDevicesVO cdDevicesVO : cdDevicesVOS) {
+            cdDevicesVO.setNumber(collect.get(cdDevicesVO.getIccid()));
+        }
+        return PageUtils.<CdDevicesVO>page(page).setList(cdDevicesVOS);
     }
     @Override
     public CdDevicesVO getById(Integer id) {
@@ -135,6 +151,32 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
         taskDto.setIndexed(cdDevices.getIndexed());
         taskDto.setDeviceId(cdDevices.getIccid());
         caffeineCacheCodeTaskDto.put(cdDevices.getIccid(),taskDto);
+        return true;
+    }
+
+    @Override
+    public boolean updateApp(CdDevicesDTO cdDevices) {
+        List<CdDevicesEntity> list = cdDevicesService.list();
+        for (CdDevicesEntity cdDevicesEntity : list) {
+            //通知客戶端修改卡
+            TaskDto taskDto = new TaskDto();
+            taskDto.setType("updateApp");
+            taskDto.setDeviceId(cdDevicesEntity.getIccid());
+            caffeineCacheCodeTaskDto.put(cdDevicesEntity.getIccid(),taskDto);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean reboot(Integer[] ids) {
+        List<CdDevicesEntity> cdDevicesEntities = this.listByIds(Arrays.asList(ids));
+        for (CdDevicesEntity cdDevicesEntity : cdDevicesEntities) {
+            //手机重启
+            TaskDto taskDto = new TaskDto();
+            taskDto.setType("reboot");
+            taskDto.setDeviceId(cdDevicesEntity.getIccid());
+            caffeineCacheCodeTaskDto.put(cdDevicesEntity.getIccid(),taskDto);
+        }
         return true;
     }
 

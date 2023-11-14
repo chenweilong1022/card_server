@@ -33,6 +33,12 @@
         label="设备id">
       </el-table-column>
       <el-table-column
+        prop="number"
+        header-align="center"
+        align="center"
+        label="编号">
+      </el-table-column>
+      <el-table-column
         prop="onlineStr"
         header-align="center"
         align="center"
@@ -52,6 +58,7 @@
         label="操作">
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="initHandle(scope.row.id)">初始化</el-button>
+          <el-button type="text" size="small" @click="rebootHandler(scope.row.id)">重启</el-button>
           <el-button type="text" size="small" @click="cddevicesChangeCardHandle(scope.row.id)">修改</el-button>
         </template>
       </el-table-column>
@@ -98,6 +105,35 @@
       this.getDataList()
     },
     methods: {
+      rebootHandler (id) {
+        var ids = id ? [id] : this.dataListSelections.map(item => {
+          return item.id
+        })
+        this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '重启' : '重启'}]操作?`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$http({
+            url: this.$http.adornUrl('/ltt/cddevices/reboot'),
+            method: 'post',
+            data: this.$http.adornData(ids, false)
+          }).then(({data}) => {
+            if (data && data.code === 0) {
+              this.$message({
+                message: '操作成功',
+                type: 'success',
+                duration: 1500,
+                onClose: () => {
+                  this.getDataList()
+                }
+              })
+            } else {
+              this.$message.error(data.msg)
+            }
+          })
+        })
+      },
       initHandle (id) {
         var ids = id ? [id] : this.dataListSelections.map(item => {
           return item.id

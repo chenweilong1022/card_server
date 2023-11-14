@@ -51,6 +51,16 @@ public class CdDevicesController {
     }
 
     /**
+     * 切换卡
+     */
+    @RequestMapping("/reboot")
+    @RequiresPermissions("ltt:cddevices:list")
+    public R reboot(@RequestBody Integer[] ids){
+        return R.data(cdDevicesService.reboot(ids));
+    }
+
+
+    /**
      * 初始化
      */
     @RequestMapping("/initCard")

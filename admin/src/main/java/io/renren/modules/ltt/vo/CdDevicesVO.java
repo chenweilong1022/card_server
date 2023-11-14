@@ -43,6 +43,11 @@ public class CdDevicesVO implements Serializable {
 	@ApiModelProperty(required=false,value="是否在线")
 	private Integer online;
 	/**
+	 * 编号
+	 */
+	@ApiModelProperty(required=false,value="编号")
+	private String number;
+	/**
 	 * 是否在线
 	 */
 	@ApiModelProperty(required=false,value="是否在线")
