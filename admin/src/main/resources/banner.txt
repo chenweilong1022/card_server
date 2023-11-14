@@ -75,3 +75,14 @@ CREATE TABLE `account` (
 
 
 
+create table cd_iccid_phone
+(
+    id          int(10) auto_increment comment '主键'
+        primary key,
+    device_id     varchar(255) null comment '设备id',
+    number       varchar(255) null comment '编号',
+    delete_flag int(10)      null comment '删除标志',
+    create_time datetime     null comment '创建时间'
+)
+    comment '设备编号对应表';
+
