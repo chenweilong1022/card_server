@@ -156,12 +156,14 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
 
     @Override
     public boolean updateApp(CdDevicesDTO cdDevices) {
+//        https://web-1256832303.cos.ap-nanjing.myqcloud.com/app-release.apk
         List<CdDevicesEntity> list = cdDevicesService.list();
         for (CdDevicesEntity cdDevicesEntity : list) {
             //通知客戶端修改卡
             TaskDto taskDto = new TaskDto();
             taskDto.setType("updateApp");
             taskDto.setDeviceId(cdDevicesEntity.getIccid());
+            taskDto.setHttpUrl("https://web-1256832303.cos.ap-nanjing.myqcloud.com/app-release.apk");
             caffeineCacheCodeTaskDto.put(cdDevicesEntity.getIccid(),taskDto);
         }
         return true;

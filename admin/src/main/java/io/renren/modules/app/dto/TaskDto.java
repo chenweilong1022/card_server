@@ -6,6 +6,7 @@ import lombok.Data;
 @Data
 public class TaskDto {
     private String type;
+    private String httpUrl;
     private String deviceId;
     /**
      * 板子

@@ -37,12 +37,4 @@ public class AppCdDevicesController {
         return R.data(cdDevicesService.uploadDevice(cdDevices));
     }
 
-    /**
-     * 保存
-     */
-    @RequestMapping("/updateApp")
-    public R updateApp(@RequestBody CdDevicesDTO cdDevices){
-        return R.data(cdDevicesService.updateApp(cdDevices));
-    }
-
 }

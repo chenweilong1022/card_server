@@ -6,6 +6,7 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
+        <el-button type="primary" @click="updateAppHandle()">app更新</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -226,6 +227,35 @@
         }).then(() => {
           this.$http({
             url: this.$http.adornUrl('/ltt/cddevices/delete'),
+            method: 'post',
+            data: this.$http.adornData(ids, false)
+          }).then(({data}) => {
+            if (data && data.code === 0) {
+              this.$message({
+                message: '操作成功',
+                type: 'success',
+                duration: 1500,
+                onClose: () => {
+                  this.getDataList()
+                }
+              })
+            } else {
+              this.$message.error(data.msg)
+            }
+          })
+        })
+      },
+      updateAppHandle (id) {
+        var ids = id ? [id] : this.dataListSelections.map(item => {
+          return item.id
+        })
+        this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '更新' : '批量更新'}]操作?`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$http({
+            url: this.$http.adornUrl('/ltt/cddevices/updateApp'),
             method: 'post',
             data: this.$http.adornData(ids, false)
           }).then(({data}) => {

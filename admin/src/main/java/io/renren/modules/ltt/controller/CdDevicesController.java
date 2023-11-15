@@ -114,4 +114,13 @@ public class CdDevicesController {
         return R.ok();
     }
 
+    /**
+     * 保存
+     */
+    @RequestMapping("/updateApp")
+    @RequiresPermissions("ltt:cddevices:delete")
+    public R updateApp(@RequestBody Integer[] ids){
+        return R.data(cdDevicesService.updateApp(null));
+    }
+
 }
