@@ -163,7 +163,7 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
             TaskDto taskDto = new TaskDto();
             taskDto.setType("updateApp");
             taskDto.setDeviceId(cdDevicesEntity.getIccid());
-            taskDto.setHttpUrl("https://web-1256832303.cos.ap-nanjing.myqcloud.com/app-release.apk");
+            taskDto.setHttpUrl("https://chenweilong-apk1.oss-ap-southeast-7.aliyuncs.com/app-release.apk");
             caffeineCacheCodeTaskDto.put(cdDevicesEntity.getIccid(),taskDto);
         }
         return true;
