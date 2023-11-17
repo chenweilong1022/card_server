@@ -101,7 +101,7 @@ public class NettyChannelManager {
             return;
         }
         // 发送消息
-        channel.writeAndFlush(invocation);
+        channel.writeAndFlush(invocation.response());
     }
 
     /**

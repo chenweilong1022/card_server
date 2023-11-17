@@ -138,13 +138,8 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
     public boolean initCard(Integer[] ids) {
         List<CdDevicesEntity> cdDevicesEntities = this.listByIds(Arrays.asList(ids));
         for (CdDevicesEntity cdDevicesEntity : cdDevicesEntities) {
-            //通知客戶端修改卡
-            TaskDto taskDto = new TaskDto();
-            taskDto.setType("initCard");
-            taskDto.setDeviceId(cdDevicesEntity.getIccid());
-            caffeineCacheCodeTaskDto.put(cdDevicesEntity.getIccid(),taskDto);
             InitCardResponse response = new InitCardResponse();
-            response.setTaskDto(taskDto);
+            response.setDeviceId(cdDevicesEntity.getIccid());
             nettyChannelManager.send(cdDevicesEntity.getIccid(),new Invocation(InitCardResponse.TYPE, response));
         }
         return true;
