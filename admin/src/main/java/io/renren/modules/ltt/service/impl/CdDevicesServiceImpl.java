@@ -12,6 +12,9 @@ import io.renren.modules.ltt.enums.Lock;
 import io.renren.modules.ltt.enums.Online;
 import io.renren.modules.ltt.service.CdCardLockService;
 import io.renren.modules.ltt.service.CdDevicesNumberService;
+import io.renren.modules.netty.codec.Invocation;
+import io.renren.modules.netty.message.initcard.InitCardResponse;
+import io.renren.modules.netty.server.NettyChannelManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -50,6 +53,8 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
     private CdDevicesService cdDevicesService;
     @Autowired
     private CdDevicesNumberService cdDevicesNumberService;
+    @Autowired
+    private NettyChannelManager nettyChannelManager;
 
     @Override
     public PageUtils<CdDevicesVO> queryPage(CdDevicesDTO cdDevices) {
@@ -138,6 +143,9 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
             taskDto.setType("initCard");
             taskDto.setDeviceId(cdDevicesEntity.getIccid());
             caffeineCacheCodeTaskDto.put(cdDevicesEntity.getIccid(),taskDto);
+            InitCardResponse response = new InitCardResponse();
+            response.setTaskDto(taskDto);
+            nettyChannelManager.send(cdDevicesEntity.getIccid(),new Invocation(InitCardResponse.TYPE, response));
         }
         return true;
     }
