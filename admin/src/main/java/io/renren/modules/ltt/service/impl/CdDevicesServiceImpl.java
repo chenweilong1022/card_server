@@ -13,6 +13,7 @@ import io.renren.modules.ltt.enums.Online;
 import io.renren.modules.ltt.service.CdCardLockService;
 import io.renren.modules.ltt.service.CdDevicesNumberService;
 import io.renren.modules.netty.codec.Invocation;
+import io.renren.modules.netty.message.changecard.ChangeCardResponse;
 import io.renren.modules.netty.message.initcard.InitCardResponse;
 import io.renren.modules.netty.server.NettyChannelManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -148,12 +149,12 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
     @Override
     public boolean changeCard(CdDevicesDTO cdDevices) {
         //通知客戶端修改卡
-        TaskDto taskDto = new TaskDto();
-        taskDto.setType("changeCard");
+        ChangeCardResponse taskDto = new ChangeCardResponse();
         taskDto.setBoardIndexed(cdDevices.getBoardIndexed());
         taskDto.setIndexed(cdDevices.getIndexed());
         taskDto.setDeviceId(cdDevices.getIccid());
-        caffeineCacheCodeTaskDto.put(cdDevices.getIccid(),taskDto);
+//        caffeineCacheCodeTaskDto.put(cdDevices.getIccid(),taskDto);
+        nettyChannelManager.send(cdDevices.getIccid(),new Invocation(ChangeCardResponse.TYPE, taskDto));
         return true;
     }
 
