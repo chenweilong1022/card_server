@@ -3,6 +3,7 @@ package io.renren.modules.ltt.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import io.renren.common.utils.PageUtils;
 import io.renren.modules.ltt.dto.CdDevicesDTO;
+import io.renren.modules.ltt.dto.CdDevicesUpdateAppDTO;
 import io.renren.modules.ltt.vo.CdDevicesVO;
 import io.renren.modules.ltt.entity.CdDevicesEntity;
 
@@ -74,7 +75,7 @@ public interface CdDevicesService extends IService<CdDevicesEntity> {
      */
     boolean changeCard(CdDevicesDTO cdDevices);
 
-    boolean updateApp(CdDevicesDTO cdDevices);
+    boolean updateApp(CdDevicesUpdateAppDTO updateAppDTO);
 
     boolean reboot(Integer[] ids);
 }

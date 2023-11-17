@@ -2,6 +2,7 @@ package io.renren.modules.ltt.controller;
 
 import java.util.Arrays;
 
+import io.renren.modules.ltt.dto.CdDevicesUpdateAppDTO;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -119,8 +120,8 @@ public class CdDevicesController {
      */
     @RequestMapping("/updateApp")
     @RequiresPermissions("ltt:cddevices:delete")
-    public R updateApp(@RequestBody Integer[] ids){
-        return R.data(cdDevicesService.updateApp(null));
+    public R updateApp(@RequestBody CdDevicesUpdateAppDTO updateAppDTO){
+        return R.data(cdDevicesService.updateApp(updateAppDTO));
     }
 
 }

@@ -5,6 +5,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.github.benmanes.caffeine.cache.Cache;
 import io.renren.datasources.annotation.Game;
 import io.renren.modules.app.dto.TaskDto;
+import io.renren.modules.ltt.dto.CdDevicesUpdateAppDTO;
 import io.renren.modules.ltt.entity.CdCardLockEntity;
 import io.renren.modules.ltt.entity.CdDevicesNumberEntity;
 import io.renren.modules.ltt.enums.DeleteFlag;
@@ -16,6 +17,7 @@ import io.renren.modules.netty.codec.Invocation;
 import io.renren.modules.netty.message.changecard.ChangeCardResponse;
 import io.renren.modules.netty.message.initcard.InitCardResponse;
 import io.renren.modules.netty.message.reboot.RebootResponse;
+import io.renren.modules.netty.message.updateapp.UpdateappResponse;
 import io.renren.modules.netty.server.NettyChannelManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,6 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -160,16 +163,20 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
     }
 
     @Override
-    public boolean updateApp(CdDevicesDTO cdDevices) {
-//        https://web-1256832303.cos.ap-nanjing.myqcloud.com/app-release.apk
-        List<CdDevicesEntity> list = cdDevicesService.list();
+    public boolean updateApp(CdDevicesUpdateAppDTO updateAppDTO) {
+        List<CdDevicesEntity> list = null;
+        if (1 == updateAppDTO.getUpdateType()) {
+            list = cdDevicesService.listByIds(Arrays.asList(updateAppDTO.getIds()));
+        }else if (2 == updateAppDTO.getUpdateType()) {
+            list = cdDevicesService.list();
+        }
+
         for (CdDevicesEntity cdDevicesEntity : list) {
             //通知客戶端修改卡
-            TaskDto taskDto = new TaskDto();
-            taskDto.setType("updateApp");
+            UpdateappResponse taskDto = new UpdateappResponse();
             taskDto.setDeviceId(cdDevicesEntity.getIccid());
-            taskDto.setHttpUrl("https://chenweilong-apk1.oss-ap-southeast-7.aliyuncs.com/app-release.apk");
-            caffeineCacheCodeTaskDto.put(cdDevicesEntity.getIccid(),taskDto);
+            taskDto.setHttpUrl(updateAppDTO.getHttpUrl());
+            nettyChannelManager.send(cdDevicesEntity.getIccid(),new Invocation(UpdateappResponse.TYPE, taskDto));
         }
         return true;
     }
