@@ -23,9 +23,6 @@ public class RebootRequestHandler implements MessageHandler<RebootRequest> {
     @Override
     public void execute(Channel channel, RebootRequest message) {
         logger.info("[execute][收到连接({}) 的心跳请求]", channel.id());
-        nettyChannelManager.addUser(channel,message.getDeviceId());
-        InitCardResponse response = new InitCardResponse();
-        channel.writeAndFlush(new Invocation(InitCardResponse.TYPE, response).response());
     }
 
     @Override
