@@ -1,6 +1,7 @@
 package io.renren.modules.netty.server;
 
 
+import cn.hutool.json.JSONUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelId;
 import io.netty.util.AttributeKey;
@@ -88,6 +89,7 @@ public class NettyChannelManager {
      * @param invocation 消息体
      */
     public void send(String user, Invocation invocation) {
+        logger.error(user + "=====" + JSONUtil.toJsonStr(userChannels));
         // 获得用户对应的 Channel
         Channel channel = userChannels.get(user);
         if (channel == null) {
