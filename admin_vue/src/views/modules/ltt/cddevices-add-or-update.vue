@@ -4,17 +4,23 @@
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-    <el-form-item label="设备id" prop="iccid">
-      <el-input v-model="dataForm.iccid" placeholder="设备id"></el-input>
+    <el-form-item label="" prop="iccid">
+      <el-input v-model="dataForm.iccid" placeholder=""></el-input>
     </el-form-item>
-    <el-form-item label="是否在线" prop="online">
-      <el-input v-model="dataForm.online" placeholder="是否在线"></el-input>
+    <el-form-item label="" prop="online">
+      <el-input v-model="dataForm.online" placeholder=""></el-input>
     </el-form-item>
-    <el-form-item label="删除标志" prop="deleteFlag">
-      <el-input v-model="dataForm.deleteFlag" placeholder="删除标志"></el-input>
+    <el-form-item label="" prop="deleteFlag">
+      <el-input v-model="dataForm.deleteFlag" placeholder=""></el-input>
     </el-form-item>
-    <el-form-item label="创建时间" prop="createTime">
-      <el-input v-model="dataForm.createTime" placeholder="创建时间"></el-input>
+    <el-form-item label="" prop="createTime">
+      <el-input v-model="dataForm.createTime" placeholder=""></el-input>
+    </el-form-item>
+    <el-form-item label="" prop="packageVersion">
+      <el-input v-model="dataForm.packageVersion" placeholder=""></el-input>
+    </el-form-item>
+    <el-form-item label="" prop="number">
+      <el-input v-model="dataForm.number" placeholder=""></el-input>
     </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -34,20 +40,28 @@
           iccid: '',
           online: '',
           deleteFlag: '',
-          createTime: ''
+          createTime: '',
+          packageVersion: '',
+          number: ''
         },
         dataRule: {
           iccid: [
-            { required: true, message: '设备id不能为空', trigger: 'blur' }
+            { required: true, message: '不能为空', trigger: 'blur' }
           ],
           online: [
-            { required: true, message: '是否在线不能为空', trigger: 'blur' }
+            { required: true, message: '不能为空', trigger: 'blur' }
           ],
           deleteFlag: [
-            { required: true, message: '删除标志不能为空', trigger: 'blur' }
+            { required: true, message: '不能为空', trigger: 'blur' }
           ],
           createTime: [
-            { required: true, message: '创建时间不能为空', trigger: 'blur' }
+            { required: true, message: '不能为空', trigger: 'blur' }
+          ],
+          packageVersion: [
+            { required: true, message: '不能为空', trigger: 'blur' }
+          ],
+          number: [
+            { required: true, message: '不能为空', trigger: 'blur' }
           ]
         }
       }
@@ -69,6 +83,8 @@
                 this.dataForm.online = data.cddevices.online
                 this.dataForm.deleteFlag = data.cddevices.deleteFlag
                 this.dataForm.createTime = data.cddevices.createTime
+                this.dataForm.packageVersion = data.cddevices.packageVersion
+                this.dataForm.number = data.cddevices.number
               }
             })
           }
@@ -86,7 +102,9 @@
                 'iccid': this.dataForm.iccid,
                 'online': this.dataForm.online,
                 'deleteFlag': this.dataForm.deleteFlag,
-                'createTime': this.dataForm.createTime
+                'createTime': this.dataForm.createTime,
+                'packageVersion': this.dataForm.packageVersion,
+                'number': this.dataForm.number
               })
             }).then(({data}) => {
               if (data && data.code === 0) {

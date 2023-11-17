@@ -5,6 +5,7 @@ import cn.hutool.json.JSONUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelId;
 import io.netty.util.AttributeKey;
+import io.renren.modules.ltt.enums.Online;
 import io.renren.modules.netty.codec.Invocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,6 +103,16 @@ public class NettyChannelManager {
         }
         // 发送消息
         channel.writeAndFlush(invocation.response());
+    }
+
+    public Online onlineStatus(String user) {
+        // 获得用户对应的 Channel
+        Channel channel = userChannels.get(user);
+        if (channel == null) {
+            logger.error("[send][连接不存在]");
+            return Online.NO;
+        }
+        return Online.YES;
     }
 
     /**

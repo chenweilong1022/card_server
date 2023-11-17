@@ -75,6 +75,8 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
         //设置number
         for (CdDevicesVO cdDevicesVO : cdDevicesVOS) {
             cdDevicesVO.setNumber(collect.get(cdDevicesVO.getIccid()));
+            Online online = nettyChannelManager.onlineStatus(cdDevicesVO.getIccid());
+            cdDevicesVO.setOnline(online.getKey());
         }
         return PageUtils.<CdDevicesVO>page(page).setList(cdDevicesVOS);
     }
@@ -116,6 +118,7 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
         if (ObjectUtil.isNull(one)) {
             CdDevicesEntity update = new CdDevicesEntity();
             update.setIccid(cdDevices.getIccid());
+            update.setPackageVersion(cdDevices.getPackageVersion());
             update.setOnline(Online.YES.getKey());
             update.setDeleteFlag(DeleteFlag.NO.getKey());
             update.setCreateTime(DateUtil.date());
@@ -157,7 +160,6 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
         taskDto.setBoardIndexed(cdDevices.getBoardIndexed());
         taskDto.setIndexed(cdDevices.getIndexed());
         taskDto.setDeviceId(cdDevices.getIccid());
-//        caffeineCacheCodeTaskDto.put(cdDevices.getIccid(),taskDto);
         nettyChannelManager.send(cdDevices.getIccid(),new Invocation(ChangeCardResponse.TYPE, taskDto));
         return true;
     }

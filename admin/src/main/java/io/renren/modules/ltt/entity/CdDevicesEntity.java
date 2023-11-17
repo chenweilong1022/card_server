@@ -12,44 +12,54 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 设备表
+ * 
  *
  * @author chenweilong
  * @email chenweilong@qq.com
- * @date 2023-10-06 23:26:10
+ * @date 2023-11-18 00:24:28
  */
 @Data
 @TableName("cd_devices")
-@ApiModel("设备表")
+@ApiModel("")
 @Accessors(chain = true)
 public class CdDevicesEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * 主键
+	 * 
 	 */
 	@TableId(type = IdType.AUTO)
-	@ApiModelProperty(required=false,value="主键")
+	@ApiModelProperty(required=false,value="")
 	private Integer id;
 	/**
-	 * 设备id
+	 * 
 	 */
-	@ApiModelProperty(required=false,value="设备id")
+	@ApiModelProperty(required=false,value="")
 	private String iccid;
 	/**
-	 * 是否在线
+	 * 
 	 */
-	@ApiModelProperty(required=false,value="是否在线")
+	@ApiModelProperty(required=false,value="")
 	private Integer online;
 	/**
-	 * 删除标志
+	 * 
 	 */
-	@ApiModelProperty(required=false,value="删除标志")
+	@ApiModelProperty(required=false,value="")
 	private Integer deleteFlag;
 	/**
-	 * 创建时间
+	 * 
 	 */
-	@ApiModelProperty(required=false,value="创建时间")
+	@ApiModelProperty(required=false,value="")
 	private Date createTime;
+	/**
+	 * 
+	 */
+	@ApiModelProperty(required=false,value="")
+	private String packageVersion;
+	/**
+	 * 
+	 */
+	@ApiModelProperty(required=false,value="")
+	private String number;
 
 }

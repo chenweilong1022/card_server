@@ -24,7 +24,7 @@ public class RenrenApplicationTests {
 	@Test
 	public void contextLoadsUpdate() {
 		sysGeneratorService.generatorCodeUpdate(new String[]{
-				"cd_iccid_phone",
+				"cd_devices",
 		});
 	}
 

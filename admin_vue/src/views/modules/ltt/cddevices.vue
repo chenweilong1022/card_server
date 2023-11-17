@@ -40,6 +40,12 @@
         label="编号">
       </el-table-column>
       <el-table-column
+        prop="packageVersion"
+        header-align="center"
+        align="center"
+        label="版本号">
+      </el-table-column>
+      <el-table-column
         prop="onlineStr"
         header-align="center"
         align="center"
