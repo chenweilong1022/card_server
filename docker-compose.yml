@@ -12,4 +12,5 @@ services:
       - /home/webfile:/home/webfile
     ports:
       - "8880:8880"
+      - "8888:8888"
     restart: always
