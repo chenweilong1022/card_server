@@ -15,6 +15,7 @@ import io.renren.modules.ltt.service.CdDevicesNumberService;
 import io.renren.modules.netty.codec.Invocation;
 import io.renren.modules.netty.message.changecard.ChangeCardResponse;
 import io.renren.modules.netty.message.initcard.InitCardResponse;
+import io.renren.modules.netty.message.reboot.RebootResponse;
 import io.renren.modules.netty.server.NettyChannelManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -178,10 +179,9 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
         List<CdDevicesEntity> cdDevicesEntities = this.listByIds(Arrays.asList(ids));
         for (CdDevicesEntity cdDevicesEntity : cdDevicesEntities) {
             //手机重启
-            TaskDto taskDto = new TaskDto();
-            taskDto.setType("reboot");
+            RebootResponse taskDto = new RebootResponse();
             taskDto.setDeviceId(cdDevicesEntity.getIccid());
-            caffeineCacheCodeTaskDto.put(cdDevicesEntity.getIccid(),taskDto);
+            nettyChannelManager.send(cdDevicesEntity.getIccid(),new Invocation(RebootResponse.TYPE, taskDto));
         }
         return true;
     }
