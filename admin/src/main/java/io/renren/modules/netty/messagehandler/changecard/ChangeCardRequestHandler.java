@@ -3,6 +3,7 @@ package io.renren.modules.netty.messagehandler.changecard;
 import io.netty.channel.Channel;
 import io.renren.modules.netty.codec.Invocation;
 import io.renren.modules.netty.dispatcher.MessageHandler;
+import io.renren.modules.netty.message.changecard.ChangeCardRequest;
 import io.renren.modules.netty.message.heartbeat.HeartbeatRequest;
 import io.renren.modules.netty.message.initcard.InitCardRequest;
 import io.renren.modules.netty.message.initcard.InitCardResponse;
@@ -30,7 +31,7 @@ public class ChangeCardRequestHandler implements MessageHandler<HeartbeatRequest
 
     @Override
     public String getType() {
-        return InitCardRequest.TYPE;
+        return ChangeCardRequest.TYPE;
     }
 
 }
