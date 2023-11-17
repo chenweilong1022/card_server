@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ChangeCardRequestHandler implements MessageHandler<HeartbeatRequest> {
+public class ChangeCardRequestHandler implements MessageHandler<ChangeCardRequest> {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -22,7 +22,7 @@ public class ChangeCardRequestHandler implements MessageHandler<HeartbeatRequest
     private NettyChannelManager nettyChannelManager;
 
     @Override
-    public void execute(Channel channel, HeartbeatRequest message) {
+    public void execute(Channel channel, ChangeCardRequest message) {
         logger.info("[execute][收到连接({}) 的心跳请求]", channel.id());
         nettyChannelManager.addUser(channel,message.getDeviceId());
         InitCardResponse response = new InitCardResponse();
