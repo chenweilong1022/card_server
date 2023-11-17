@@ -1,3 +1,5 @@
+netty:
+  port: 8888
 # Tomcat
 server:
   tomcat:
