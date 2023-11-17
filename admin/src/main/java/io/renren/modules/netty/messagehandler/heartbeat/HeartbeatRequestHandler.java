@@ -9,9 +9,11 @@ import io.renren.modules.netty.server.NettyChannelManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
+@Order(100)
 public class HeartbeatRequestHandler implements MessageHandler<HeartbeatRequest> {
 
     private Logger logger = LoggerFactory.getLogger(getClass());

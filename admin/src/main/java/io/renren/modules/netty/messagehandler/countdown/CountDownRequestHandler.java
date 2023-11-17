@@ -9,9 +9,11 @@ import io.renren.modules.netty.message.countdown.CountDownRequest;
 import io.renren.modules.netty.message.countdown.CountDownResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
+@Order(100)
 public class CountDownRequestHandler implements MessageHandler<CountDownRequest> {
 
     private Logger logger = LoggerFactory.getLogger(getClass());

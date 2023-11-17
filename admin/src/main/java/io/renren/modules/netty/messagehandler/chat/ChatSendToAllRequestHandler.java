@@ -9,6 +9,7 @@ import io.renren.modules.netty.message.chat.ChatSendToAllRequest;
 import io.renren.modules.netty.server.NettyChannelManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 /**
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
+@Order(100)
 public class ChatSendToAllRequestHandler implements MessageHandler<ChatSendToAllRequest> {
 
     @Autowired
