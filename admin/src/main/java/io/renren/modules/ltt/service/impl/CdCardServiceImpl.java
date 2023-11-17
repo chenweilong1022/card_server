@@ -110,6 +110,16 @@ public class CdCardServiceImpl extends ServiceImpl<CdCardDao, CdCardEntity> impl
                 .eq(CdCardEntity::getBoardIndexed,iccidDTO.getBoardIndexed())
                 .eq(CdCardEntity::getIndexed,iccidDTO.getIndexed())
         );
+
+        CdIccidPhoneEntity one = cdIccidPhoneService.getOne(new QueryWrapper<CdIccidPhoneEntity>().lambda()
+                .eq(CdIccidPhoneEntity::getIccid,iccidDTO.getIccid())
+        );
+        if (ObjectUtil.isNull(one)) {
+            CdIccidPhoneEntity save = new CdIccidPhoneEntity();
+            save.setIccid(iccidDTO.getIccid());
+            save.setPhone(iccidDTO.getPhone());
+            cdIccidPhoneService.save(save);
+        }
     }
 
     @Override
