@@ -6,6 +6,8 @@ import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -14,7 +16,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @Slf4j
-public class MessageHandlerContainer implements InitializingBean {
+public class MessageHandlerContainer implements InitializingBean, ApplicationListener<ContextRefreshedEvent> {
 //
 //    private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -27,10 +29,6 @@ public class MessageHandlerContainer implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        // 通过 ApplicationContext 获得所有 MessageHandler Bean
-        SpringContextUtils.getApplicationContext().getBeansOfType(MessageHandler.class).values() // 获得所有 MessageHandler Bean
-                .forEach(messageHandler -> handlers.put(messageHandler.getType(), messageHandler)); // 添加到 handlers 中
-        log.info("[afterPropertiesSet][消息处理器数量：{}]", handlers.size());
     }
 
     /**
@@ -85,4 +83,11 @@ public class MessageHandlerContainer implements InitializingBean {
         throw new IllegalStateException(String.format("类型(%s) 获得不到消息类型", handler));
     }
 
+    @Override
+    public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
+        // 通过 ApplicationContext 获得所有 MessageHandler Bean
+        SpringContextUtils.getApplicationContext().getBeansOfType(MessageHandler.class).values() // 获得所有 MessageHandler Bean
+                .forEach(messageHandler -> handlers.put(messageHandler.getType(), messageHandler)); // 添加到 handlers 中
+        log.info("[afterPropertiesSet][消息处理器数量：{}]", handlers.size());
+    }
 }
