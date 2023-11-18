@@ -68,6 +68,8 @@ public interface CdDevicesService extends IService<CdDevicesEntity> {
 
     boolean initCard(Integer[] ids);
 
+    boolean initCard2(Integer[] ids);
+
     /**
      * 通知前端切换卡
      * @param cdDevices
@@ -78,5 +80,7 @@ public interface CdDevicesService extends IService<CdDevicesEntity> {
     boolean updateApp(CdDevicesUpdateAppDTO updateAppDTO);
 
     boolean reboot(Integer[] ids);
+
+
 }
 

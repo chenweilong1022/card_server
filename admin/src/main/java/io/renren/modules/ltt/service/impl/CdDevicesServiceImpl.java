@@ -15,6 +15,7 @@ import io.renren.modules.ltt.service.CdCardLockService;
 import io.renren.modules.ltt.service.CdDevicesNumberService;
 import io.renren.modules.netty.codec.Invocation;
 import io.renren.modules.netty.message.changecard.ChangeCardResponse;
+import io.renren.modules.netty.message.initcard.InitCard2Response;
 import io.renren.modules.netty.message.initcard.InitCardResponse;
 import io.renren.modules.netty.message.reboot.RebootResponse;
 import io.renren.modules.netty.message.updateapp.UpdateappResponse;
@@ -149,6 +150,17 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
             InitCardResponse response = new InitCardResponse();
             response.setDeviceId(cdDevicesEntity.getIccid());
             nettyChannelManager.send(cdDevicesEntity.getIccid(),new Invocation(InitCardResponse.TYPE, response));
+        }
+        return true;
+    }
+
+    @Override
+    public boolean initCard2(Integer[] ids) {
+        List<CdDevicesEntity> cdDevicesEntities = this.listByIds(Arrays.asList(ids));
+        for (CdDevicesEntity cdDevicesEntity : cdDevicesEntities) {
+            InitCardResponse response = new InitCardResponse();
+            response.setDeviceId(cdDevicesEntity.getIccid());
+            nettyChannelManager.send(cdDevicesEntity.getIccid(),new Invocation(InitCard2Response.TYPE, response));
         }
         return true;
     }
