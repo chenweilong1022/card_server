@@ -133,8 +133,8 @@ public class CdCardServiceImpl extends ServiceImpl<CdCardDao, CdCardEntity> impl
                 continue;
             }
             String[] rs = s.split("R");
-            int boardIndexed = Integer.parseInt(rs[0], 16);
-            int indexed = Integer.parseInt(rs[1], 16);
+            int boardIndexed = Integer.parseInt(rs[0], 10);
+            int indexed = Integer.parseInt(rs[1], 10);
             String iccid = params.get(s);
             String phoneNumber = params.get(s + "phoneNumber");
 
