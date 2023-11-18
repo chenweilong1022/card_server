@@ -36,7 +36,13 @@ public class LogTest {
     +"sYenn3k/dO0H7MZtkbHLQdMj3tNjYLNwhbh1Bv6IhveTFwAY0OEtYa52nRAu95Kw"
             +"KrZw1n9Cxo19XZE=";
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) {
+        int indexed = Integer.parseInt("A", 16);
+        System.out.println(indexed);
+    }
+
+
+    public static void main1(String[] args) throws IOException, InterruptedException {
 
 
         String PRIVATE_KEY = "MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAJ0m87tfr+m1HvLB"
