@@ -7,6 +7,9 @@
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
         <el-button type="primary" @click="cddevicesUpdateAppCardHandle()" :disabled="dataListSelections.length <= 0">app更新</el-button>
+        <el-button type="primary" @click="initHandle()" :disabled="dataListSelections.length <= 0">批量初始化</el-button>
+        <el-button type="primary" @click="initHandle2()" :disabled="dataListSelections.length <= 0">批量初始化2</el-button>
+        <el-button type="primary" @click="rebootHandler()" :disabled="dataListSelections.length <= 0">批量重启</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -65,7 +68,7 @@
         label="操作">
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="initHandle(scope.row.id)">初始化</el-button>
-          <el-button type="text" size="small" @click="initHandle2(scope.row.id)">初始化</el-button>
+          <el-button type="text" size="small" @click="initHandle2(scope.row.id)">初始化2</el-button>
           <el-button type="text" size="small" @click="rebootHandler(scope.row.id)">重启</el-button>
           <el-button type="text" size="small" @click="cddevicesChangeCardHandle(scope.row.id)">切换卡</el-button>
 <!--          <el-button type="text" size="small" @click="cddevicesUpdateAppCardHandle(scope.row.id)">app更新</el-button>-->
@@ -122,7 +125,7 @@
         var ids = id ? [id] : this.dataListSelections.map(item => {
           return item.id
         })
-        this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '重启' : '重启'}]操作?`, '提示', {
+        this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '重启' : '批量重启'}]操作?`, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'

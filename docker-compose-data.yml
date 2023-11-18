@@ -35,4 +35,5 @@ services:
       MINIO_ROOT_USER: admin
       MINIO_ROOT_PASSWORD: password
     volumes:
-      - /home/webfile/minio/home/webfile/wk/file/:/data
+#      - /home/webfile/minio/home/webfile/wk/file/:/data
+      - /Users/chenweilong/webfile/wk/file/:/data
