@@ -27,15 +27,4 @@ public class RenrenApplication extends SpringBootServletInitializer {
 		return application.sources(RenrenApplication.class);
 	}
 
-//
-//	@Autowired
-//	private CdDevicesService cdDevicesService;
-//
-//	@Scheduled(cron ="*/39 * * * * ?")
-//	public void sayHello() {
-//		CdDevicesEntity cdDevicesEntity = new CdDevicesEntity();
-//		cdDevicesEntity.setOnline(Online.NO.getKey());
-//		cdDevicesService.update(cdDevicesEntity,new QueryWrapper<CdDevicesEntity>());
-//	}
-
 }

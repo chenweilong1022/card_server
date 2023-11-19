@@ -69,6 +69,16 @@ public class NettyChannelManager {
             logger.error("[addUser][连接({}) 不存在]", channel.id());
             return;
         }
+        //是否包含用户
+        boolean containsKey = userChannels.containsKey(user);
+        if (!containsKey) {
+            //将当前设备在线
+            CdDevicesEntity cdDevicesEntity = new CdDevicesEntity();
+            cdDevicesEntity.setOnline(Online.NO.getKey());
+            cdDevicesService.update(cdDevicesEntity,new QueryWrapper<CdDevicesEntity>().lambda()
+                    .eq(CdDevicesEntity::getIccid,user)
+            );
+        }
         // 设置属性
         channel.attr(CHANNEL_ATTR_KEY_USER).set(user);
         // 添加到 userChannels

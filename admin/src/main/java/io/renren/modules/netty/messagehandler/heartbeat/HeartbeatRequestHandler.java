@@ -31,12 +31,6 @@ public class HeartbeatRequestHandler implements MessageHandler<HeartbeatRequest>
     public void execute(Channel channel, HeartbeatRequest message) {
         logger.info("[execute][收到连接({}) 的心跳请求]", channel.id());
         nettyChannelManager.addUser(channel,message.getDeviceId());
-        //将当前设备在线
-        CdDevicesEntity cdDevicesEntity = new CdDevicesEntity();
-        cdDevicesEntity.setOnline(Online.NO.getKey());
-        cdDevicesService.update(cdDevicesEntity,new QueryWrapper<CdDevicesEntity>().lambda()
-                .eq(CdDevicesEntity::getIccid,message.getDeviceId())
-        );
         // 响应心跳
         HeartbeatResponse response = new HeartbeatResponse();
         channel.writeAndFlush(new Invocation(HeartbeatResponse.TYPE, response).response());
