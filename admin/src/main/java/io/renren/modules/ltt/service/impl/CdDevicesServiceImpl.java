@@ -3,6 +3,7 @@ package io.renren.modules.ltt.service.impl;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.github.benmanes.caffeine.cache.Cache;
 import io.renren.datasources.annotation.Game;
 import io.renren.modules.app.dto.TaskDto;
@@ -86,7 +87,7 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
                 .in(CdCardEntity::getDeviceId,deviceIds)
 
         );
-        Map<String, List<CdCardEntity>> collect1 = cdCardEntities.stream().collect(Collectors.groupingBy(CdCardEntity::getDeviceId));
+        Map<String, List<CdCardEntity>> collect1 = cdCardEntities.stream().filter(item -> StrUtil.isNotEmpty(item.getIccid())).collect(Collectors.groupingBy(CdCardEntity::getDeviceId));
         //设置number
         for (CdDevicesVO cdDevicesVO : cdDevicesVOS) {
             cdDevicesVO.setNumber(collect.get(cdDevicesVO.getIccid()));
