@@ -59,6 +59,15 @@
         label="版本号">
       </el-table-column>
       <el-table-column
+        prop="initSuccessNumber"
+        header-align="center"
+        align="center"
+        label="初始化比例">
+        <template slot-scope="scope">
+          ({{scope.row.initSuccessNumber}}/{{scope.row.initTotalNumber}})
+        </template>
+      </el-table-column>
+      <el-table-column
         prop="onlineStr"
         header-align="center"
         align="center"

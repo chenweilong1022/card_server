@@ -1,17 +1,20 @@
 package io.renren.modules.ltt.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.github.benmanes.caffeine.cache.Cache;
 import io.renren.datasources.annotation.Game;
 import io.renren.modules.app.dto.TaskDto;
 import io.renren.modules.ltt.dto.CdDevicesUpdateAppDTO;
+import io.renren.modules.ltt.entity.CdCardEntity;
 import io.renren.modules.ltt.entity.CdCardLockEntity;
 import io.renren.modules.ltt.entity.CdDevicesNumberEntity;
 import io.renren.modules.ltt.enums.DeleteFlag;
 import io.renren.modules.ltt.enums.Lock;
 import io.renren.modules.ltt.enums.Online;
 import io.renren.modules.ltt.service.CdCardLockService;
+import io.renren.modules.ltt.service.CdCardService;
 import io.renren.modules.ltt.service.CdDevicesNumberService;
 import io.renren.modules.netty.codec.Invocation;
 import io.renren.modules.netty.message.changecard.ChangeCardResponse;
@@ -61,6 +64,8 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
     private CdDevicesNumberService cdDevicesNumberService;
     @Autowired
     private NettyChannelManager nettyChannelManager;
+    @Autowired
+    private CdCardService cdCardService;
 
     @Override
     public PageUtils<CdDevicesVO> queryPage(CdDevicesDTO cdDevices) {
@@ -75,9 +80,23 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
         //转为map
         Map<String, String> collect = list.stream().collect(Collectors.toMap(CdDevicesNumberEntity::getDeviceId, CdDevicesNumberEntity::getNumber));
         List<CdDevicesVO> cdDevicesVOS = CdDevicesConver.MAPPER.conver(page.getRecords());
+
+        List<String> deviceIds = cdDevicesVOS.stream().map(CdDevicesVO::getIccid).collect(Collectors.toList());
+        List<CdCardEntity> cdCardEntities = cdCardService.list(new QueryWrapper<CdCardEntity>().lambda()
+                .in(CdCardEntity::getDeviceId,deviceIds)
+
+        );
+        Map<String, List<CdCardEntity>> collect1 = cdCardEntities.stream().collect(Collectors.groupingBy(CdCardEntity::getDeviceId));
         //设置number
         for (CdDevicesVO cdDevicesVO : cdDevicesVOS) {
             cdDevicesVO.setNumber(collect.get(cdDevicesVO.getIccid()));
+            List<CdCardEntity> currentCard = collect1.get(cdDevicesVO.getIccid());
+            if (CollUtil.isNotEmpty(currentCard)) {
+                // 获取list
+                Map<String, Long> stringLongMap = currentCard.stream().collect(Collectors.groupingBy(CdCardEntity::getIccid, Collectors.counting()));
+                cdDevicesVO.setInitTotalNumber(currentCard.size());
+                cdDevicesVO.setInitSuccessNumber(stringLongMap.keySet().size());
+            }
         }
         return PageUtils.<CdDevicesVO>page(page).setList(cdDevicesVOS);
     }

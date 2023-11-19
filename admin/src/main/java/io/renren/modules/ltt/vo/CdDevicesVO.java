@@ -68,6 +68,10 @@ public class CdDevicesVO implements Serializable {
 	@ApiModelProperty(required=false,value="")
 	private String number;
 
+	private Integer initSuccessNumber;
+
+	private Integer initTotalNumber;
+
 	public String getOnlineStr() {
 		return EnumUtil.queryValueByKey(this.online, Online.values());
 	}
