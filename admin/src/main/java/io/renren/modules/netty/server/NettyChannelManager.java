@@ -2,13 +2,17 @@ package io.renren.modules.netty.server;
 
 
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelId;
 import io.netty.util.AttributeKey;
+import io.renren.modules.ltt.entity.CdDevicesEntity;
 import io.renren.modules.ltt.enums.Online;
+import io.renren.modules.ltt.service.CdDevicesService;
 import io.renren.modules.netty.codec.Invocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,6 +25,9 @@ import java.util.concurrent.ConcurrentMap;
  */
 @Component
 public class NettyChannelManager {
+
+    @Autowired
+    private CdDevicesService cdDevicesService;
 
     /**
      * {@link Channel#attr(AttributeKey)} 属性中，表示 Channel 对应的用户
@@ -78,7 +85,14 @@ public class NettyChannelManager {
         channels.remove(channel.id());
         // 移除 userChannels
         if (channel.hasAttr(CHANNEL_ATTR_KEY_USER)) {
-            userChannels.remove(channel.attr(CHANNEL_ATTR_KEY_USER).get());
+            String device = channel.attr(CHANNEL_ATTR_KEY_USER).get();
+            userChannels.remove(device);
+            //将当前设备离线
+            CdDevicesEntity cdDevicesEntity = new CdDevicesEntity();
+		    cdDevicesEntity.setOnline(Online.NO.getKey());
+		    cdDevicesService.update(cdDevicesEntity,new QueryWrapper<CdDevicesEntity>().lambda()
+                    .eq(CdDevicesEntity::getIccid,device)
+            );
         }
         logger.info("[remove][一个连接({})离开]", channel.id());
     }

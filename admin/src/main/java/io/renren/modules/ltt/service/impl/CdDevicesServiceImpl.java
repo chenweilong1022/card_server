@@ -66,19 +66,14 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
     public PageUtils<CdDevicesVO> queryPage(CdDevicesDTO cdDevices) {
         IPage<CdDevicesEntity> page = baseMapper.selectPage(
                 new Query<CdDevicesEntity>(cdDevices).getPage(),
-                new QueryWrapper<CdDevicesEntity>()
+                new QueryWrapper<CdDevicesEntity>().lambda()
+                        .eq(ObjectUtil.isNotNull(cdDevices.getOnline()),CdDevicesEntity::getOnline,cdDevices.getOnline())
         );
         //获取number
         List<CdDevicesNumberEntity> list = cdDevicesNumberService.list();
         //转为map
         Map<String, String> collect = list.stream().collect(Collectors.toMap(CdDevicesNumberEntity::getDeviceId, CdDevicesNumberEntity::getNumber));
         List<CdDevicesVO> cdDevicesVOS = CdDevicesConver.MAPPER.conver(page.getRecords());
-        //设置number
-        for (CdDevicesVO cdDevicesVO : cdDevicesVOS) {
-            cdDevicesVO.setNumber(collect.get(cdDevicesVO.getIccid()));
-            Online online = nettyChannelManager.onlineStatus(cdDevicesVO.getIccid());
-            cdDevicesVO.setOnline(online.getKey());
-        }
         return PageUtils.<CdDevicesVO>page(page).setList(cdDevicesVOS);
     }
     @Override
