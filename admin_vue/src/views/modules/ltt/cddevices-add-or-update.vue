@@ -10,6 +10,9 @@
     <el-form-item label="" prop="online">
       <el-input v-model="dataForm.online" placeholder=""></el-input>
     </el-form-item>
+    <el-form-item label="" prop="workType">
+      <el-input v-model="dataForm.workType" placeholder=""></el-input>
+    </el-form-item>
     <el-form-item label="" prop="deleteFlag">
       <el-input v-model="dataForm.deleteFlag" placeholder=""></el-input>
     </el-form-item>
@@ -39,6 +42,7 @@
           id: 0,
           iccid: '',
           online: '',
+          workType: '',
           deleteFlag: '',
           createTime: '',
           packageVersion: '',
@@ -49,6 +53,9 @@
             { required: true, message: '不能为空', trigger: 'blur' }
           ],
           online: [
+            { required: true, message: '不能为空', trigger: 'blur' }
+          ],
+          workType: [
             { required: true, message: '不能为空', trigger: 'blur' }
           ],
           deleteFlag: [
@@ -81,6 +88,7 @@
               if (data && data.code === 0) {
                 this.dataForm.iccid = data.cddevices.iccid
                 this.dataForm.online = data.cddevices.online
+                this.dataForm.workType = data.cddevices.workType
                 this.dataForm.deleteFlag = data.cddevices.deleteFlag
                 this.dataForm.createTime = data.cddevices.createTime
                 this.dataForm.packageVersion = data.cddevices.packageVersion
@@ -101,6 +109,7 @@
                 'id': this.dataForm.id || undefined,
                 'iccid': this.dataForm.iccid,
                 'online': this.dataForm.online,
+                'workType': this.dataForm.workType,
                 'deleteFlag': this.dataForm.deleteFlag,
                 'createTime': this.dataForm.createTime,
                 'packageVersion': this.dataForm.packageVersion,

@@ -16,7 +16,7 @@ import java.util.Date;
  *
  * @author chenweilong
  * @email chenweilong@qq.com
- * @date 2023-11-18 00:24:28
+ * @date 2023-11-20 00:37:04
  */
 @Data
 @TableName("cd_devices")
@@ -41,6 +41,11 @@ public class CdDevicesEntity implements Serializable {
 	 */
 	@ApiModelProperty(required=false,value="")
 	private Integer online;
+	/**
+	 * 
+	 */
+	@ApiModelProperty(required=false,value="")
+	private Integer workType;
 	/**
 	 * 
 	 */
