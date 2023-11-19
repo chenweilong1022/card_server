@@ -5,6 +5,16 @@
         <el-input v-model="dataForm.key" placeholder="参数名" clearable></el-input>
       </el-form-item>
       <el-form-item>
+        <el-select v-model="online" placeholder="请选择" clearable>
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
         <el-button type="primary" @click="cddevicesUpdateAppCardHandle()" :disabled="dataListSelections.length <= 0">app更新</el-button>
         <el-button type="primary" @click="initHandle()" :disabled="dataListSelections.length <= 0">批量初始化</el-button>
@@ -98,9 +108,21 @@
   export default {
     data () {
       return {
+        online: null,
         dataForm: {
-          key: ''
+          key: '',
+          online: null
         },
+        options: [
+          {
+            value: 0,
+            label: '在线'
+          },
+          {
+            value: 1,
+            label: '离线'
+          }
+        ],
         dataList: [],
         pageIndex: 1,
         pageSize: 10,
@@ -217,6 +239,7 @@
           params: this.$http.adornParams({
             'page': this.pageIndex,
             'limit': this.pageSize,
+            'online': this.online,
             'key': this.dataForm.key
           })
         }).then(({data}) => {

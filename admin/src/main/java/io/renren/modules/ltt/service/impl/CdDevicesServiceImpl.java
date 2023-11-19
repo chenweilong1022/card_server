@@ -75,6 +75,10 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
         //转为map
         Map<String, String> collect = list.stream().collect(Collectors.toMap(CdDevicesNumberEntity::getDeviceId, CdDevicesNumberEntity::getNumber));
         List<CdDevicesVO> cdDevicesVOS = CdDevicesConver.MAPPER.conver(page.getRecords());
+        //设置number
+        for (CdDevicesVO cdDevicesVO : cdDevicesVOS) {
+            cdDevicesVO.setNumber(collect.get(cdDevicesVO.getIccid()));
+        }
         return PageUtils.<CdDevicesVO>page(page).setList(cdDevicesVOS);
     }
     @Override
