@@ -71,18 +71,17 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
 
     @Override
     public PageUtils<CdDevicesVO> queryPage(CdDevicesDTO cdDevices) {
-        IPage<CdDevicesEntity> page = baseMapper.selectPage(
-                new Query<CdDevicesEntity>(cdDevices).getPage(),
-                new QueryWrapper<CdDevicesEntity>().lambda()
-                        .eq(ObjectUtil.isNotNull(cdDevices.getOnline()),CdDevicesEntity::getOnline,cdDevices.getOnline())
-        );
+
+        IPage<CdDevicesVO> page = baseMapper.listPage(new Query<CdDevicesEntity>(cdDevices).getPage(),cdDevices);
         //获取number
         List<CdDevicesNumberEntity> list = cdDevicesNumberService.list();
         //转为map
         Map<String, String> collect = list.stream().collect(Collectors.toMap(CdDevicesNumberEntity::getDeviceId, CdDevicesNumberEntity::getNumber));
-        List<CdDevicesVO> cdDevicesVOS = CdDevicesConver.MAPPER.conver(page.getRecords());
+//        List<CdDevicesVO> cdDevicesVOS = CdDevicesConver.MAPPER.conver(page.getRecords());
         List<GroupByDeviceIdVO> groupByDeviceIdVOS = cdCardService.groupByDeviceId();
         Map<String, GroupByDeviceIdVO> collect1 = groupByDeviceIdVOS.stream().collect(Collectors.toMap(GroupByDeviceIdVO::getDeviceId, x -> x));
+
+        List<CdDevicesVO> cdDevicesVOS = page.getRecords();
         //设置number
         for (CdDevicesVO cdDevicesVO : cdDevicesVOS) {
             cdDevicesVO.setNumber(collect.get(cdDevicesVO.getIccid()));

@@ -13,4 +13,29 @@
     </resultMap>
 
 
+
+    <select id="listPage" resultType="io.renren.modules.ltt.vo.CdDevicesVO">
+        SELECT
+            d.id as id,
+            d.iccid as iccid,
+            d.online as online,
+            d.delete_flag as deleteFlag,
+            d.create_time as createTime,
+            d.package_version as packageVersion,
+            n.number number
+        FROM
+            cd_devices d
+                LEFT JOIN cd_devices_number n ON n.device_id = d.iccid
+        <where>
+            <if test="dto.online != null">
+                and d.online = #{dto.online}
+            </if>
+            <if test="dto.packageVersion != null and dto.packageVersion != ''">
+                and d.package_version = #{dto.packageVersion}
+            </if>
+        </where>
+        ORDER BY n.number + 0 ASC
+    </select>
+
+
 </mapper>

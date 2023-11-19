@@ -5,6 +5,9 @@
         <el-input v-model="dataForm.key" placeholder="参数名" clearable></el-input>
       </el-form-item>
       <el-form-item>
+        <el-input v-model="dataForm.packageVersion" placeholder="版本号" clearable></el-input>
+      </el-form-item>
+      <el-form-item>
         <el-select v-model="online" placeholder="请选择" clearable>
           <el-option
             v-for="item in options"
@@ -120,7 +123,8 @@
         online: null,
         dataForm: {
           key: '',
-          online: null
+          online: null,
+          packageVersion: null
         },
         options: [
           {
@@ -249,6 +253,7 @@
             'page': this.pageIndex,
             'limit': this.pageSize,
             'online': this.online,
+            'packageVersion': this.dataForm.packageVersion,
             'key': this.dataForm.key
           })
         }).then(({data}) => {
