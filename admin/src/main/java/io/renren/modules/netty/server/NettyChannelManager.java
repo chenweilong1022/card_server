@@ -74,7 +74,7 @@ public class NettyChannelManager {
         if (!containsKey) {
             //将当前设备在线
             CdDevicesEntity cdDevicesEntity = new CdDevicesEntity();
-            cdDevicesEntity.setOnline(Online.NO.getKey());
+            cdDevicesEntity.setOnline(Online.YES.getKey());
             cdDevicesService.update(cdDevicesEntity,new QueryWrapper<CdDevicesEntity>().lambda()
                     .eq(CdDevicesEntity::getIccid,user)
             );
