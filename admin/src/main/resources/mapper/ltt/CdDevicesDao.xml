@@ -19,6 +19,7 @@
             d.id as id,
             d.iccid as iccid,
             d.online as online,
+            d.work_type as workType,
             d.delete_flag as deleteFlag,
             d.create_time as createTime,
             d.package_version as packageVersion,
@@ -29,6 +30,9 @@
         <where>
             <if test="dto.online != null">
                 and d.online = #{dto.online}
+            </if>
+            <if test="dto.workType != null">
+                and d.work_type = #{dto.workType}
             </if>
             <if test="dto.packageVersion != null and dto.packageVersion != ''">
                 and d.package_version = #{dto.packageVersion}

@@ -7,8 +7,11 @@ import io.renren.datasources.annotation.Game;
 import io.renren.modules.app.dto.AppCdBoardUpdateBoardDTO;
 import io.renren.modules.app.dto.AppCdCardUpdateIccidDTO;
 import io.renren.modules.ltt.entity.CdBoardEntity;
+import io.renren.modules.ltt.entity.CdDevicesEntity;
 import io.renren.modules.ltt.entity.CdIccidPhoneEntity;
 import io.renren.modules.ltt.enums.DeleteFlag;
+import io.renren.modules.ltt.enums.WorkType;
+import io.renren.modules.ltt.service.CdDevicesService;
 import io.renren.modules.ltt.service.CdIccidPhoneService;
 import io.renren.modules.ltt.vo.GroupByDeviceIdVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service("cdCardService")
@@ -40,6 +44,8 @@ public class CdCardServiceImpl extends ServiceImpl<CdCardDao, CdCardEntity> impl
 
     @Autowired
     private CdIccidPhoneService cdIccidPhoneService;
+    @Autowired
+    private CdDevicesService cdDevicesService;
 
 
     @Override
@@ -103,30 +109,38 @@ public class CdCardServiceImpl extends ServiceImpl<CdCardDao, CdCardEntity> impl
     @Transactional(rollbackFor = Exception.class)
     public void uploadIccid(AppCdCardUpdateIccidDTO iccidDTO) {
 
-        CdCardEntity update = new CdCardEntity();
-        update.setIccid(iccidDTO.getIccid());
-        update.setPhone(iccidDTO.getPhone());
-        this.update(update,new QueryWrapper<CdCardEntity>()
-                .lambda().eq(CdCardEntity::getDeviceId,iccidDTO.getDeviceId())
-                .eq(CdCardEntity::getBoardIndexed,iccidDTO.getBoardIndexed())
-                .eq(CdCardEntity::getIndexed,iccidDTO.getIndexed())
-        );
-
-        CdIccidPhoneEntity one = cdIccidPhoneService.getOne(new QueryWrapper<CdIccidPhoneEntity>().lambda()
-                .eq(CdIccidPhoneEntity::getIccid,iccidDTO.getIccid())
-        );
-        if (ObjectUtil.isNull(one)) {
-            CdIccidPhoneEntity save = new CdIccidPhoneEntity();
-            save.setIccid(iccidDTO.getIccid());
-            save.setPhone(iccidDTO.getPhone());
-            cdIccidPhoneService.save(save);
-        }
+//        CdCardEntity update = new CdCardEntity();
+//        update.setIccid(iccidDTO.getIccid());
+//        update.setPhone(iccidDTO.getPhone());
+//        this.update(update,new QueryWrapper<CdCardEntity>()
+//                .lambda().eq(CdCardEntity::getDeviceId,iccidDTO.getDeviceId())
+//                .eq(CdCardEntity::getBoardIndexed,iccidDTO.getBoardIndexed())
+//                .eq(CdCardEntity::getIndexed,iccidDTO.getIndexed())
+//        );
+//
+//        CdIccidPhoneEntity one = cdIccidPhoneService.getOne(new QueryWrapper<CdIccidPhoneEntity>().lambda()
+//                .eq(CdIccidPhoneEntity::getIccid,iccidDTO.getIccid())
+//        );
+//        if (ObjectUtil.isNull(one)) {
+//            CdIccidPhoneEntity save = new CdIccidPhoneEntity();
+//            save.setIccid(iccidDTO.getIccid());
+//            save.setPhone(iccidDTO.getPhone());
+//            cdIccidPhoneService.save(save);
+//        }
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void uploadIccids(Map<String, String> params) {
         String deviceId = params.get("deviceId");
+        //获取设备信息
+        CdDevicesEntity one = cdDevicesService.getOne(new QueryWrapper<CdDevicesEntity>().lambda()
+                .eq(CdDevicesEntity::getIccid,deviceId)
+        );
+        List<CdCardEntity> list = this.list(new QueryWrapper<CdCardEntity>().lambda()
+                .eq(CdCardEntity::getDeviceId,deviceId)
+        );
+        List<AppCdCardUpdateIccidDTO> appCdCardUpdateIccidDTOS = new ArrayList<>();
         for (String s : params.keySet()) {
             if (s.contains("deviceId")){
                 continue;
@@ -144,19 +158,34 @@ public class CdCardServiceImpl extends ServiceImpl<CdCardDao, CdCardEntity> impl
             appCdCardUpdateIccidDTO.setBoardIndexed(boardIndexed - 1);
             appCdCardUpdateIccidDTO.setIndexed(indexed - 1);
             appCdCardUpdateIccidDTO.setIccid(iccid);
-            CdIccidPhoneEntity one = cdIccidPhoneService.getOne(new QueryWrapper<CdIccidPhoneEntity>().lambda()
-                    .eq(CdIccidPhoneEntity::getIccid,iccid)
-            );
+
             appCdCardUpdateIccidDTO.setPhone("");
-            if (ObjectUtil.isNotNull(one)) {
-                appCdCardUpdateIccidDTO.setPhone(one.getPhone());
-            }
             if (StrUtil.isNotEmpty(phoneNumber)) {
                 appCdCardUpdateIccidDTO.setPhone(phoneNumber);
             }
-            uploadIccid(appCdCardUpdateIccidDTO);
+            appCdCardUpdateIccidDTOS.add(appCdCardUpdateIccidDTO);
+        }
+        //上报的卡数据更新
+        Map<String, AppCdCardUpdateIccidDTO> collect = appCdCardUpdateIccidDTOS.stream().collect(Collectors.toMap(x -> x.getBoardIndexed() + "-" + x.getIndexed(), y -> y));
+        List<CdCardEntity> updates = new ArrayList<>();
+        for (CdCardEntity cdCardEntity : list) {
+            String x = cdCardEntity.getBoardIndexed() + "-" + cdCardEntity.getIndexed();
+            AppCdCardUpdateIccidDTO appCdCardUpdateIccidDTO = collect.get(x);
+            CdCardEntity update = new CdCardEntity();
+            update.setId(cdCardEntity.getId());
+            update.setIccid(appCdCardUpdateIccidDTO.getIccid());
+            update.setPhone(appCdCardUpdateIccidDTO.getPhone());
+            updates.add(update);
+        }
+        //修改卡信息
+        this.updateBatchById(updates);
+        //修改卡片为工作状态
+        if (ObjectUtil.isNotNull(one)) {
+            one.setWorkType(WorkType.WorkType3.getKey());
+            cdDevicesService.updateById(one);
         }
     }
+
 
     @Override
     public List<GroupByDeviceIdVO> groupByDeviceId() {

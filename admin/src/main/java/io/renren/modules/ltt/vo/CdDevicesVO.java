@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.renren.common.utils.EnumUtil;
 import io.renren.modules.ltt.enums.Online;
+import io.renren.modules.ltt.enums.WorkType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -81,5 +82,10 @@ public class CdDevicesVO implements Serializable {
 	public String getOnlineStr() {
 		return EnumUtil.queryValueByKey(this.online, Online.values());
 	}
+	public String getWorkTypeStr() {
+		return EnumUtil.queryValueByKey(this.workType, WorkType.values());
+	}
+
+
 
 }
