@@ -7,9 +7,11 @@ import io.renren.modules.app.dto.AppCdCardUpdateIccidDTO;
 import io.renren.modules.ltt.dto.CdCardDTO;
 import io.renren.modules.ltt.vo.CdCardVO;
 import io.renren.modules.ltt.entity.CdCardEntity;
+import io.renren.modules.ltt.vo.GroupByDeviceIdVO;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 
@@ -67,5 +69,8 @@ public interface CdCardService extends IService<CdCardEntity> {
     void uploadIccid(AppCdCardUpdateIccidDTO iccidDTO);
 
     void uploadIccids(Map<String, String> params);
+
+    List<GroupByDeviceIdVO> groupByDeviceId();
+
 }
 

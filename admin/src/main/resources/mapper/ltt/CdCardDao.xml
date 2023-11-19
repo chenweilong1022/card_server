@@ -14,4 +14,9 @@
     </resultMap>
 
 
+    <select id="groupByDeviceId" resultType="io.renren.modules.ltt.vo.GroupByDeviceIdVO">
+        SELECT device_id as deviceId,COUNT(iccid) as initTotalNumber,COUNT(DISTINCT iccid) initSuccessNumber as FROM cd_card GROUP BY device_id;
+    </select>
+
+
 </mapper>

@@ -10,6 +10,7 @@ import io.renren.modules.ltt.entity.CdBoardEntity;
 import io.renren.modules.ltt.entity.CdIccidPhoneEntity;
 import io.renren.modules.ltt.enums.DeleteFlag;
 import io.renren.modules.ltt.service.CdIccidPhoneService;
+import io.renren.modules.ltt.vo.GroupByDeviceIdVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -155,6 +156,11 @@ public class CdCardServiceImpl extends ServiceImpl<CdCardDao, CdCardEntity> impl
             }
             uploadIccid(appCdCardUpdateIccidDTO);
         }
+    }
+
+    @Override
+    public List<GroupByDeviceIdVO> groupByDeviceId() {
+        return baseMapper.groupByDeviceId();
     }
 
 }

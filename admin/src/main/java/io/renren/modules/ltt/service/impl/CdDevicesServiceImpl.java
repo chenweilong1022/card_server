@@ -17,6 +17,7 @@ import io.renren.modules.ltt.enums.Online;
 import io.renren.modules.ltt.service.CdCardLockService;
 import io.renren.modules.ltt.service.CdCardService;
 import io.renren.modules.ltt.service.CdDevicesNumberService;
+import io.renren.modules.ltt.vo.GroupByDeviceIdVO;
 import io.renren.modules.netty.codec.Invocation;
 import io.renren.modules.netty.message.changecard.ChangeCardResponse;
 import io.renren.modules.netty.message.initcard.InitCard2Response;
@@ -80,22 +81,15 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
         //转为map
         Map<String, String> collect = list.stream().collect(Collectors.toMap(CdDevicesNumberEntity::getDeviceId, CdDevicesNumberEntity::getNumber));
         List<CdDevicesVO> cdDevicesVOS = CdDevicesConver.MAPPER.conver(page.getRecords());
-
-        List<String> deviceIds = cdDevicesVOS.stream().map(CdDevicesVO::getIccid).collect(Collectors.toList());
-        List<CdCardEntity> cdCardEntities = cdCardService.list(new QueryWrapper<CdCardEntity>().lambda()
-                .in(CdCardEntity::getDeviceId,deviceIds)
-
-        );
-        Map<String, List<CdCardEntity>> collect1 = cdCardEntities.stream().filter(item -> StrUtil.isNotEmpty(item.getIccid())).collect(Collectors.groupingBy(CdCardEntity::getDeviceId));
+        List<GroupByDeviceIdVO> groupByDeviceIdVOS = cdCardService.groupByDeviceId();
+        Map<String, GroupByDeviceIdVO> collect1 = groupByDeviceIdVOS.stream().collect(Collectors.toMap(GroupByDeviceIdVO::getDeviceId, x -> x));
         //设置number
         for (CdDevicesVO cdDevicesVO : cdDevicesVOS) {
             cdDevicesVO.setNumber(collect.get(cdDevicesVO.getIccid()));
-            List<CdCardEntity> currentCard = collect1.get(cdDevicesVO.getIccid());
-            if (CollUtil.isNotEmpty(currentCard)) {
-                // 获取list
-                Map<String, Long> stringLongMap = currentCard.stream().collect(Collectors.groupingBy(CdCardEntity::getIccid, Collectors.counting()));
-                cdDevicesVO.setInitTotalNumber(currentCard.size());
-                cdDevicesVO.setInitSuccessNumber(stringLongMap.keySet().size());
+            GroupByDeviceIdVO groupByDeviceIdVO = collect1.get(cdDevicesVO.getIccid());
+            if (ObjectUtil.isNotNull(groupByDeviceIdVO)) {
+                cdDevicesVO.setInitSuccessNumber(groupByDeviceIdVO.getInitSuccessNumber());
+                cdDevicesVO.setInitTotalNumber(groupByDeviceIdVO.getInitTotalNumber());
             }
         }
         return PageUtils.<CdDevicesVO>page(page).setList(cdDevicesVOS);
