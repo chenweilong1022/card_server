@@ -73,7 +73,6 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
         IPage<CdDevicesEntity> page = baseMapper.selectPage(
                 new Query<CdDevicesEntity>(cdDevices).getPage(),
                 new QueryWrapper<CdDevicesEntity>().lambda()
-                        .orderByAsc(CdDevicesEntity::getNumber)
                         .eq(ObjectUtil.isNotNull(cdDevices.getOnline()),CdDevicesEntity::getOnline,cdDevices.getOnline())
         );
         //获取number
