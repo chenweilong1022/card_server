@@ -125,6 +125,11 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
             update.setCreateTime(DateUtil.date());
             this.save(update);
             one = update;
+        }else {
+            CdDevicesEntity update = new CdDevicesEntity();
+            update.setId(one.getId());
+            update.setPackageVersion(cdDevices.getPackageVersion());
+            this.updateById(update);
         }
 
 
