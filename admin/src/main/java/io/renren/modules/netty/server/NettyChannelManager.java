@@ -26,8 +26,8 @@ import java.util.concurrent.ConcurrentMap;
 @Component
 public class NettyChannelManager {
 
-    @Autowired
-    private CdDevicesService cdDevicesService;
+//    @Autowired
+//    private CdDevicesService cdDevicesService;
 
     /**
      * {@link Channel#attr(AttributeKey)} 属性中，表示 Channel 对应的用户
@@ -69,16 +69,16 @@ public class NettyChannelManager {
             logger.error("[addUser][连接({}) 不存在]", channel.id());
             return;
         }
-        //是否包含用户
-        boolean containsKey = userChannels.containsKey(user);
-        if (!containsKey) {
-            //将当前设备在线
-            CdDevicesEntity cdDevicesEntity = new CdDevicesEntity();
-            cdDevicesEntity.setOnline(Online.NO.getKey());
-            cdDevicesService.update(cdDevicesEntity,new QueryWrapper<CdDevicesEntity>().lambda()
-                    .eq(CdDevicesEntity::getIccid,user)
-            );
-        }
+//        //是否包含用户
+//        boolean containsKey = userChannels.containsKey(user);
+//        if (!containsKey) {
+//            //将当前设备在线
+//            CdDevicesEntity cdDevicesEntity = new CdDevicesEntity();
+//            cdDevicesEntity.setOnline(Online.NO.getKey());
+//            cdDevicesService.update(cdDevicesEntity,new QueryWrapper<CdDevicesEntity>().lambda()
+//                    .eq(CdDevicesEntity::getIccid,user)
+//            );
+//        }
         // 设置属性
         channel.attr(CHANNEL_ATTR_KEY_USER).set(user);
         // 添加到 userChannels
@@ -97,12 +97,12 @@ public class NettyChannelManager {
         if (channel.hasAttr(CHANNEL_ATTR_KEY_USER)) {
             String device = channel.attr(CHANNEL_ATTR_KEY_USER).get();
             userChannels.remove(device);
-            //将当前设备离线
-            CdDevicesEntity cdDevicesEntity = new CdDevicesEntity();
-		    cdDevicesEntity.setOnline(Online.NO.getKey());
-		    cdDevicesService.update(cdDevicesEntity,new QueryWrapper<CdDevicesEntity>().lambda()
-                    .eq(CdDevicesEntity::getIccid,device)
-            );
+//            //将当前设备离线
+//            CdDevicesEntity cdDevicesEntity = new CdDevicesEntity();
+//		    cdDevicesEntity.setOnline(Online.NO.getKey());
+//		    cdDevicesService.update(cdDevicesEntity,new QueryWrapper<CdDevicesEntity>().lambda()
+//                    .eq(CdDevicesEntity::getIccid,device)
+//            );
         }
         logger.info("[remove][一个连接({})离开]", channel.id());
     }
