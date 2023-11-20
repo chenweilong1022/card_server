@@ -36,6 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -61,6 +62,8 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
     private NettyChannelManager nettyChannelManager;
     @Resource(name = "caffeineCacheCodeTaskDto")
     private Cache<String, TaskDto> caffeineCacheCodeTaskDto;
+    @Autowired
+    private CdUserService cdUserService;
 
 
     @Override
@@ -162,6 +165,10 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
                     }else {
                         update.setPhone(cdDevicesEntity.getPhone());
                     }
+                    //直接扣除金额
+                    BigDecimal after = cdUserEntity.getBalance().subtract(cdProjectVO.getPrice());
+                    cdUserEntity.setBalance(after);
+                    cdUserService.updateById(cdUserEntity);
 
                     update.setId(cdCardLockEntity.getId());
                     update.setUserId(cdUserEntity.getId());
