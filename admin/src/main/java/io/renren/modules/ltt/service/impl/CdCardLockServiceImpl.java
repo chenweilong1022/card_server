@@ -177,7 +177,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
                     taskDto.setBoardIndexed(cdDevicesEntity.getBoardIndexed());
                     taskDto.setIndexed(cdDevicesEntity.getIndexed());
                     taskDto.setDeviceId(cdDevicesEntity.getIccid());
-                    nettyChannelManager.send(cdDevicesEntity.getIccid(),new Invocation(ChangeCardResponse.TYPE, taskDto));
+                    nettyChannelManager.send(cdDevicesEntity.getDeviceId(),new Invocation(ChangeCardResponse.TYPE, taskDto));
 
                     return new CdCardLockVO().setPhone(update.getPhone()).setIccid(update.getIccid());
                 }
