@@ -16,6 +16,9 @@ import io.renren.modules.ltt.enums.Lock;
 import io.renren.modules.ltt.enums.Online;
 import io.renren.modules.ltt.service.*;
 import io.renren.modules.ltt.vo.CdProjectVO;
+import io.renren.modules.netty.codec.Invocation;
+import io.renren.modules.netty.message.changecard.ChangeCardResponse;
+import io.renren.modules.netty.server.NettyChannelManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -53,7 +56,8 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
     private CdProjectSmsRecordService cdProjectSmsRecordService;
     @Autowired
     private CdIccidPhoneService cdIccidPhoneService;
-
+    @Autowired
+    private NettyChannelManager nettyChannelManager;
     @Resource(name = "caffeineCacheCodeTaskDto")
     private Cache<String, TaskDto> caffeineCacheCodeTaskDto;
 
@@ -164,12 +168,19 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
                     update.setCreateTime(DateUtil.date());
                     this.updateById(update);
                     //通知客戶端修改卡
-                    TaskDto taskDto = new TaskDto();
-                    taskDto.setType("changeCard");
-                    taskDto.setDeviceId(cdDevicesEntity.getDeviceId());
+//                    TaskDto taskDto = new TaskDto();
+//                    taskDto.setType("changeCard");
+//                    taskDto.setDeviceId(cdDevicesEntity.getDeviceId());
+//                    taskDto.setBoardIndexed(cdDevicesEntity.getBoardIndexed());
+//                    taskDto.setIndexed(cdDevicesEntity.getIndexed());
+//                    caffeineCacheCodeTaskDto.put(cdDevicesEntity.getDeviceId(),taskDto);
+
+                    //通知客戶端修改卡
+                    ChangeCardResponse taskDto = new ChangeCardResponse();
                     taskDto.setBoardIndexed(cdDevicesEntity.getBoardIndexed());
                     taskDto.setIndexed(cdDevicesEntity.getIndexed());
-                    caffeineCacheCodeTaskDto.put(cdDevicesEntity.getDeviceId(),taskDto);
+                    taskDto.setDeviceId(cdDevicesEntity.getIccid());
+                    nettyChannelManager.send(cdDevicesEntity.getIccid(),new Invocation(ChangeCardResponse.TYPE, taskDto));
 
                     return new CdCardLockVO().setPhone(update.getPhone()).setIccid(update.getIccid());
                 }
