@@ -115,10 +115,6 @@ public class CdDevicesController {
         return R.data(cdDevicesService.withBlack(ids));
     }
 
-
-    @Resource(name = "caffeineCacheProjectWorkEntity")
-    private Cache<String, ProjectWorkEntity> caffeineCacheProjectWorkEntity;
-
     /**
      * 手机号删除
      */
