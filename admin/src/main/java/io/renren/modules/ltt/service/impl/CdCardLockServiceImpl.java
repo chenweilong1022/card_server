@@ -22,6 +22,9 @@ import io.renren.modules.netty.codec.Invocation;
 import io.renren.modules.netty.message.changecard.ChangeCardResponse;
 import io.renren.modules.netty.server.NettyChannelManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -68,8 +71,9 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
     @Autowired
     private CdUserService cdUserService;
 
-    Integer userId = 2;
-    Integer projectId = 196;
+    @Resource(name = "caffeineCacheIntegerCode")
+    private Cache<String, Integer> caffeineCacheIntegerCode;
+
     String phonePre = "+855";
 
     @Override
@@ -274,6 +278,8 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean uploadSms(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity) {
+        Integer userId = caffeineCacheIntegerCode.getIfPresent("userId");
+        Integer projectId = caffeineCacheIntegerCode.getIfPresent("projectId");
         //获取当前的设备
         CdCardLockEntity cdCardLockEntity = this.getOne(new QueryWrapper<CdCardLockEntity>().lambda()
                 .eq(CdCardLockEntity::getDeviceId, cdCardLock.getDeviceId())
@@ -344,9 +350,17 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
         return taskDto;
     }
 
+    @EventListener
+    @Order(value = 9999)
+    public void handlerApplicationReadyEvent(ApplicationReadyEvent event) {
+        caffeineCacheIntegerCode.put("userId",2);
+        caffeineCacheIntegerCode.put("projectId",7);
+    }
 
 
     public void init3() throws IOException {
+        Integer userId = caffeineCacheIntegerCode.getIfPresent("userId");
+        Integer projectId = caffeineCacheIntegerCode.getIfPresent("projectId");
         //用户
         CdUserEntity userEntity = cdUserService.getById((Serializable) userId);
         //判断火狐狸上有几个用户

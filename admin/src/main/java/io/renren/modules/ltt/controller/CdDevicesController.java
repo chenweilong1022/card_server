@@ -1,13 +1,21 @@
 package io.renren.modules.ltt.controller;
 
+import java.io.Serializable;
 import java.util.Arrays;
+import java.util.List;
 
 import cn.hutool.http.HttpUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.benmanes.caffeine.cache.Cache;
+import io.renren.modules.ltt.dto.CdCardLockDTO;
 import io.renren.modules.ltt.dto.CdDevicesUpdateAppDTO;
+import io.renren.modules.ltt.entity.CdCardLockEntity;
+import io.renren.modules.ltt.entity.CdUserEntity;
 import io.renren.modules.ltt.firefox.PhoneAddBatch;
 import io.renren.modules.ltt.firefox.Root;
+import io.renren.modules.ltt.service.CdCardLockService;
+import io.renren.modules.ltt.service.CdUserService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +29,7 @@ import io.renren.modules.ltt.service.CdDevicesService;
 import io.renren.common.utils.PageUtils;
 import io.renren.common.utils.R;
 
+import javax.annotation.Resource;
 
 
 /**
@@ -35,6 +44,12 @@ import io.renren.common.utils.R;
 public class CdDevicesController {
     @Autowired
     private CdDevicesService cdDevicesService;
+    @Autowired
+    private CdCardLockService cdCardLockService;
+    @Resource(name = "caffeineCacheIntegerCode")
+    private Cache<String, Integer> caffeineCacheIntegerCode;
+    @Autowired
+    private CdUserService cdUserService;
 
     /**
      * 列表
@@ -90,10 +105,21 @@ public class CdDevicesController {
     @RequestMapping("/phoneDeleteAll")
     @RequiresPermissions("ltt:cddevices:list")
     public R phoneDeleteAll(@RequestBody Integer[] ids) throws JsonProcessingException {
+        Integer userId = caffeineCacheIntegerCode.getIfPresent("userId");
+        Integer projectId = caffeineCacheIntegerCode.getIfPresent("projectId");
         Root phoneAddBatch = new Root("PhoneDeleteAll");
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(phoneAddBatch);
         String response = HttpUtil.post("https://www.firefox.fun/ksapi.ashx?key=76082377BDE44F99", json);
+
+        List<CdCardLockEntity> list = cdCardLockService.list();
+        CdUserEntity userEntity = cdUserService.getById((Serializable) userId);
+        for (CdCardLockEntity cdCardLockEntity : list) {
+            CdCardLockDTO cdCardLockDTO = new CdCardLockDTO();
+            cdCardLockDTO.setProjectId(projectId);
+            cdCardLockDTO.setIccid(cdCardLockEntity.getIccid());
+            boolean b = cdCardLockService.releaseMobile(cdCardLockDTO, userEntity);
+        }
         return R.data(response);
     }
 

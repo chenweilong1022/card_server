@@ -1,6 +1,7 @@
 package io.renren.modules.app.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.github.benmanes.caffeine.cache.Cache;
 import io.renren.common.base.dto.PageParam;
 import io.renren.common.utils.PageUtils;
 import io.renren.common.utils.R;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
@@ -36,6 +38,8 @@ public class AppCdCardController extends PageParam implements Serializable {
     @Autowired
     private CdCardService cdCardService;
 
+    @Resource(name = "caffeineCacheIntegerCode")
+    private Cache<String, Integer> caffeineCacheIntegerCode;
 
 
     /**
@@ -49,6 +53,16 @@ public class AppCdCardController extends PageParam implements Serializable {
         return R.data(list);
     }
 
+
+    /**
+     * 保存
+     */
+    @RequestMapping("/setCacheUserId")
+    public R uploadCard(Integer userId,Integer projectId){
+        caffeineCacheIntegerCode.put("userId",userId);
+        caffeineCacheIntegerCode.put("projectId",projectId);
+        return R.ok();
+    }
 
 
     /**
