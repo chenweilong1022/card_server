@@ -69,7 +69,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
     private CdUserService cdUserService;
 
     Integer userId = 2;
-    Integer projectId = 7;
+    Integer projectId = 196;
     String phonePre = "+855";
 
     @Override
