@@ -9,12 +9,15 @@ import com.github.benmanes.caffeine.cache.Cache;
 import io.renren.common.utils.ConfigConstant;
 import io.renren.modules.ltt.dto.CdCardLockDTO;
 import io.renren.modules.ltt.entity.CdCardLockEntity;
+import io.renren.modules.ltt.entity.CdProjectEntity;
 import io.renren.modules.ltt.entity.CdUserEntity;
 import io.renren.modules.ltt.enums.Lock;
 import io.renren.modules.ltt.firefox.GetWaitPhoneList;
 import io.renren.modules.ltt.firefox.GetWaitPhoneListDaum;
 import io.renren.modules.ltt.service.CdCardLockService;
+import io.renren.modules.ltt.service.CdProjectService;
 import io.renren.modules.ltt.service.CdUserService;
+import io.renren.modules.ltt.vo.CdProjectVO;
 import io.renren.modules.sys.entity.ProjectWorkEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,95 +49,43 @@ public class BlackListTask {
     @Resource(name = "caffeineCacheProjectWorkEntity")
     private Cache<String, ProjectWorkEntity> caffeineCacheProjectWorkEntity;
 
-//    @Scheduled(fixedDelay = 5000)
-    public void sayHello() {
+    @Autowired
+    private CdProjectService cdProjectService;
 
+    @Scheduled(fixedDelay = 5000)
+    public void sayHello() {
         ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(ConfigConstant.PROJECT_WORK_KEY);
-        Integer userId = projectWorkEntity.getUserId();
         try {
             String response = HttpUtil.get("https://www.firefox.fun/ksapi.ashx?key=76082377BDE44F99&act=GetWaitPhoneList");
             ObjectMapper objectMapper = new ObjectMapper();
             GetWaitPhoneList phoneDeleteAllResponse = objectMapper.readValue(response, GetWaitPhoneList.class);
 
-
             List<GetWaitPhoneListDaum> data = phoneDeleteAllResponse.getData();
             if (CollUtil.isEmpty(data)) {
                 return;
             }
-
-            for (GetWaitPhoneListDaum datum : data) {
-                Long itemId = datum.getItemId();
-                String phoneNum = datum.getPhoneNum();
-                String phoneGetTime = datum.getPhoneGetTime();
-                TimeZone.setDefault( TimeZone.getTimeZone("UTC"));
-                Instant instant = Instant.parse(phoneGetTime + "Z");
-                java.util.Date date = java.util.Date.from( instant );
-
-
-
+            //获取所有的手机
+            Map<String, GetWaitPhoneListDaum> stringGetWaitPhoneListDaumMap = data.stream().collect(Collectors.toMap(x -> projectWorkEntity.getPhonePre() + x.getPhoneNum() + "=" + x.getItemId(), y -> y));
+            //获取所有的手机号
+            List<CdCardLockEntity> list = cdCardLockService.list(new QueryWrapper<CdCardLockEntity>().lambda()
+                    .in(CdCardLockEntity::getPhone,stringGetWaitPhoneListDaumMap.keySet().stream().map(x -> x.split("=")[0]).collect(Collectors.toList()))
+            );
+            for (CdCardLockEntity cdCardLockEntity : list) {
+                Integer projectId = cdCardLockEntity.getProjectId();
+                CdProjectVO cdProjectVO = cdProjectService.getById(projectId);
+                GetWaitPhoneListDaum getWaitPhoneListDaum = stringGetWaitPhoneListDaumMap.get(cdCardLockEntity.getPhone() + "=" + cdProjectVO.getItemId());
+                if (ObjectUtil.isNotNull(getWaitPhoneListDaum)) {
+                    String phoneGetTime = getWaitPhoneListDaum.getPhoneGetTime();
+                    TimeZone.setDefault( TimeZone.getTimeZone("UTC"));
+                    Instant instant = Instant.parse(phoneGetTime + "Z");
+                    java.util.Date date = java.util.Date.from( instant );
+                    cdCardLockEntity.setPhoneGetTime(date);
+                    cdCardLockService.updateById(cdCardLockEntity);
+                }
             }
-
-
-
-
-
-//            log.info("GetWaitPhoneList result code 1");
-//            prePhoneDeleteAllResponse = currentPhoneDeleteAllResponse;
-//            currentPhoneDeleteAllResponse = phoneDeleteAllResponse;
-//            if (ObjectUtil.isNull(currentPhoneDeleteAllResponse) || ObjectUtil.isNull(prePhoneDeleteAllResponse)) {
-//                log.info("currentPhoneDeleteAllResponse & prePhoneDeleteAllResponse is Null");
-//                return;
-//            }
-//            //
-//            List<GetWaitPhoneListDaum> currentList = currentPhoneDeleteAllResponse.getData();
-//            List<GetWaitPhoneListDaum> preList = prePhoneDeleteAllResponse.getData();
-//            if (CollUtil.isEmpty(preList)) {
-//                log.info("preList is Null");
-//                return;
-//            }
-//
-//            Map<String, GetWaitPhoneListDaum> preMap = preList.stream().collect(Collectors.toMap(GetWaitPhoneListDaum::getPhoneNum, x -> x));
-//            Map<String, GetWaitPhoneListDaum> currentMap = currentList.stream().collect(Collectors.toMap(GetWaitPhoneListDaum::getPhoneNum, x -> x));
-//            //当前剩下的就是 被拉黑的 或者已使用的或者被释放的
-//            for (String s : preMap.keySet()) {
-//                GetWaitPhoneListDaum getWaitPhoneListDaum = currentMap.get(s);
-//                if (ObjectUtil.isNotNull(getWaitPhoneListDaum)) {
-//                    preMap.remove(s);
-//                }
-//            }
-//
-//            if (CollUtil.isEmpty(preMap)) {
-//                log.info("preMap is Null");
-//                return;
-//            }
-//
-//            List<CdCardLockEntity> list = cdCardLockService.list(new QueryWrapper<CdCardLockEntity>().lambda()
-//                    .eq(CdCardLockEntity::getLock, Lock.YES.getKey())
-//            );
-//
-//
-//            List<CdCardLockEntity> changeLock = new ArrayList<>();
-//
-//            for (CdCardLockEntity cdCardLockEntity : list) {
-//                GetWaitPhoneListDaum getWaitPhoneListDaum = preMap.get(cdCardLockEntity.getPhone().replace("+855", ""));
-//                if (ObjectUtil.isNotNull(getWaitPhoneListDaum)) {
-//                    changeLock.add(cdCardLockEntity);
-//                }
-//            }
-//
-//            CdUserEntity userEntity = cdUserService.getById((Serializable) userId);
-//            for (CdCardLockEntity cdCardLockEntity : changeLock) {
-//                log.info("拉黑 ===> {}",cdCardLockEntity.getDeviceId());
-//                CdCardLockDTO cdCardLock = new CdCardLockDTO();
-//                cdCardLock.setCode("拉黑");
-//                cdCardLock.setDeviceId(cdCardLockEntity.getDeviceId());
-//                boolean b = cdCardLockService.uploadSms(cdCardLock, userEntity);
-//            }
         }catch (Exception e) {
             log.error("error = {}",e.getMessage());
         }
-
-
     }
 
 }

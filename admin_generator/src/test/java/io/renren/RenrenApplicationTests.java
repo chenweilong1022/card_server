@@ -24,7 +24,8 @@ public class RenrenApplicationTests {
 	@Test
 	public void contextLoadsUpdate() {
 		sysGeneratorService.generatorCodeUpdate(new String[]{
-				"cd_devices",
+				"cd_card_lock",
+				"cd_project",
 		});
 	}
 

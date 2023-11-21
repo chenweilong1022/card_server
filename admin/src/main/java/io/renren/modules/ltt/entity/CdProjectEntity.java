@@ -13,54 +13,59 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 项目表
+ * 
  *
  * @author chenweilong
  * @email chenweilong@qq.com
- * @date 2023-10-15 00:41:11
+ * @date 2023-11-22 03:25:15
  */
 @Data
 @TableName("cd_project")
-@ApiModel("项目表")
+@ApiModel("")
 @Accessors(chain = true)
 public class CdProjectEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * id;主键
+	 * 
 	 */
 	@TableId(type = IdType.AUTO)
-	@ApiModelProperty(required=false,value="id;主键")
+	@ApiModelProperty(required=false,value="")
 	private Integer id;
 	/**
-	 * 审核状态
+	 * 
 	 */
-	@ApiModelProperty(required=false,value="审核状态")
+	@ApiModelProperty(required=false,value="")
 	private Integer auditStatus;
 	/**
-	 * 项目名称
+	 * 
 	 */
-	@ApiModelProperty(required=false,value="项目名称")
+	@ApiModelProperty(required=false,value="")
 	private String name;
 	/**
-	 * 国家id
+	 * 
 	 */
-	@ApiModelProperty(required=false,value="国家id")
+	@ApiModelProperty(required=false,value="")
 	private Integer countryId;
 	/**
-	 * 价格
+	 * 
 	 */
-	@ApiModelProperty(required=false,value="价格")
+	@ApiModelProperty(required=false,value="")
 	private BigDecimal price;
 	/**
-	 * 删除标志
+	 * 
 	 */
-	@ApiModelProperty(required=false,value="删除标志")
+	@ApiModelProperty(required=false,value="")
 	private Integer deleteFlag;
 	/**
-	 * 创建时间
+	 * 
 	 */
-	@ApiModelProperty(required=false,value="创建时间")
+	@ApiModelProperty(required=false,value="")
 	private Date createTime;
+	/**
+	 * 
+	 */
+	@ApiModelProperty(required=false,value="")
+	private Integer itemId;
 
 }

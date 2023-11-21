@@ -80,5 +80,9 @@ public class CdCardLockEntity implements Serializable {
 	 */
 	@ApiModelProperty(required=false,value="创建时间")
 	private Date createTime;
-
+	/**
+	 *
+	 */
+	@ApiModelProperty(required=false,value="")
+	private Date phoneGetTime;
 }

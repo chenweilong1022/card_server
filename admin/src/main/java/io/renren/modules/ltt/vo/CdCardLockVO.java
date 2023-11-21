@@ -11,69 +11,74 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 卡锁
+ * 
  *
  * @author chenweilong
  * @email chenweilong@qq.com
- * @date 2023-10-20 00:47:11
+ * @date 2023-11-22 03:25:15
  */
 @Data
 @TableName("cd_card_lock")
-@ApiModel("卡锁")
+@ApiModel("")
 @Accessors(chain = true)
 public class CdCardLockVO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * 主键
+	 * 
 	 */
 	@TableId(type = IdType.AUTO)
-	@ApiModelProperty(required=false,value="主键")
+	@ApiModelProperty(required=false,value="")
 	private Integer id;
 	/**
-	 * 短信
+	 * 
 	 */
-	@ApiModelProperty(required=false,value="短信")
+	@ApiModelProperty(required=false,value="")
 	private String code;
 	/**
-	 * 用户id
+	 * 
 	 */
-	@ApiModelProperty(required=false,value="用户id")
+	@ApiModelProperty(required=false,value="")
 	private Integer userId;
 	/**
-	 * 项目id
+	 * 
 	 */
-	@ApiModelProperty(required=false,value="项目id")
+	@ApiModelProperty(required=false,value="")
 	private Integer projectId;
 	/**
-	 * 设备id
+	 * 
 	 */
-	@ApiModelProperty(required=false,value="设备id")
+	@ApiModelProperty(required=false,value="")
 	private String deviceId;
 	/**
-	 * 锁
+	 * 
 	 */
-	@ApiModelProperty(required=false,value="锁")
+	@ApiModelProperty(required=false,value="")
 	private Integer lock;
 	/**
-	 * 手机号
+	 * 
 	 */
-	@ApiModelProperty(required=false,value="手机号")
+	@ApiModelProperty(required=false,value="")
 	private String phone;
 	/**
-	 * 卡的iccid
+	 * 
 	 */
-	@ApiModelProperty(required=false,value="卡的iccid")
+	@ApiModelProperty(required=false,value="")
 	private String iccid;
 	/**
-	 * 删除标志
+	 * 
 	 */
-	@ApiModelProperty(required=false,value="删除标志")
+	@ApiModelProperty(required=false,value="")
 	private Integer deleteFlag;
 	/**
-	 * 创建时间
+	 * 
 	 */
-	@ApiModelProperty(required=false,value="创建时间")
+	@ApiModelProperty(required=false,value="")
 	private Date createTime;
+	/**
+	 * 
+	 */
+	@ApiModelProperty(required=false,value="")
+	private Date phoneGetTime;
 
 }

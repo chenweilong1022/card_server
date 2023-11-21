@@ -73,6 +73,11 @@ public class CdProjectVO implements Serializable {
 	 */
 	@ApiModelProperty(required=false,value="创建时间")
 	private Date createTime;
+	/**
+	 *
+	 */
+	@ApiModelProperty(required=false,value="")
+	private Integer itemId;
 
 	public String getAuditStatusStr() {
 		return EnumUtil.queryValueByKey(this.auditStatus, AuditStatus.values());
