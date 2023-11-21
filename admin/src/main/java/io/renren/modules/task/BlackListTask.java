@@ -66,7 +66,7 @@ public class BlackListTask {
             }
             DateTime dateTime = DateUtil.offsetMinute(cdCardLockEntity.getPhoneGetTime(), 2);
             DateTime now = DateUtil.date();
-            if (now.getTime() > dateTime.getTime()) {
+            if (now.toJdkDate().getTime()> dateTime.toJdkDate().getTime()) {
                 ids.add(cdCardLockEntity.getId());
             }
         }
