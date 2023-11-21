@@ -380,9 +380,9 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
                 SysConfigEntity config = new SysConfigEntity();
                 config.setId(one.getId());
                 config.setType(2);
-                config.setProjectId(one.getProjectId());
-                config.setPhonePre(one.getPhonePre());
-                config.setUserId(one.getUserId());
+                config.setProjectId(bean.getProjectId());
+                config.setPhonePre(bean.getPhonePre());
+                config.setUserId(bean.getUserId());
                 sysConfigService.update(config);
             }
         }
