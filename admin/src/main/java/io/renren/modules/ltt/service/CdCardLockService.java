@@ -97,7 +97,7 @@ public interface CdCardLockService extends IService<CdCardLockEntity> {
      * @param cdUserEntity
      * @return
      */
-    boolean uploadSms(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity) throws IOException;
+    boolean uploadSms(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity);
 
     TaskDto deviceTaskGet(CdCardLockDTO cdCardLock);
 }

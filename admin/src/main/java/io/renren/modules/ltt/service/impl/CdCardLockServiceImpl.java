@@ -284,7 +284,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean uploadSms(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity) throws IOException {
+    public boolean uploadSms(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity) {
         //获取当前的设备
         CdCardLockEntity cdCardLockEntity = this.getOne(new QueryWrapper<CdCardLockEntity>().lambda()
                 .eq(CdCardLockEntity::getDeviceId, cdCardLock.getDeviceId())
@@ -325,7 +325,11 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
                 List<PhoneList> phoneListsRemove = new ArrayList<>();
                 PhoneList phoneListRemove = new PhoneList("khm",cdCardLockEntity.getPhone().replace(phonePre,""));
                 phoneListsRemove.add(phoneListRemove);
-                extracted(phoneListsRemove,"PhoneDeleteBatch");
+                try{
+                    extracted(phoneListsRemove,"PhoneDeleteBatch");
+                }catch (Exception e) {
+
+                }
 
                 CdCardLockDTO cdCardLockDTO = new CdCardLockDTO();
                 cdCardLockDTO.setProjectId(projectId);
@@ -336,7 +340,11 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
                 List<PhoneList> phoneLists = new ArrayList<>();
                 PhoneList phoneList = new PhoneList("khm",mobile.getPhone().replace(phonePre,""));
                 phoneLists.add(phoneList);
-                extracted(phoneLists,"");
+                try{
+                    extracted(phoneLists,"");
+                }catch (Exception e) {
+
+                }
             }
         }
         return save;
