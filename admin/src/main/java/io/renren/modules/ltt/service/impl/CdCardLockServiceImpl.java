@@ -230,6 +230,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
         cdCardLockEntity.setCode(null);
         cdCardLockEntity.setLock(Lock.NO.getKey());
         cdCardLockEntity.setPhone(null);
+        cdCardLockEntity.setPhoneGetTime(null);
         cdCardLockEntity.setIccid(null);
         cdCardLockEntity.setDeleteFlag(DeleteFlag.NO.getKey());
         cdCardLockEntity.setCreateTime(DateUtil.date());

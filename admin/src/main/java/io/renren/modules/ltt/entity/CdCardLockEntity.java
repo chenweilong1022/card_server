@@ -84,5 +84,6 @@ public class CdCardLockEntity implements Serializable {
 	 *
 	 */
 	@ApiModelProperty(required=false,value="")
+	@TableField(updateStrategy = FieldStrategy.IGNORED)
 	private Date phoneGetTime;
 }
