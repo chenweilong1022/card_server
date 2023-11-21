@@ -38,10 +38,6 @@ public class AppCdCardController extends PageParam implements Serializable {
     @Autowired
     private CdCardService cdCardService;
 
-    @Resource(name = "caffeineCacheIntegerCode")
-    private Cache<String, Integer> caffeineCacheIntegerCode;
-
-
     /**
      * 獲取device所有的card
      */
@@ -52,18 +48,6 @@ public class AppCdCardController extends PageParam implements Serializable {
         );
         return R.data(list);
     }
-
-
-    /**
-     * 保存
-     */
-    @RequestMapping("/setCacheUserId")
-    public R uploadCard(Integer userId,Integer projectId){
-        caffeineCacheIntegerCode.put("userId",userId);
-        caffeineCacheIntegerCode.put("projectId",projectId);
-        return R.ok();
-    }
-
 
     /**
      * 保存

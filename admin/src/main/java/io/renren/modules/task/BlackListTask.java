@@ -6,6 +6,7 @@ import cn.hutool.http.HttpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.benmanes.caffeine.cache.Cache;
+import io.renren.common.utils.ConfigConstant;
 import io.renren.modules.ltt.dto.CdCardLockDTO;
 import io.renren.modules.ltt.entity.CdCardLockEntity;
 import io.renren.modules.ltt.entity.CdUserEntity;
@@ -14,6 +15,7 @@ import io.renren.modules.ltt.firefox.GetWaitPhoneList;
 import io.renren.modules.ltt.firefox.GetWaitPhoneListDaum;
 import io.renren.modules.ltt.service.CdCardLockService;
 import io.renren.modules.ltt.service.CdUserService;
+import io.renren.modules.sys.entity.ProjectWorkEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -40,18 +42,19 @@ public class BlackListTask {
     private GetWaitPhoneList prePhoneDeleteAllResponse;
     private GetWaitPhoneList currentPhoneDeleteAllResponse;
 
-    @Resource(name = "caffeineCacheIntegerCode")
-    private Cache<String, Integer> caffeineCacheIntegerCode;
     @Autowired
     private CdCardLockService cdCardLockService;
     @Autowired
     private CdUserService cdUserService;
+    @Resource(name = "caffeineCacheProjectWorkEntity")
+    private Cache<String, ProjectWorkEntity> caffeineCacheProjectWorkEntity;
 
-    @Scheduled(fixedDelay = 5000)
+//    @Scheduled(fixedDelay = 5000)
     public void sayHello() {
 
-        Integer userId = caffeineCacheIntegerCode.getIfPresent("userId");
-        Integer projectId = caffeineCacheIntegerCode.getIfPresent("projectId");
+        ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(ConfigConstant.PROJECT_WORK_KEY);
+
+        Integer userId = projectWorkEntity.getUserId();
 
         try {
             String response = HttpUtil.get("https://www.firefox.fun/ksapi.ashx?key=76082377BDE44F99&act=GetWaitPhoneList");

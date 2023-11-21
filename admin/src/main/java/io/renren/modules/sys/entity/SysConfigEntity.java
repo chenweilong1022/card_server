@@ -16,10 +16,9 @@
 
 package io.renren.modules.sys.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
@@ -32,16 +31,29 @@ import java.io.Serializable;
  * @date 2016年12月4日 下午6:43:36
  */
 @TableName("sys_config")
+@Data
 public class SysConfigEntity extends AbstractEntity implements Serializable {
 	@TableId(type = IdType.AUTO)
 	private Long id;
-	@NotBlank(message="参数名不能为空")
+
 	private String paramKey;
-	@NotBlank(message="参数值不能为空")
+
 	private String paramValue;
-	@NotBlank(message="备注不能为空")
+
 	private String remark;
 	private Integer status;
+
+	@TableField(exist = false)
+	private Integer userId;
+
+	@TableField(exist = false)
+	private Integer projectId;
+
+	@TableField(exist = false)
+	private Integer type;
+
+	@TableField(exist = false)
+	private String phonePre;
 
 	public Long getId() {
 		return id;

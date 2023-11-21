@@ -16,14 +16,18 @@
 
 package io.renren.modules.sys.service.impl;
 
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.benmanes.caffeine.cache.Cache;
 import com.google.gson.Gson;
 import io.renren.common.exception.RRException;
+import io.renren.common.utils.ConfigConstant;
 import io.renren.common.utils.PageUtils;
 import io.renren.common.utils.Query;
 import io.renren.modules.sys.dao.SysConfigDao;
+import io.renren.modules.sys.entity.ProjectWorkEntity;
 import io.renren.modules.sys.entity.SysConfigEntity;
 import io.renren.modules.sys.redis.SysConfigRedis;
 import io.renren.modules.sys.service.SysConfigService;
@@ -32,6 +36,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -39,6 +44,8 @@ import java.util.Map;
 public class SysConfigServiceImpl extends ServiceImpl<SysConfigDao, SysConfigEntity> implements SysConfigService {
 	@Autowired
 	private SysConfigRedis sysConfigRedis;
+	@Resource(name = "caffeineCacheProjectWorkEntity")
+	private Cache<String, ProjectWorkEntity> caffeineCacheProjectWorkEntity;
 
 	@Override
 	public PageUtils queryPage(SysConfigEntity sysConfigEntity) {
@@ -46,25 +53,42 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigDao, SysConfigEnt
 				new Query<SysConfigEntity>(sysConfigEntity).getPage(),
 				new QueryWrapper<SysConfigEntity>().lambda()
 					.like(StringUtils.isNotBlank(sysConfigEntity.getParamKey()),SysConfigEntity::getParamKey, sysConfigEntity.getParamKey())
-					.eq(SysConfigEntity::getStatus, 1)
 		);
 
 		return new PageUtils(page);
 	}
-	
+
 	@Override
 	public boolean save(SysConfigEntity config) {
+//		获取类型
+		if (2 == config.getType()) {
+			ProjectWorkEntity projectWorkEntity = new ProjectWorkEntity();
+			projectWorkEntity.setProjectId(config.getProjectId());
+			projectWorkEntity.setPhonePre(config.getPhonePre());
+			projectWorkEntity.setUserId(config.getUserId());
+			String jsonStr = JSONUtil.toJsonStr(projectWorkEntity);
+			config.setParamKey(ConfigConstant.PROJECT_WORK_KEY);
+			config.setParamValue(jsonStr);
+			caffeineCacheProjectWorkEntity.put(ConfigConstant.PROJECT_WORK_KEY,projectWorkEntity);
+		}
 		baseMapper.insert(config);
-		sysConfigRedis.saveOrUpdate(config);
 		return false;
 	}
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public void update(SysConfigEntity config) {
-//		this.updateAllColumnById(config);
+		if (2 == config.getType()) {
+			ProjectWorkEntity projectWorkEntity = new ProjectWorkEntity();
+			projectWorkEntity.setProjectId(config.getProjectId());
+			projectWorkEntity.setPhonePre(config.getPhonePre());
+			projectWorkEntity.setUserId(config.getUserId());
+			String jsonStr = JSONUtil.toJsonStr(projectWorkEntity);
+			config.setParamKey(ConfigConstant.PROJECT_WORK_KEY);
+			config.setParamValue(jsonStr);
+			caffeineCacheProjectWorkEntity.put(ConfigConstant.PROJECT_WORK_KEY,projectWorkEntity);
+		}
 		this.updateById(config);
-		sysConfigRedis.saveOrUpdate(config);
 	}
 
 	@Override
@@ -95,7 +119,7 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigDao, SysConfigEnt
 
 		return config == null ? null : config.getParamValue();
 	}
-	
+
 	@Override
 	public <T> T getConfigObject(String key, Class<T> clazz) {
 		String value = getValue(key);

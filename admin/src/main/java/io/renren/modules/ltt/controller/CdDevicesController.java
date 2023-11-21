@@ -10,6 +10,7 @@ import cn.hutool.http.HttpUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.benmanes.caffeine.cache.Cache;
+import io.renren.common.utils.ConfigConstant;
 import io.renren.modules.ltt.dto.CdCardLockDTO;
 import io.renren.modules.ltt.dto.CdDevicesUpdateAppDTO;
 import io.renren.modules.ltt.entity.CdCardLockEntity;
@@ -18,6 +19,7 @@ import io.renren.modules.ltt.firefox.PhoneAddBatch;
 import io.renren.modules.ltt.firefox.Root;
 import io.renren.modules.ltt.service.CdCardLockService;
 import io.renren.modules.ltt.service.CdUserService;
+import io.renren.modules.sys.entity.ProjectWorkEntity;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,8 +50,7 @@ public class CdDevicesController {
     private CdDevicesService cdDevicesService;
     @Autowired
     private CdCardLockService cdCardLockService;
-    @Resource(name = "caffeineCacheIntegerCode")
-    private Cache<String, Integer> caffeineCacheIntegerCode;
+
     @Autowired
     private CdUserService cdUserService;
 
@@ -101,14 +102,18 @@ public class CdDevicesController {
         return R.data(cdDevicesService.initCard3(ids));
     }
 
+
+    @Resource(name = "caffeineCacheProjectWorkEntity")
+    private Cache<String, ProjectWorkEntity> caffeineCacheProjectWorkEntity;
+
     /**
      * 手机号删除
      */
     @RequestMapping("/phoneDeleteAll")
     @RequiresPermissions("ltt:cddevices:list")
     public R phoneDeleteAll(@RequestBody Integer[] ids) throws JsonProcessingException {
-        Integer userId = caffeineCacheIntegerCode.getIfPresent("userId");
-        Integer projectId = caffeineCacheIntegerCode.getIfPresent("projectId");
+        ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(ConfigConstant.PROJECT_WORK_KEY);
+        Integer userId = projectWorkEntity.getUserId();
         Root phoneAddBatch = new Root("PhoneDeleteAll");
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(phoneAddBatch);
@@ -119,7 +124,7 @@ public class CdDevicesController {
         for (CdCardLockEntity cdCardLockEntity : list) {
             if (ObjectUtil.isNotNull(cdCardLockEntity) && StrUtil.isNotEmpty(cdCardLockEntity.getIccid())) {
                 CdCardLockDTO cdCardLockDTO = new CdCardLockDTO();
-                cdCardLockDTO.setProjectId(projectId);
+                cdCardLockDTO.setProjectId(cdCardLockEntity.getProjectId());
                 cdCardLockDTO.setIccid(cdCardLockEntity.getIccid());
                 boolean b = cdCardLockService.releaseMobile(cdCardLockDTO, userEntity);
             }

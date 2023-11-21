@@ -5,8 +5,10 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
+import cn.hutool.json.JSONUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.benmanes.caffeine.cache.Cache;
+import io.renren.common.utils.ConfigConstant;
 import io.renren.common.validator.Assert;
 import io.renren.datasources.annotation.Game;
 import io.renren.modules.app.dto.TaskDto;
@@ -21,6 +23,9 @@ import io.renren.modules.ltt.vo.CdProjectVO;
 import io.renren.modules.netty.codec.Invocation;
 import io.renren.modules.netty.message.changecard.ChangeCardResponse;
 import io.renren.modules.netty.server.NettyChannelManager;
+import io.renren.modules.sys.entity.ProjectWorkEntity;
+import io.renren.modules.sys.entity.SysConfigEntity;
+import io.renren.modules.sys.service.SysConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -53,12 +58,16 @@ import java.util.stream.Collectors;
 public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLockEntity> implements CdCardLockService {
 
 
+    @Resource(name = "caffeineCacheProjectWorkEntity")
+    private Cache<String, ProjectWorkEntity> caffeineCacheProjectWorkEntity;
     @Autowired
     private CdProjectService cdProjectService;
     @Autowired
     private CdDevicesService cdDevicesService;
     @Autowired
     private CdCardService cdCardService;
+    @Autowired
+    private SysConfigService sysConfigService;
 
     @Autowired
     private CdProjectSmsRecordService cdProjectSmsRecordService;
@@ -70,9 +79,6 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
     private Cache<String, TaskDto> caffeineCacheCodeTaskDto;
     @Autowired
     private CdUserService cdUserService;
-
-    @Resource(name = "caffeineCacheIntegerCode")
-    private Cache<String, Integer> caffeineCacheIntegerCode;
 
     String phonePre = "+855";
 
@@ -279,8 +285,10 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean uploadSms(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity) {
-        Integer userId = caffeineCacheIntegerCode.getIfPresent("userId");
-        Integer projectId = caffeineCacheIntegerCode.getIfPresent("projectId");
+        ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(ConfigConstant.PROJECT_WORK_KEY);
+
+        Integer userId = projectWorkEntity.getUserId();
+        Integer projectId = projectWorkEntity.getProjectId();
         //获取当前的设备
         CdCardLockEntity cdCardLockEntity = this.getOne(new QueryWrapper<CdCardLockEntity>().lambda()
                 .eq(CdCardLockEntity::getDeviceId, cdCardLock.getDeviceId())
@@ -356,14 +364,29 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
     @EventListener
     @Order(value = 9999)
     public void handlerApplicationReadyEvent(ApplicationReadyEvent event) {
-        caffeineCacheIntegerCode.put("userId",2);
-        caffeineCacheIntegerCode.put("projectId",7);
+        SysConfigEntity one = sysConfigService.getOne(new QueryWrapper<SysConfigEntity>().lambda()
+                .eq(SysConfigEntity::getParamKey,ConfigConstant.PROJECT_WORK_KEY)
+        );
+        if (ObjectUtil.isNull(one)) {
+            SysConfigEntity config = new SysConfigEntity();
+            ProjectWorkEntity projectWorkEntity = new ProjectWorkEntity();
+            projectWorkEntity.setProjectId(198);
+            projectWorkEntity.setPhonePre("+855");
+            projectWorkEntity.setUserId(2);
+            String jsonStr = JSONUtil.toJsonStr(projectWorkEntity);
+            config.setParamKey(ConfigConstant.PROJECT_WORK_KEY);
+            config.setParamValue(jsonStr);
+            caffeineCacheProjectWorkEntity.put(ConfigConstant.PROJECT_WORK_KEY,projectWorkEntity);
+            sysConfigService.save(config);
+        }
     }
 
 
     public void init3() throws IOException {
-        Integer userId = caffeineCacheIntegerCode.getIfPresent("userId");
-        Integer projectId = caffeineCacheIntegerCode.getIfPresent("projectId");
+        ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(ConfigConstant.PROJECT_WORK_KEY);
+
+        Integer userId = projectWorkEntity.getUserId();
+        Integer projectId = projectWorkEntity.getProjectId();
         //用户
         CdUserEntity userEntity = cdUserService.getById((Serializable) userId);
         //判断火狐狸上有几个用户

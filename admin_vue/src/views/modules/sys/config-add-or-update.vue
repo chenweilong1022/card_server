@@ -4,15 +4,41 @@
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-      <el-form-item label="参数名" prop="paramKey">
+
+      <el-form-item label="参数名">
+        <el-select v-model="type" placeholder="类型" clearable>
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="参数名" prop="paramKey" v-if="type === 1">
         <el-input v-model="dataForm.paramKey" placeholder="参数名"></el-input>
       </el-form-item>
-      <el-form-item label="参数值" prop="paramValue">
+      <el-form-item label="参数值" prop="paramValue"  v-if="type === 1">
         <el-input v-model="dataForm.paramValue" placeholder="参数值"></el-input>
       </el-form-item>
-      <el-form-item label="备注" prop="remark">
+      <el-form-item label="备注" prop="remark"  v-if="type === 1">
         <el-input v-model="dataForm.remark" placeholder="备注"></el-input>
       </el-form-item>
+
+      <el-form-item label="用户id" prop="userId" v-if="type === 2">
+        <el-input v-model="dataForm.userId" placeholder="参数名"></el-input>
+      </el-form-item>
+      <el-form-item label="项目id" prop="projectId"  v-if="type === 2">
+        <el-input v-model="dataForm.projectId" placeholder="参数值"></el-input>
+      </el-form-item>
+      <el-form-item label="手机号前缀" prop="phonePre"  v-if="type === 2">
+        <el-input v-model="dataForm.phonePre" placeholder="备注"></el-input>
+      </el-form-item>
+
+
+
+
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>
@@ -25,11 +51,25 @@
   export default {
     data () {
       return {
+        type: 2,
         visible: false,
+        options: [
+          {
+            value: 1,
+            label: '云存储'
+          },
+          {
+            value: 2,
+            label: '项目配置'
+          }
+        ],
         dataForm: {
           id: 0,
           paramKey: '',
           paramValue: '',
+          userId: '',
+          projectId: '',
+          phonePre: '',
           remark: ''
         },
         dataRule: {
@@ -58,6 +98,9 @@
                 this.dataForm.paramKey = data.config.paramKey
                 this.dataForm.paramValue = data.config.paramValue
                 this.dataForm.remark = data.config.remark
+                this.dataForm.userId = data.config.userId
+                this.dataForm.projectId = data.config.projectId
+                this.dataForm.phonePre = data.config.phonePre
               }
             })
           }
@@ -74,6 +117,10 @@
                 'id': this.dataForm.id || undefined,
                 'paramKey': this.dataForm.paramKey,
                 'paramValue': this.dataForm.paramValue,
+                'userId': this.dataForm.userId,
+                'projectId': this.dataForm.projectId,
+                'phonePre': this.dataForm.phonePre,
+                'type': this.type,
                 'remark': this.dataForm.remark
               })
             }).then(({data}) => {

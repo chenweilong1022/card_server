@@ -17,10 +17,14 @@
 package io.renren.modules.sys.controller;
 
 
+import cn.hutool.core.util.ObjectUtil;
+import com.github.benmanes.caffeine.cache.Cache;
 import io.renren.common.annotation.SysLog;
+import io.renren.common.utils.ConfigConstant;
 import io.renren.common.utils.PageUtils;
 import io.renren.common.utils.R;
 import io.renren.common.validator.ValidatorUtils;
+import io.renren.modules.sys.entity.ProjectWorkEntity;
 import io.renren.modules.sys.entity.SysConfigEntity;
 import io.renren.modules.sys.service.SysConfigService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -28,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.validation.Valid;
 
 /**
@@ -55,6 +60,8 @@ public class SysConfigController extends AbstractController {
 		return R.ok().put("page", page);
 	}
 
+	@Resource(name = "caffeineCacheProjectWorkEntity")
+	private Cache<String, ProjectWorkEntity> caffeineCacheProjectWorkEntity;
 
 	/**
 	 * 配置信息
@@ -63,7 +70,12 @@ public class SysConfigController extends AbstractController {
 	@RequiresPermissions("sys:config:info")
 	public R info(@PathVariable("id") Long id){
 		SysConfigEntity config = sysConfigService.getById(id);
-
+		ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(ConfigConstant.PROJECT_WORK_KEY);
+		if (ObjectUtil.isNotNull(projectWorkEntity)) {
+			config.setProjectId(projectWorkEntity.getProjectId());;
+			config.setPhonePre(projectWorkEntity.getPhonePre());
+			config.setUserId(projectWorkEntity.getUserId());
+		}
 		return R.ok().put("config", config);
 	}
 
