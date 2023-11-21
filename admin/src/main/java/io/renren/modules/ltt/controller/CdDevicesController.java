@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -115,10 +117,12 @@ public class CdDevicesController {
         List<CdCardLockEntity> list = cdCardLockService.list();
         CdUserEntity userEntity = cdUserService.getById((Serializable) userId);
         for (CdCardLockEntity cdCardLockEntity : list) {
-            CdCardLockDTO cdCardLockDTO = new CdCardLockDTO();
-            cdCardLockDTO.setProjectId(projectId);
-            cdCardLockDTO.setIccid(cdCardLockEntity.getIccid());
-            boolean b = cdCardLockService.releaseMobile(cdCardLockDTO, userEntity);
+            if (ObjectUtil.isNotNull(cdCardLockEntity) && StrUtil.isNotEmpty(cdCardLockEntity.getIccid())) {
+                CdCardLockDTO cdCardLockDTO = new CdCardLockDTO();
+                cdCardLockDTO.setProjectId(projectId);
+                cdCardLockDTO.setIccid(cdCardLockEntity.getIccid());
+                boolean b = cdCardLockService.releaseMobile(cdCardLockDTO, userEntity);
+            }
         }
         return R.data(response);
     }
