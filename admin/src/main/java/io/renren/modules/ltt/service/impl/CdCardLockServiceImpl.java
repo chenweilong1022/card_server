@@ -379,8 +379,8 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
 
 
     public void init3() throws IOException {
-        ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(ConfigConstant.PROJECT_WORK_KEY);
 
+        ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(ConfigConstant.PROJECT_WORK_KEY);
         Integer userId = projectWorkEntity.getUserId();
         Integer projectId = projectWorkEntity.getProjectId();
         //用户
@@ -392,14 +392,14 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
             List<PhoneList> phoneLists = new ArrayList<PhoneList>();
             //获取所有的手机
             for (CdCardLockEntity cdCardLockEntity : list) {
-                if (ObjectUtil.isNull(userEntity.getId())) {
+                if (ObjectUtil.isNull(userEntity)) {
                     continue;
                 }
                 CdCardLockDTO cdCardLockDTO = new CdCardLockDTO();
                 cdCardLockDTO.setProjectId(projectId);
                 CdCardLockVO mobile = getMobile(cdCardLockDTO, userEntity, cdCardLockEntity.getDeviceId());
                 if (ObjectUtil.isNotNull(mobile)) {
-                    PhoneList phoneList = new PhoneList("khm",mobile.getPhone().replace(phonePre,""));
+                    PhoneList phoneList = new PhoneList("khm",mobile.getPhone().replace(projectWorkEntity.getPhonePre(),""));
                     phoneLists.add(phoneList);
                 }
             }
@@ -409,7 +409,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
         }
     }
 
-    private void extracted(List<PhoneList> phoneLists,String act){
+    public void extracted(List<PhoneList> phoneLists,String act){
         try{
             if (StrUtil.isEmpty(act)) {
                 act = "PhoneAddBatch";

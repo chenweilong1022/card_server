@@ -34,6 +34,7 @@
         <el-button type="primary" @click="cddevicesUpdateAppCardHandle()" :disabled="dataListSelections.length <= 0">app更新</el-button>
         <el-button type="primary" @click="initHandle()" :disabled="dataListSelections.length <= 0">批量初始化</el-button>
         <el-button type="primary" @click="initHandle2()" :disabled="dataListSelections.length <= 0">批量初始化2</el-button>
+        <el-button type="primary" @click="withBlack()" :disabled="dataListSelections.length <= 0">火狐狸拉黑</el-button>
         <el-button type="primary" @click="initHandle3()" :disabled="dataListSelections.length <= 0">火狐狸初始化</el-button>
         <el-button type="primary" @click="phoneDeleteAllHandle3()" :disabled="dataListSelections.length <= 0">火狐狸清空手机号</el-button>
         <el-button type="primary" @click="rebootHandler()" :disabled="dataListSelections.length <= 0">批量重启</el-button>
@@ -290,6 +291,35 @@ export default {
       }).then(() => {
         this.$http({
           url: this.$http.adornUrl('/ltt/cddevices/initCard3'),
+          method: 'post',
+          data: this.$http.adornData(ids, false)
+        }).then(({data}) => {
+          if (data && data.code === 0) {
+            this.$message({
+              message: '操作成功',
+              type: 'success',
+              duration: 1500,
+              onClose: () => {
+                this.getDataList()
+              }
+            })
+          } else {
+            this.$message.error(data.msg)
+          }
+        })
+      })
+    },
+    withBlack (id) {
+      var ids = id ? [id] : this.dataListSelections.map(item => {
+        return item.id
+      })
+      this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '初始化' : '批量初始化'}]操作?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$http({
+          url: this.$http.adornUrl('/ltt/cddevices/withBlack'),
           method: 'post',
           data: this.$http.adornData(ids, false)
         }).then(({data}) => {

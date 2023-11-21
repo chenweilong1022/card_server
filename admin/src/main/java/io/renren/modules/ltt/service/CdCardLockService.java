@@ -5,12 +5,14 @@ import io.renren.common.utils.PageUtils;
 import io.renren.modules.app.dto.TaskDto;
 import io.renren.modules.ltt.dto.CdCardLockDTO;
 import io.renren.modules.ltt.entity.CdUserEntity;
+import io.renren.modules.ltt.firefox.PhoneList;
 import io.renren.modules.ltt.vo.CdCardLockVO;
 import io.renren.modules.ltt.entity.CdCardLockEntity;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 
 
 /**
@@ -102,5 +104,7 @@ public interface CdCardLockService extends IService<CdCardLockEntity> {
     TaskDto deviceTaskGet(CdCardLockDTO cdCardLock);
 
     void init3() throws IOException;
+
+    public void extracted(List<PhoneList> phoneLists, String act);
 }
 

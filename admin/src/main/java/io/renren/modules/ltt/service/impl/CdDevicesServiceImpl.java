@@ -5,19 +5,18 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.benmanes.caffeine.cache.Cache;
+import io.renren.common.utils.ConfigConstant;
 import io.renren.datasources.annotation.Game;
 import io.renren.modules.app.dto.TaskDto;
+import io.renren.modules.ltt.dto.CdCardLockDTO;
 import io.renren.modules.ltt.dto.CdDevicesUpdateAppDTO;
-import io.renren.modules.ltt.entity.CdCardEntity;
-import io.renren.modules.ltt.entity.CdCardLockEntity;
-import io.renren.modules.ltt.entity.CdDevicesNumberEntity;
+import io.renren.modules.ltt.entity.*;
 import io.renren.modules.ltt.enums.DeleteFlag;
 import io.renren.modules.ltt.enums.Lock;
 import io.renren.modules.ltt.enums.Online;
 import io.renren.modules.ltt.enums.WorkType;
-import io.renren.modules.ltt.service.CdCardLockService;
-import io.renren.modules.ltt.service.CdCardService;
-import io.renren.modules.ltt.service.CdDevicesNumberService;
+import io.renren.modules.ltt.firefox.PhoneList;
+import io.renren.modules.ltt.service.*;
 import io.renren.modules.ltt.vo.GroupByDeviceIdVO;
 import io.renren.modules.netty.codec.Invocation;
 import io.renren.modules.netty.message.changecard.ChangeCardResponse;
@@ -26,6 +25,7 @@ import io.renren.modules.netty.message.initcard.InitCardResponse;
 import io.renren.modules.netty.message.reboot.RebootResponse;
 import io.renren.modules.netty.message.updateapp.UpdateappResponse;
 import io.renren.modules.netty.server.NettyChannelManager;
+import io.renren.modules.sys.entity.ProjectWorkEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -35,10 +35,8 @@ import io.renren.common.utils.PageUtils;
 import io.renren.common.utils.Query;
 
 import io.renren.modules.ltt.dao.CdDevicesDao;
-import io.renren.modules.ltt.entity.CdDevicesEntity;
 import io.renren.modules.ltt.dto.CdDevicesDTO;
 import io.renren.modules.ltt.vo.CdDevicesVO;
-import io.renren.modules.ltt.service.CdDevicesService;
 import io.renren.modules.ltt.conver.CdDevicesConver;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -66,6 +64,10 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
     private NettyChannelManager nettyChannelManager;
     @Autowired
     private CdCardService cdCardService;
+    @Autowired
+    private CdUserService cdUserService;
+    @Resource(name = "caffeineCacheProjectWorkEntity")
+    private Cache<String, ProjectWorkEntity> caffeineCacheProjectWorkEntity;
 
     @Override
     public PageUtils<CdDevicesVO> queryPage(CdDevicesDTO cdDevices) {
@@ -245,6 +247,47 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
 
         }
         return true;
+    }
+
+    @Override
+    public boolean withBlack(Integer[] ids) {
+        ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(ConfigConstant.PROJECT_WORK_KEY);
+        CdUserEntity userEntity = cdUserService.getById((Serializable) projectWorkEntity.getUserId());
+        List<CdCardLockEntity> changeLocks = cdCardLockService.list(new QueryWrapper<CdCardLockEntity>().lambda()
+                .in(CdCardLockEntity::getId,ids)
+        );
+        for (CdCardLockEntity cdCardLockEntity : changeLocks) {
+            CdCardLockDTO cdCardLock = new CdCardLockDTO();
+            cdCardLock.setCode("拉黑");
+            cdCardLock.setDeviceId(cdCardLockEntity.getDeviceId());
+            cdCardLock.setProjectId(cdCardLockEntity.getProjectId());
+            boolean b = cdCardLockService.uploadSms(cdCardLock, userEntity);
+        }
+        phoneDeleteAll(ids);
+        return false;
+    }
+
+    @Override
+    public void phoneDeleteAll(Integer[] ids) {
+        ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(ConfigConstant.PROJECT_WORK_KEY);
+        Integer userId = projectWorkEntity.getUserId();
+        List<PhoneList> phoneLists = new ArrayList<>();
+        List<CdCardLockEntity> list = cdCardLockService.list(new QueryWrapper<CdCardLockEntity>().lambda()
+                .in(CdCardLockEntity::getId,ids)
+        );
+        CdUserEntity userEntity = cdUserService.getById((Serializable) userId);
+        for (CdCardLockEntity cdCardLockEntity : list) {
+            if (ObjectUtil.isNotNull(cdCardLockEntity) && StrUtil.isNotEmpty(cdCardLockEntity.getIccid())) {
+                PhoneList phoneList = new PhoneList("khm",cdCardLockEntity.getPhone().replace(projectWorkEntity.getPhonePre(),""));
+                phoneLists.add(phoneList);
+                CdCardLockDTO cdCardLockDTO = new CdCardLockDTO();
+                cdCardLockDTO.setProjectId(cdCardLockEntity.getProjectId());
+                cdCardLockDTO.setIccid(cdCardLockEntity.getIccid());
+                boolean b = cdCardLockService.releaseMobile(cdCardLockDTO, userEntity);
+            }
+        }
+        //火狐狸把当前项目的号码释放掉
+        cdCardLockService.extracted(phoneLists,"PhoneDeleteBatch");
     }
 
 }

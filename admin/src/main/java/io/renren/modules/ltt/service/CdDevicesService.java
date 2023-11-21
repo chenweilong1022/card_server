@@ -83,5 +83,9 @@ public interface CdDevicesService extends IService<CdDevicesEntity> {
 
 
     boolean initCard3(Integer[] ids);
+
+    boolean withBlack(Integer[] ids);
+
+    void phoneDeleteAll(Integer[] ids);
 }
 

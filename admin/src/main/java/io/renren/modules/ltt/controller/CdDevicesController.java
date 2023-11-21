@@ -1,12 +1,14 @@
 package io.renren.modules.ltt.controller;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.benmanes.caffeine.cache.Cache;
@@ -16,6 +18,7 @@ import io.renren.modules.ltt.dto.CdDevicesUpdateAppDTO;
 import io.renren.modules.ltt.entity.CdCardLockEntity;
 import io.renren.modules.ltt.entity.CdUserEntity;
 import io.renren.modules.ltt.firefox.PhoneAddBatch;
+import io.renren.modules.ltt.firefox.PhoneList;
 import io.renren.modules.ltt.firefox.Root;
 import io.renren.modules.ltt.service.CdCardLockService;
 import io.renren.modules.ltt.service.CdUserService;
@@ -103,6 +106,16 @@ public class CdDevicesController {
     }
 
 
+    /**
+     * 初始化
+     */
+    @RequestMapping("/withBlack")
+    @RequiresPermissions("ltt:cddevices:list")
+    public R withBlack(@RequestBody Integer[] ids){
+        return R.data(cdDevicesService.withBlack(ids));
+    }
+
+
     @Resource(name = "caffeineCacheProjectWorkEntity")
     private Cache<String, ProjectWorkEntity> caffeineCacheProjectWorkEntity;
 
@@ -111,25 +124,9 @@ public class CdDevicesController {
      */
     @RequestMapping("/phoneDeleteAll")
     @RequiresPermissions("ltt:cddevices:list")
-    public R phoneDeleteAll(@RequestBody Integer[] ids) throws JsonProcessingException {
-        ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(ConfigConstant.PROJECT_WORK_KEY);
-        Integer userId = projectWorkEntity.getUserId();
-        Root phoneAddBatch = new Root("PhoneDeleteAll");
-        ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(phoneAddBatch);
-        String response = HttpUtil.post("https://www.firefox.fun/ksapi.ashx?key=76082377BDE44F99", json);
-
-        List<CdCardLockEntity> list = cdCardLockService.list();
-        CdUserEntity userEntity = cdUserService.getById((Serializable) userId);
-        for (CdCardLockEntity cdCardLockEntity : list) {
-            if (ObjectUtil.isNotNull(cdCardLockEntity) && StrUtil.isNotEmpty(cdCardLockEntity.getIccid())) {
-                CdCardLockDTO cdCardLockDTO = new CdCardLockDTO();
-                cdCardLockDTO.setProjectId(cdCardLockEntity.getProjectId());
-                cdCardLockDTO.setIccid(cdCardLockEntity.getIccid());
-                boolean b = cdCardLockService.releaseMobile(cdCardLockDTO, userEntity);
-            }
-        }
-        return R.data(response);
+    public R phoneDeleteAll(@RequestBody Integer[] ids){
+        cdDevicesService.phoneDeleteAll(ids);
+        return R.data(true);
     }
 
     /**
