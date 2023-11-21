@@ -386,11 +386,14 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
                 CdCardLockDTO cdCardLockDTO = new CdCardLockDTO();
                 cdCardLockDTO.setProjectId(projectId);
                 CdCardLockVO mobile = getMobile(cdCardLockDTO, userEntity, cdCardLockEntity.getDeviceId());
-                PhoneList phoneList = new PhoneList("khm",mobile.getPhone().replace(phonePre,""));
-                phoneLists.add(phoneList);
+                if (ObjectUtil.isNotNull(mobile)) {
+                    PhoneList phoneList = new PhoneList("khm",mobile.getPhone().replace(phonePre,""));
+                    phoneLists.add(phoneList);
+                }
             }
-
-            extracted(phoneLists,"");
+            if (CollUtil.isNotEmpty(phoneLists)) {
+                extracted(phoneLists,"");
+            }
         }
     }
 
