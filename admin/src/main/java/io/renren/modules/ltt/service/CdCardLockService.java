@@ -100,5 +100,7 @@ public interface CdCardLockService extends IService<CdCardLockEntity> {
     boolean uploadSms(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity);
 
     TaskDto deviceTaskGet(CdCardLockDTO cdCardLock);
+
+    void init3() throws IOException;
 }
 

@@ -367,10 +367,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
 
 
 
-
-    @EventListener
-    @Order(value = 9999)
-    public void handlerApplicationReadyEvent(ApplicationReadyEvent event) throws IOException {
+    public void init3() throws IOException {
         //用户
         CdUserEntity userEntity = cdUserService.getById((Serializable) userId);
         //判断火狐狸上有几个用户

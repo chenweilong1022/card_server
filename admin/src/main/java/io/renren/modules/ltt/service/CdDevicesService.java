@@ -82,5 +82,6 @@ public interface CdDevicesService extends IService<CdDevicesEntity> {
     boolean reboot(Integer[] ids);
 
 
+    boolean initCard3(Integer[] ids);
 }
 

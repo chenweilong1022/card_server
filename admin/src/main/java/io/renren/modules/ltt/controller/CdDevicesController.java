@@ -73,6 +73,15 @@ public class CdDevicesController {
     /**
      * 初始化
      */
+    @RequestMapping("/initCard3")
+    @RequiresPermissions("ltt:cddevices:list")
+    public R initCard3(@RequestBody Integer[] ids){
+        return R.data(cdDevicesService.initCard3(ids));
+    }
+
+    /**
+     * 初始化
+     */
     @RequestMapping("/initCard2")
     @RequiresPermissions("ltt:cddevices:list")
     public R initCard2(@RequestBody Integer[] ids){
