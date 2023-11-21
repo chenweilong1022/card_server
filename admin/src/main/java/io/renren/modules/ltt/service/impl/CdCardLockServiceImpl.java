@@ -298,12 +298,11 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
         String key = String.format("code_%s_%s", cdCardLockEntity.getIccid(), cdCardLockEntity.getProjectId());
 
         CdProjectVO cdProjectVO = cdProjectService.getById(cdCardLockEntity.getProjectId());
-
         //保存短信的记录
         CdProjectSmsRecordEntity cdProjectSmsRecordEntity = new CdProjectSmsRecordEntity();
         cdProjectSmsRecordEntity.setKey(key);
         cdProjectSmsRecordEntity.setCode(cdCardLock.getCode());
-        if (cdCardLock.getCode().contains(cdProjectVO.getName()) || cdCardLock.getCode().contains("拉黑")) {
+        if (ObjectUtil.isNotNull(cdProjectVO) && cdCardLock.getCode().contains(cdProjectVO.getName()) || cdCardLock.getCode().contains("拉黑")) {
             cdProjectSmsRecordEntity.setUserId(cdCardLockEntity.getUserId());
             cdProjectSmsRecordEntity.setProjectId(cdCardLockEntity.getProjectId());
         }
@@ -315,14 +314,14 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
 
         boolean save = cdProjectSmsRecordService.save(cdProjectSmsRecordEntity);
 
-        if (cdCardLock.getCode().contains(cdProjectVO.getName()) || cdCardLock.getCode().contains("拉黑")) {
+        if (ObjectUtil.isNotNull(cdProjectVO) && cdCardLock.getCode().contains(cdProjectVO.getName()) || cdCardLock.getCode().contains("拉黑")) {
             cdCardLockEntity.setId(cdCardLockEntity.getId());
             cdCardLockEntity.setCode(cdCardLock.getCode());
             this.updateById(cdCardLockEntity);
         }
 
         //上传短信
-        if (cdCardLock.getCode().contains(cdProjectVO.getName()) || cdCardLock.getCode().contains("拉黑")) {
+        if (ObjectUtil.isNotNull(cdProjectVO) && cdCardLock.getCode().contains(cdProjectVO.getName()) || cdCardLock.getCode().contains("拉黑")) {
             String deviceId = cdCardLockEntity.getDeviceId();
             if (userId.equals(cdCardLockEntity.getUserId()) && projectId.equals(cdCardLockEntity.getProjectId())) {
                 if (cdCardLock.getCode().contains(cdProjectVO.getName())){
