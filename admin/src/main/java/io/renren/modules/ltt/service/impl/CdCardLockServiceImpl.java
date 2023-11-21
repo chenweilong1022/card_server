@@ -6,6 +6,9 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HttpUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.benmanes.caffeine.cache.Cache;
 import io.renren.common.validator.Assert;
 import io.renren.datasources.annotation.Game;
@@ -15,12 +18,21 @@ import io.renren.modules.ltt.enums.DeleteFlag;
 import io.renren.modules.ltt.enums.Lock;
 import io.renren.modules.ltt.enums.Online;
 import io.renren.modules.ltt.enums.WorkType;
+import io.renren.modules.ltt.firefox.PhoneAddBatch;
+import io.renren.modules.ltt.firefox.PhoneDeleteAllResponse;
+import io.renren.modules.ltt.firefox.PhoneList;
+import io.renren.modules.ltt.firefox.Root;
 import io.renren.modules.ltt.service.*;
 import io.renren.modules.ltt.vo.CdProjectVO;
+import io.renren.modules.ltt.vo.CdUserVO;
 import io.renren.modules.netty.codec.Invocation;
 import io.renren.modules.netty.message.changecard.ChangeCardResponse;
 import io.renren.modules.netty.server.NettyChannelManager;
+import jodd.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -35,8 +47,10 @@ import io.renren.modules.ltt.conver.CdCardLockConver;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -65,6 +79,9 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
     @Autowired
     private CdUserService cdUserService;
 
+    Integer userId = 2;
+    Integer projectId = 7;
+    String phonePre = "+855";
 
     @Override
     public PageUtils<CdCardLockVO> queryPage(CdCardLockDTO cdCardLock) {
@@ -103,7 +120,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
     }
 
     @Override
-    public CdCardLockVO getMobile(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity) {
+    public CdCardLockVO getMobile(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity,String deviceId) {
         //获取项目
         CdProjectVO cdProjectVO = cdProjectService.getById(cdCardLock.getProjectId());
         Assert.isNull(cdProjectVO,"ProjectDoesNotExist");
@@ -113,6 +130,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
         //获取可以使用的设备
         List<CdCardLockEntity> list = this.list(new QueryWrapper<CdCardLockEntity>().lambda()
                 .eq(CdCardLockEntity::getLock, Lock.NO.getKey())
+                .eq(StrUtil.isNotEmpty(deviceId),CdCardLockEntity::getDeviceId,deviceId)
         );
         //没有可用的设备
         Assert.isTrue(CollUtil.isEmpty(list),"NoEquipmentAvailable");
@@ -265,7 +283,8 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
     }
 
     @Override
-    public boolean uploadSms(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity) {
+    @Transactional(rollbackFor = Exception.class)
+    public boolean uploadSms(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity) throws IOException {
         //获取当前的设备
         CdCardLockEntity cdCardLockEntity = this.getOne(new QueryWrapper<CdCardLockEntity>().lambda()
                 .eq(CdCardLockEntity::getDeviceId, cdCardLock.getDeviceId())
@@ -290,13 +309,37 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
         cdProjectSmsRecordEntity.setDeleteFlag(DeleteFlag.YES.getKey());
         cdProjectSmsRecordEntity.setCreateTime(DateUtil.date());
 
+        boolean save = cdProjectSmsRecordService.save(cdProjectSmsRecordEntity);
 
         if (cdCardLock.getCode().contains(cdProjectVO.getName())) {
             cdCardLockEntity.setId(cdCardLockEntity.getId());
             cdCardLockEntity.setCode(cdCardLock.getCode());
             this.updateById(cdCardLockEntity);
         }
-        return cdProjectSmsRecordService.save(cdProjectSmsRecordEntity);
+
+        //上传短信
+        if (cdCardLock.getCode().contains(cdProjectVO.getName())) {
+            String deviceId = cdCardLockEntity.getDeviceId();
+            if (userId.equals(cdCardLockEntity.getUserId()) && projectId.equals(cdCardLockEntity.getProjectId())) {
+                //删除老的手机号
+                List<PhoneList> phoneListsRemove = new ArrayList<>();
+                PhoneList phoneListRemove = new PhoneList("khm",cdCardLockEntity.getPhone().replace(phonePre,""));
+                phoneListsRemove.add(phoneListRemove);
+                extracted(phoneListsRemove,"PhoneDeleteBatch");
+
+                CdCardLockDTO cdCardLockDTO = new CdCardLockDTO();
+                cdCardLockDTO.setProjectId(projectId);
+                CdUserEntity cdUserEntity1 = new CdUserEntity().setId(userId);
+                boolean b = releaseMobile(cdCardLockDTO, cdUserEntity1);
+                CdCardLockVO mobile = getMobile(cdCardLockDTO, cdUserEntity1, deviceId);
+                //获取新的
+                List<PhoneList> phoneLists = new ArrayList<>();
+                PhoneList phoneList = new PhoneList("khm",mobile.getPhone().replace(phonePre,""));
+                phoneLists.add(phoneList);
+                extracted(phoneLists,"");
+            }
+        }
+        return save;
     }
 
     @Override
@@ -312,6 +355,49 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
                 .eq(CdDevicesEntity::getIccid,cdCardLock.getDeviceId())
         );
         return taskDto;
+    }
+
+
+
+
+    @EventListener
+    @Order(value = 9999)
+    public void handlerApplicationReadyEvent(ApplicationReadyEvent event) throws IOException {
+        //用户
+        CdUserEntity userEntity = cdUserService.getById((Serializable) userId);
+        //判断火狐狸上有几个用户
+        List<CdCardLockEntity> list = this.list(new QueryWrapper<CdCardLockEntity>());
+
+        if (!list.isEmpty()) {
+            List<PhoneList> phoneLists = new ArrayList<PhoneList>();
+            //获取所有的手机
+            for (CdCardLockEntity cdCardLockEntity : list) {
+                if (ObjectUtil.isNull(userEntity.getId())) {
+                    continue;
+                }
+                CdCardLockDTO cdCardLockDTO = new CdCardLockDTO();
+                cdCardLockDTO.setProjectId(projectId);
+                CdCardLockVO mobile = getMobile(cdCardLockDTO, userEntity, cdCardLockEntity.getDeviceId());
+                PhoneList phoneList = new PhoneList("khm",mobile.getPhone().replace(phonePre,""));
+                phoneLists.add(phoneList);
+            }
+
+            extracted(phoneLists,"");
+        }
+    }
+
+    private void extracted(List<PhoneList> phoneLists,String act) throws IOException {
+        if (StrUtil.isEmpty(act)) {
+            act = "PhoneAddBatch";
+        }
+        PhoneAddBatch phoneAddBatch = new PhoneAddBatch(act, phoneLists);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(phoneAddBatch);
+        String response = HttpUtil.post("https://www.firefox.fun/ksapi.ashx?key=76082377BDE44F99", json);
+        PhoneDeleteAllResponse phoneDeleteAllResponse = objectMapper.readValue(response, PhoneDeleteAllResponse.class);
+        if ("1".equals(phoneDeleteAllResponse.getCode())) {
+            log.error("添加成功");
+        }
     }
 
 

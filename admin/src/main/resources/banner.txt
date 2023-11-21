@@ -86,3 +86,46 @@ create table cd_iccid_phone
 )
     comment '设备编号对应表';
 
+
+
+
+1. 创建数据库 跟火狐狸平台同步手机号 50 / 50
+2. 系统启动的时候检查一下 是否需要向火狐狸上传手机号，需要上传的话 同步上传
+3. 手机端收到短信上传平台同步检测是否上传成功
+4. 上传成功删除当前手机号同步删除火狐狸 同时再摸出来一个手机号
+
+
+
+
+
+
+火狐狸
+
+CREATE TABLE `cd_firefox_card` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `device_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `board_indexed` int(11) DEFAULT NULL,
+  `indexed` int(11) DEFAULT NULL,
+  `phone` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `iccid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `delete_flag` int(11) DEFAULT NULL,
+  `create_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=194641 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

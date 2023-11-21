@@ -8,6 +8,7 @@ import io.renren.modules.ltt.entity.CdUserEntity;
 import io.renren.modules.ltt.vo.CdCardLockVO;
 import io.renren.modules.ltt.entity.CdCardLockEntity;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collection;
 
@@ -66,7 +67,7 @@ public interface CdCardLockService extends IService<CdCardLockEntity> {
      * @param cdCardLock
      * @return
      */
-    CdCardLockVO getMobile(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity);
+    CdCardLockVO getMobile(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity,String deviceId);
 
     /**
      * 释放手机号
@@ -96,7 +97,7 @@ public interface CdCardLockService extends IService<CdCardLockEntity> {
      * @param cdUserEntity
      * @return
      */
-    boolean uploadSms(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity);
+    boolean uploadSms(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity) throws IOException;
 
     TaskDto deviceTaskGet(CdCardLockDTO cdCardLock);
 }
