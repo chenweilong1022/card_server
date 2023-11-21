@@ -150,6 +150,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
             List<CdCardEntity> cdCardEntities = cdCardService.list(new QueryWrapper<CdCardEntity>().lambda()
                     .eq(CdCardEntity::getDeviceId,cdCardLockEntity.getDeviceId())
                     .notIn(CdCardEntity::getIccid,"无卡")
+                    .notIn(CdCardEntity::getPhone,"无卡")
             );
             //获取这个设备下这个项目所有记录
             List<CdProjectSmsRecordEntity> cdProjectSmsRecordEntities = cdProjectSmsRecordService.list(new QueryWrapper<CdProjectSmsRecordEntity>().lambda()
@@ -294,7 +295,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
         CdProjectSmsRecordEntity cdProjectSmsRecordEntity = new CdProjectSmsRecordEntity();
         cdProjectSmsRecordEntity.setKey(key);
         cdProjectSmsRecordEntity.setCode(cdCardLock.getCode());
-        if (cdCardLock.getCode().contains(cdProjectVO.getName())) {
+        if (cdCardLock.getCode().contains(cdProjectVO.getName()) || cdCardLock.getCode().contains("拉黑")) {
             cdProjectSmsRecordEntity.setUserId(cdCardLockEntity.getUserId());
             cdProjectSmsRecordEntity.setProjectId(cdCardLockEntity.getProjectId());
         }
@@ -306,17 +307,19 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
 
         boolean save = cdProjectSmsRecordService.save(cdProjectSmsRecordEntity);
 
-        if (cdCardLock.getCode().contains(cdProjectVO.getName())) {
+        if (cdCardLock.getCode().contains(cdProjectVO.getName()) || cdCardLock.getCode().contains("拉黑")) {
             cdCardLockEntity.setId(cdCardLockEntity.getId());
             cdCardLockEntity.setCode(cdCardLock.getCode());
             this.updateById(cdCardLockEntity);
         }
 
         //上传短信
-        if (cdCardLock.getCode().contains(cdProjectVO.getName())) {
+        if (cdCardLock.getCode().contains(cdProjectVO.getName()) || cdCardLock.getCode().contains("拉黑")) {
             String deviceId = cdCardLockEntity.getDeviceId();
             if (userId.equals(cdCardLockEntity.getUserId()) && projectId.equals(cdCardLockEntity.getProjectId())) {
-                uploadSms(cdCardLock, cdCardLockEntity);
+                if (cdCardLock.getCode().contains(cdProjectVO.getName())){
+                    uploadSms(cdCardLock, cdCardLockEntity);
+                }
                 CdCardLockDTO cdCardLockDTO = new CdCardLockDTO();
                 cdCardLockDTO.setProjectId(projectId);
                 cdCardLockDTO.setIccid(cdCardLockEntity.getIccid());
