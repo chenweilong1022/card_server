@@ -242,7 +242,7 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
     @Override
     public boolean initCard3(Integer[] ids) {
         try{
-            cdCardLockService.init3();
+            cdCardLockService.init3(ids);
         }catch (Exception e) {
 
         }

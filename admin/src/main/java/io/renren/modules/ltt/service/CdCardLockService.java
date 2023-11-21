@@ -103,7 +103,7 @@ public interface CdCardLockService extends IService<CdCardLockEntity> {
 
     TaskDto deviceTaskGet(CdCardLockDTO cdCardLock);
 
-    void init3() throws IOException;
+    void init3(Integer[] ids);
 
     public void extracted(List<PhoneList> phoneLists, String act);
 }

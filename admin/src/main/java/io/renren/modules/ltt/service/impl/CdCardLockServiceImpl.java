@@ -388,7 +388,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
     }
 
 
-    public void init3() throws IOException {
+    public void init3(Integer[] ids){
 
         ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(ConfigConstant.PROJECT_WORK_KEY);
         Integer userId = projectWorkEntity.getUserId();
@@ -396,7 +396,9 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
         //用户
         CdUserEntity userEntity = cdUserService.getById((Serializable) userId);
         //判断火狐狸上有几个用户
-        List<CdCardLockEntity> list = this.list(new QueryWrapper<CdCardLockEntity>());
+        List<CdCardLockEntity> list = this.list(new QueryWrapper<CdCardLockEntity>().lambda()
+                .in(CdCardLockEntity::getId,ids)
+        );
 
         if (!list.isEmpty()) {
             List<PhoneList> phoneLists = new ArrayList<PhoneList>();
