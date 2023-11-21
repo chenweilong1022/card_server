@@ -98,7 +98,7 @@ public class BlackListTask {
                 Integer projectId = cdCardLockEntity.getProjectId();
                 CdProjectVO cdProjectVO = cdProjectService.getById(projectId);
                 GetWaitPhoneListDaum getWaitPhoneListDaum = stringGetWaitPhoneListDaumMap.get(cdCardLockEntity.getPhone() + "=" + cdProjectVO.getItemId());
-                if (ObjectUtil.isNotNull(getWaitPhoneListDaum)) {
+                if (ObjectUtil.isNotNull(getWaitPhoneListDaum) || ObjectUtil.isNull(cdCardLockEntity.getPhoneGetTime())) {
                     String phoneGetTime = getWaitPhoneListDaum.getPhoneGetTime();
                     DateTime parse = DateUtil.parse(phoneGetTime.replace("T", " "));
                     cdCardLockEntity.setPhoneGetTime(parse);
