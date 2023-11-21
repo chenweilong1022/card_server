@@ -170,7 +170,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
             //已经使用的id
             List<String> iccids = cdProjectSmsRecordEntities.stream().map(CdProjectSmsRecordEntity::getIccid).collect(Collectors.toList());
             for (CdCardEntity cdDevicesEntity : cdCardEntities) {
-                if (iccids.contains(cdDevicesEntity.getIccid())) {
+                if (iccids.contains(cdDevicesEntity.getIccid()) || StrUtil.isEmpty(cdDevicesEntity.getPhone())) {
                     continue;
                 }else {
                     //将当前手机上锁

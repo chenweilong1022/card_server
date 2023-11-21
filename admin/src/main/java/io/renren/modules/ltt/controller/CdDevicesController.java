@@ -2,7 +2,12 @@ package io.renren.modules.ltt.controller;
 
 import java.util.Arrays;
 
+import cn.hutool.http.HttpUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.renren.modules.ltt.dto.CdDevicesUpdateAppDTO;
+import io.renren.modules.ltt.firefox.PhoneAddBatch;
+import io.renren.modules.ltt.firefox.Root;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -77,6 +82,19 @@ public class CdDevicesController {
     @RequiresPermissions("ltt:cddevices:list")
     public R initCard3(@RequestBody Integer[] ids){
         return R.data(cdDevicesService.initCard3(ids));
+    }
+
+    /**
+     * 手机号删除
+     */
+    @RequestMapping("/phoneDeleteAll")
+    @RequiresPermissions("ltt:cddevices:list")
+    public R phoneDeleteAll(@RequestBody Integer[] ids) throws JsonProcessingException {
+        Root phoneAddBatch = new Root("PhoneDeleteAll");
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(phoneAddBatch);
+        String response = HttpUtil.post("https://www.firefox.fun/ksapi.ashx?key=76082377BDE44F99", json);
+        return R.data(response);
     }
 
     /**
