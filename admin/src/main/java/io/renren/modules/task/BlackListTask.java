@@ -1,6 +1,7 @@
 package io.renren.modules.task;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.http.HttpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -27,10 +28,9 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TimeZone;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -76,10 +76,11 @@ public class BlackListTask {
                 GetWaitPhoneListDaum getWaitPhoneListDaum = stringGetWaitPhoneListDaumMap.get(cdCardLockEntity.getPhone() + "=" + cdProjectVO.getItemId());
                 if (ObjectUtil.isNotNull(getWaitPhoneListDaum)) {
                     String phoneGetTime = getWaitPhoneListDaum.getPhoneGetTime();
-                    TimeZone.setDefault( TimeZone.getTimeZone("UTC"));
                     Instant instant = Instant.parse(phoneGetTime + "Z");
-                    java.util.Date date = java.util.Date.from( instant );
+                    ZonedDateTime zonedDateTime = instant.atZone(ZoneOffset.UTC);
+                    Date date = Date.from(zonedDateTime.toInstant());
                     cdCardLockEntity.setPhoneGetTime(date);
+                    cdCardLockEntity.setCreateTime(DateUtil.date());
                     cdCardLockService.updateById(cdCardLockEntity);
                 }
             }

@@ -13,6 +13,8 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import java.util.TimeZone;
+
 
 @SpringBootApplication(exclude={DataSourceAutoConfiguration.class})
 @EnableScheduling
@@ -24,6 +26,7 @@ public class RenrenApplication extends SpringBootServletInitializer {
 
 	@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+		TimeZone.setDefault( TimeZone.getTimeZone("UTC"));
 		return application.sources(RenrenApplication.class);
 	}
 
