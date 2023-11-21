@@ -3,6 +3,7 @@ package io.renren.modules.task;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.http.HttpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -17,6 +18,7 @@ import io.renren.modules.ltt.enums.Lock;
 import io.renren.modules.ltt.firefox.GetWaitPhoneList;
 import io.renren.modules.ltt.firefox.GetWaitPhoneListDaum;
 import io.renren.modules.ltt.service.CdCardLockService;
+import io.renren.modules.ltt.service.CdDevicesService;
 import io.renren.modules.ltt.service.CdProjectService;
 import io.renren.modules.ltt.service.CdUserService;
 import io.renren.modules.ltt.vo.CdProjectVO;
@@ -52,6 +54,27 @@ public class BlackListTask {
 
     @Autowired
     private CdProjectService cdProjectService;
+    @Autowired
+    private CdDevicesService cdDevicesService;
+    @Scheduled(fixedDelay = 60000)
+    public void withBlack() {
+        List<Integer> ids = new ArrayList<>();
+        List<CdCardLockEntity> list = cdCardLockService.list();
+        for (CdCardLockEntity cdCardLockEntity : list) {
+            if (ObjectUtil.isNull(cdCardLockEntity.getPhoneGetTime())) {
+                continue;
+            }
+            DateTime dateTime = DateUtil.offsetMinute(cdCardLockEntity.getPhoneGetTime(), 2);
+            DateTime now = DateUtil.date();
+            if (now.getTime() > dateTime.getTime()) {
+                ids.add(cdCardLockEntity.getId());
+            }
+        }
+        //自动拉黑
+        cdDevicesService.withBlack(ArrayUtil.toArray(ids,Integer.class));
+        //自动切号
+        cdDevicesService.initCard3(ArrayUtil.toArray(ids,Integer.class));
+    }
 
     @Scheduled(fixedDelay = 5000)
     public void sayHello() {
