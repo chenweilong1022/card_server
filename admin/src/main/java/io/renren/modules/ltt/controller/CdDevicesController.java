@@ -125,6 +125,29 @@ public class CdDevicesController {
         return R.data(true);
     }
 
+
+    @Resource(name = "caffeineCacheProjectWorkEntity")
+    private Cache<String, ProjectWorkEntity> caffeineCacheProjectWorkEntity;
+
+    /**
+     * 手机号删除
+     */
+    @RequestMapping("/phoneDeleteAll2")
+    @RequiresPermissions("ltt:cddevices:list")
+    public R phoneDeleteAll2(@RequestBody Integer[] ids){
+        ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(ConfigConstant.PROJECT_WORK_KEY);
+        Root phoneAddBatch = new Root("PhoneDeleteAll");
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = null;
+        try {
+            json = objectMapper.writeValueAsString(phoneAddBatch);
+        } catch (JsonProcessingException e) {
+
+        }
+        String response = HttpUtil.post("https://www.firefox.fun/ksapi.ashx?key=76082377BDE44F99", json);
+        return R.data(true);
+    }
+
     /**
      * 初始化
      */
