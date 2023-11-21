@@ -375,13 +375,16 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
             config.setUserId(2);
             sysConfigService.save(config);
         }else {
-            SysConfigEntity config = new SysConfigEntity();
-            config.setId(one.getId());
-            config.setType(2);
-            config.setProjectId(one.getProjectId());
-            config.setPhonePre(one.getPhonePre());
-            config.setUserId(one.getUserId());
-            sysConfigService.update(config);
+            ProjectWorkEntity bean = JSONUtil.toBean(one.getParamValue(), ProjectWorkEntity.class);
+            if (ObjectUtil.isNotNull(bean) && ObjectUtil.isNotNull(bean.getUserId())) {
+                SysConfigEntity config = new SysConfigEntity();
+                config.setId(one.getId());
+                config.setType(2);
+                config.setProjectId(one.getProjectId());
+                config.setPhonePre(one.getPhonePre());
+                config.setUserId(one.getUserId());
+                sysConfigService.update(config);
+            }
         }
     }
 
