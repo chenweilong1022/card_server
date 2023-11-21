@@ -310,31 +310,18 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
         if (cdCardLock.getCode().contains(cdProjectVO.getName())) {
             String deviceId = cdCardLockEntity.getDeviceId();
             if (userId.equals(cdCardLockEntity.getUserId()) && projectId.equals(cdCardLockEntity.getProjectId())) {
-                try{
-                    uploadSms(cdCardLock, cdCardLockEntity);
-                }catch (Exception ignored) {
-                }
-                //删除老的手机号
-                List<PhoneList> phoneListsRemove = new ArrayList<>();
-                PhoneList phoneListRemove = new PhoneList("khm",cdCardLockEntity.getPhone().replace(phonePre,""));
-                phoneListsRemove.add(phoneListRemove);
-                try{
-                    extracted(phoneListsRemove,"PhoneDeleteBatch");
-                }catch (Exception ignored) {
-                }
+                uploadSms(cdCardLock, cdCardLockEntity);
                 CdCardLockDTO cdCardLockDTO = new CdCardLockDTO();
                 cdCardLockDTO.setProjectId(projectId);
                 CdUserEntity cdUserEntity1 = new CdUserEntity().setId(userId);
                 boolean b = releaseMobile(cdCardLockDTO, cdUserEntity1);
                 CdCardLockVO mobile = getMobile(cdCardLockDTO, cdUserEntity1, deviceId);
-                //获取新的
-                List<PhoneList> phoneLists = new ArrayList<>();
-                PhoneList phoneList = new PhoneList("khm",mobile.getPhone().replace(phonePre,""));
-                phoneLists.add(phoneList);
-                try{
+                if (ObjectUtil.isNotNull(mobile)) {
+                    //获取新的
+                    List<PhoneList> phoneLists = new ArrayList<>();
+                    PhoneList phoneList = new PhoneList("khm",mobile.getPhone().replace(phonePre,""));
+                    phoneLists.add(phoneList);
                     extracted(phoneLists,"");
-                }catch (Exception ignored) {
-
                 }
             }
         }
@@ -385,29 +372,43 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
         }
     }
 
-    private void extracted(List<PhoneList> phoneLists,String act) throws IOException {
-        if (StrUtil.isEmpty(act)) {
-            act = "PhoneAddBatch";
-        }
-        PhoneAddBatch phoneAddBatch = new PhoneAddBatch(act, phoneLists);
-        ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(phoneAddBatch);
-        String response = HttpUtil.post("https://www.firefox.fun/ksapi.ashx?key=76082377BDE44F99", json);
-        PhoneDeleteAllResponse phoneDeleteAllResponse = objectMapper.readValue(response, PhoneDeleteAllResponse.class);
-        if ("1".equals(phoneDeleteAllResponse.getCode())) {
-            log.error("添加成功");
+    private void extracted(List<PhoneList> phoneLists,String act){
+        try{
+            if (StrUtil.isEmpty(act)) {
+                act = "PhoneAddBatch";
+            }
+            PhoneAddBatch phoneAddBatch = new PhoneAddBatch(act, phoneLists);
+            ObjectMapper objectMapper = new ObjectMapper();
+            String json = objectMapper.writeValueAsString(phoneAddBatch);
+            String response = firefoxPost(json);
+            PhoneDeleteAllResponse phoneDeleteAllResponse = objectMapper.readValue(response, PhoneDeleteAllResponse.class);
+            if ("1".equals(phoneDeleteAllResponse.getCode())) {
+                log.error("添加成功");
+            }
+        }catch (Exception e) {
+
         }
     }
 
-    private void uploadSms(CdCardLockDTO cdCardLock, CdCardLockEntity cdCardLockEntity) throws IOException {
-        UploadSms phoneAddBatch = new UploadSms("UploadSms", "khm", cdCardLockEntity.getPhone().replace(phonePre,""), cdCardLock.getCode());
-        ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(phoneAddBatch);
-        String response = HttpUtil.post("https://www.firefox.fun/ksapi.ashx?key=76082377BDE44F99", json);
-        PhoneDeleteAllResponse phoneDeleteAllResponse = objectMapper.readValue(response, PhoneDeleteAllResponse.class);
-        if ("1".equals(phoneDeleteAllResponse.getCode())) {
-            log.error("添加成功");
+    private void uploadSms(CdCardLockDTO cdCardLock, CdCardLockEntity cdCardLockEntity){
+        try {
+            UploadSms phoneAddBatch = new UploadSms("UploadSms", "khm", cdCardLockEntity.getPhone().replace(phonePre,""), cdCardLock.getCode());
+            ObjectMapper objectMapper = new ObjectMapper();
+            String json = objectMapper.writeValueAsString(phoneAddBatch);
+            String response = firefoxPost(json);
+            PhoneDeleteAllResponse phoneDeleteAllResponse = objectMapper.readValue(response, PhoneDeleteAllResponse.class);
+            if ("1".equals(phoneDeleteAllResponse.getCode())) {
+                log.error("添加成功");
+            }
+        }catch (Exception e) {
+
         }
+    }
+
+
+    private String firefoxPost(String json) {
+        String response = HttpUtil.post("https://www.firefox.fun/ksapi.ashx?key=76082377BDE44F99", json);
+        return response;
     }
 
 
