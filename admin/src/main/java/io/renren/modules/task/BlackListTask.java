@@ -1,6 +1,7 @@
 package io.renren.modules.task;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.http.HttpUtil;
@@ -76,10 +77,8 @@ public class BlackListTask {
                 GetWaitPhoneListDaum getWaitPhoneListDaum = stringGetWaitPhoneListDaumMap.get(cdCardLockEntity.getPhone() + "=" + cdProjectVO.getItemId());
                 if (ObjectUtil.isNotNull(getWaitPhoneListDaum)) {
                     String phoneGetTime = getWaitPhoneListDaum.getPhoneGetTime();
-                    Instant instant = Instant.parse(phoneGetTime + "Z");
-                    ZonedDateTime zonedDateTime = instant.atZone(ZoneOffset.UTC);
-                    Date date = Date.from(zonedDateTime.toInstant());
-                    cdCardLockEntity.setPhoneGetTime(date);
+                    DateTime parse = DateUtil.parse(phoneGetTime.replace("T", " "));
+                    cdCardLockEntity.setPhoneGetTime(parse);
                     cdCardLockEntity.setCreateTime(DateUtil.date());
                     cdCardLockService.updateById(cdCardLockEntity);
                 }
