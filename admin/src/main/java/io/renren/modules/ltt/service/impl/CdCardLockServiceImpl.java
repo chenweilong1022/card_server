@@ -369,14 +369,10 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
         );
         if (ObjectUtil.isNull(one)) {
             SysConfigEntity config = new SysConfigEntity();
-            ProjectWorkEntity projectWorkEntity = new ProjectWorkEntity();
-            projectWorkEntity.setProjectId(198);
-            projectWorkEntity.setPhonePre("+855");
-            projectWorkEntity.setUserId(2);
-            String jsonStr = JSONUtil.toJsonStr(projectWorkEntity);
-            config.setParamKey(ConfigConstant.PROJECT_WORK_KEY);
-            config.setParamValue(jsonStr);
-            caffeineCacheProjectWorkEntity.put(ConfigConstant.PROJECT_WORK_KEY,projectWorkEntity);
+            config.setType(2);
+            config.setProjectId(198);
+            config.setPhonePre("+855");
+            config.setUserId(2);
             sysConfigService.save(config);
         }
     }
