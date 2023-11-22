@@ -263,7 +263,6 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
             cdCardLock.setProjectId(cdCardLockEntity.getProjectId());
             boolean b = cdCardLockService.uploadSms(cdCardLock, userEntity);
         }
-        phoneDeleteAll(ids);
         return false;
     }
 
