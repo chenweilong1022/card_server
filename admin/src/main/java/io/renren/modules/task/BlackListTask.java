@@ -27,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.Serializable;
@@ -57,6 +58,7 @@ public class BlackListTask {
     @Autowired
     private CdDevicesService cdDevicesService;
     @Scheduled(fixedDelay = 60000)
+    @Transactional(rollbackFor = Exception.class)
     public void withBlack() {
         List<Integer> ids = new ArrayList<>();
         List<CdCardLockEntity> list = cdCardLockService.list();
@@ -77,6 +79,7 @@ public class BlackListTask {
     }
 
     @Scheduled(fixedDelay = 5000)
+    @Transactional(rollbackFor = Exception.class)
     public void sayHello() {
         ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(ConfigConstant.PROJECT_WORK_KEY);
         try {

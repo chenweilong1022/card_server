@@ -15,7 +15,7 @@ public class CacheConfig {
     public Cache<String, String> caffeineCacheCode() {
         return Caffeine.newBuilder()
                 // 设置最后一次写入或访问后两个小时后过期
-                .expireAfterWrite(7200, TimeUnit.SECONDS)
+                .expireAfterWrite(7200, TimeUnit.DAYS)
                 // 初始的缓存空间大小
                 .initialCapacity(100)
                 // 缓存的最大条数
@@ -27,7 +27,7 @@ public class CacheConfig {
     public Cache<String, ProjectWorkEntity> caffeineCacheProjectWorkEntity() {
         return Caffeine.newBuilder()
                 // 设置最后一次写入或访问后两个小时后过期
-                .expireAfterWrite(7200, TimeUnit.SECONDS)
+                .expireAfterWrite(7200, TimeUnit.DAYS)
                 // 初始的缓存空间大小
                 .initialCapacity(100)
                 // 缓存的最大条数
@@ -39,7 +39,7 @@ public class CacheConfig {
     public Cache<String, TaskDto> caffeineCacheCodeTaskDto() {
         return Caffeine.newBuilder()
                 // 设置最后一次写入或访问后两个小时后过期
-                .expireAfterWrite(7200, TimeUnit.SECONDS)
+                .expireAfterWrite(7200, TimeUnit.DAYS)
                 // 初始的缓存空间大小
                 .initialCapacity(100)
                 // 缓存的最大条数
@@ -52,7 +52,7 @@ public class CacheConfig {
 //    public Cache<String, Integer> caffeineCacheIntegerCode() {
 //        return Caffeine.newBuilder()
 //                // 设置最后一次写入或访问后两个小时后过期
-//                .expireAfterWrite(7200, TimeUnit.SECONDS)
+//                .expireAfterWrite(7200, TimeUnit.DAYS)
 //                // 初始的缓存空间大小
 //                .initialCapacity(100)
 //                // 缓存的最大条数
