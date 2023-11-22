@@ -42,6 +42,11 @@ public class CdDevicesVO implements Serializable {
 	 *
 	 */
 	@ApiModelProperty(required=false,value="")
+	private String deviceId;
+	/**
+	 *
+	 */
+	@ApiModelProperty(required=false,value="")
 	private Integer online;
 	/**
 	 * 是否在线
@@ -78,6 +83,37 @@ public class CdDevicesVO implements Serializable {
 	 */
 	@ApiModelProperty(required=false,value="")
 	private Integer workType;
+
+	/**
+	 *
+	 */
+	@ApiModelProperty(required=false,value="")
+	private String code;
+	/**
+	 *
+	 */
+	@ApiModelProperty(required=false,value="")
+	private Integer userId;
+	/**
+	 *
+	 */
+	@ApiModelProperty(required=false,value="")
+	private Integer projectId;
+	/**
+	 *
+	 */
+	@ApiModelProperty(required=false,value="")
+	private Integer lock;
+	/**
+	 *
+	 */
+	@ApiModelProperty(required=false,value="")
+	private String phone;
+	/**
+	 *
+	 */
+	@ApiModelProperty(required=false,value="")
+	private Date phoneGetTime;
 
 	public String getOnlineStr() {
 		return EnumUtil.queryValueByKey(this.online, Online.values());

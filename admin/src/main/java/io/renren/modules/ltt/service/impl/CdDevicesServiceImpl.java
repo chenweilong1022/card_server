@@ -2,6 +2,7 @@ package io.renren.modules.ltt.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.benmanes.caffeine.cache.Cache;
@@ -73,18 +74,12 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
     public PageUtils<CdDevicesVO> queryPage(CdDevicesDTO cdDevices) {
 
         IPage<CdDevicesVO> page = baseMapper.listPage(new Query<CdDevicesEntity>(cdDevices).getPage(),cdDevices);
-        //获取number
-        List<CdDevicesNumberEntity> list = cdDevicesNumberService.list();
-        //转为map
-        Map<String, String> collect = list.stream().collect(Collectors.toMap(CdDevicesNumberEntity::getDeviceId, CdDevicesNumberEntity::getNumber));
-//        List<CdDevicesVO> cdDevicesVOS = CdDevicesConver.MAPPER.conver(page.getRecords());
         List<GroupByDeviceIdVO> groupByDeviceIdVOS = cdCardService.groupByDeviceId();
         Map<String, GroupByDeviceIdVO> collect1 = groupByDeviceIdVOS.stream().collect(Collectors.toMap(GroupByDeviceIdVO::getDeviceId, x -> x));
 
         List<CdDevicesVO> cdDevicesVOS = page.getRecords();
         //设置number
         for (CdDevicesVO cdDevicesVO : cdDevicesVOS) {
-            cdDevicesVO.setNumber(collect.get(cdDevicesVO.getIccid()));
             GroupByDeviceIdVO groupByDeviceIdVO = collect1.get(cdDevicesVO.getIccid());
             if (ObjectUtil.isNotNull(groupByDeviceIdVO)) {
                 cdDevicesVO.setInitSuccessNumber(groupByDeviceIdVO.getInitSuccessNumber());
@@ -240,6 +235,7 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean initCard3(Integer[] ids) {
         try{
             cdCardLockService.init3(ids);
@@ -250,7 +246,11 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean withBlack(Integer[] ids) {
+        if (ArrayUtil.isEmpty(ids)) {
+            return false;
+        }
         ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(ConfigConstant.PROJECT_WORK_KEY);
         CdUserEntity userEntity = cdUserService.getById((Serializable) projectWorkEntity.getUserId());
         List<CdCardLockEntity> changeLocks = cdCardLockService.list(new QueryWrapper<CdCardLockEntity>().lambda()
@@ -268,6 +268,7 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void phoneDeleteAll(Integer[] ids) {
         ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(ConfigConstant.PROJECT_WORK_KEY);
         Integer userId = projectWorkEntity.getUserId();

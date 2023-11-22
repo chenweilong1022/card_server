@@ -8,6 +8,12 @@
         <el-input v-model="dataForm.packageVersion" placeholder="版本号" clearable></el-input>
       </el-form-item>
       <el-form-item>
+        <el-input v-model="dataForm.phone" placeholder="手机号" clearable></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-input v-model="dataForm.iccid" placeholder="设备编码" clearable></el-input>
+      </el-form-item>
+      <el-form-item>
         <el-select v-model="online" placeholder="在线" clearable>
           <el-option
             v-for="item in options"
@@ -60,7 +66,7 @@
         label="主键">
       </el-table-column>
       <el-table-column
-        prop="iccid"
+        prop="deviceId"
         header-align="center"
         align="center"
         label="设备id">
@@ -98,11 +104,39 @@
         align="center"
         label="工作流程">
       </el-table-column>
+
       <el-table-column
-        prop="createTime"
+        prop="userId"
         header-align="center"
         align="center"
-        label="创建时间">
+        label="用户id">
+      </el-table-column>
+
+      <el-table-column
+        prop="projectId"
+        header-align="center"
+        align="center"
+        label="项目id">
+      </el-table-column>
+
+      <el-table-column
+        prop="phone"
+        header-align="center"
+        align="center"
+        label="phone">
+      </el-table-column>
+      <el-table-column
+        prop="iccid"
+        header-align="center"
+        align="center"
+        label="iccid">
+      </el-table-column>
+
+      <el-table-column
+        prop="phoneGetTime"
+        header-align="center"
+        align="center"
+        label="取码时间">
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -148,6 +182,8 @@ export default {
         key: '',
         online: null,
         workType: null,
+        iccid: null,
+        phone: null,
         packageVersion: null
       },
       options: [
@@ -408,6 +444,8 @@ export default {
           'limit': this.pageSize,
           'online': this.online,
           'workType': this.workType,
+          'iccid': this.dataForm.iccid,
+          'phone': this.dataForm.phone,
           'packageVersion': this.dataForm.packageVersion,
           'key': this.dataForm.key
         })

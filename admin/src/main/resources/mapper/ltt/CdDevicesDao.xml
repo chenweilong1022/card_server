@@ -12,27 +12,54 @@
         <result property="createTime" column="create_time"/>
     </resultMap>
 
-
+<!--CREATE TABLE `cd_card_lock` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `project_id` int(11) DEFAULT NULL,
+  `device_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `lock` int(11) DEFAULT NULL,
+  `phone` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `iccid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `delete_flag` int(11) DEFAULT NULL,
+  `create_time` datetime DEFAULT NULL,
+  `phone_get_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;-->
 
     <select id="listPage" resultType="io.renren.modules.ltt.vo.CdDevicesVO">
         SELECT
             d.id as id,
-            d.iccid as iccid,
             d.online as online,
             d.work_type as workType,
             d.delete_flag as deleteFlag,
             d.create_time as createTime,
             d.package_version as packageVersion,
+            l.code as code,
+            l.user_id as userId,
+            l.project_id as projectId,
+            l.`lock`,
+            l.device_id as deviceId,
+            l.phone as phone,
+            l.iccid as iccid,
+            l.phone_get_time as phoneGetTime,
             n.number number
         FROM
             cd_devices d
+                left join cd_card_lock l on l.id = d.id
                 LEFT JOIN cd_devices_number n ON n.device_id = d.iccid
         <where>
-            <if test="dto.online != null">
+            <if test="dto.online != null and dto.online != ''">
                 and d.online = #{dto.online}
             </if>
-            <if test="dto.workType != null">
+            <if test="dto.workType != null and dto.workType != ''">
                 and d.work_type = #{dto.workType}
+            </if>
+            <if test="dto.iccid != null and dto.iccid != ''">
+                and d.iccid = #{dto.iccid}
+            </if>
+            <if test="dto.phone != null and dto.phone != ''">
+                and l.phone = #{dto.phone}
             </if>
             <if test="dto.packageVersion != null and dto.packageVersion != ''">
                 and d.package_version = #{dto.packageVersion}
