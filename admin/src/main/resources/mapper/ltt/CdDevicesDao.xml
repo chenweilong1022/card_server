@@ -49,10 +49,10 @@
                 left join cd_card_lock l on l.id = d.id
                 LEFT JOIN cd_devices_number n ON n.device_id = d.iccid
         <where>
-            <if test="dto.online != null and dto.online != ''">
+            <if test="dto.online != null">
                 and d.online = #{dto.online}
             </if>
-            <if test="dto.workType != null and dto.workType != ''">
+            <if test="dto.workType != null">
                 and d.work_type = #{dto.workType}
             </if>
             <if test="dto.iccid != null and dto.iccid != ''">
