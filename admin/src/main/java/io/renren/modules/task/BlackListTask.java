@@ -75,7 +75,7 @@ public class BlackListTask {
         //自动拉黑
         cdDevicesService.withBlack(ArrayUtil.toArray(ids,Integer.class));
         //自动切号
-        cdDevicesService.initCard3(ArrayUtil.toArray(ids,Integer.class));
+//        cdDevicesService.initCard3(ArrayUtil.toArray(ids,Integer.class));
     }
 
     @Scheduled(fixedDelay = 5000)

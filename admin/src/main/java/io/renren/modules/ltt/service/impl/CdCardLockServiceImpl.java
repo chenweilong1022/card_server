@@ -326,6 +326,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
         if (ObjectUtil.isNotNull(cdProjectVO) && cdCardLock.getCode().contains(cdProjectVO.getName()) || cdCardLock.getCode().contains("拉黑")) {
             cdCardLockEntity.setId(cdCardLockEntity.getId());
             cdCardLockEntity.setCode(cdCardLock.getCode());
+            cdCardLockEntity.setPhoneGetTime(null);
             this.updateById(cdCardLockEntity);
         }
 
