@@ -1,5 +1,6 @@
 package io.renren.modules.netty.messagehandler.heartbeat;
 
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.netty.channel.Channel;
 import io.renren.modules.ltt.entity.CdDevicesEntity;
@@ -29,7 +30,7 @@ public class HeartbeatRequestHandler implements MessageHandler<HeartbeatRequest>
 
     @Override
     public void execute(Channel channel, HeartbeatRequest message) {
-        logger.info("[execute][收到连接({}) 的心跳请求]", channel.id());
+        logger.info("[execute][收到连接({}) 的心跳请求 {}", channel.id(), JSONUtil.toJsonStr(message));
         nettyChannelManager.addUser(channel,message.getDeviceId());
         // 响应心跳
         HeartbeatResponse response = new HeartbeatResponse();

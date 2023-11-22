@@ -19,6 +19,10 @@ public class HeartbeatRequest implements Message {
      * 设备id
      */
     private String deviceId;
+    /**
+     * 当前的ic
+     */
+    private String ic;
 
     @Override
     public String toString() {
