@@ -314,14 +314,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
         cdProjectSmsRecordEntity.setCreateTime(DateUtil.date());
 
         boolean save = cdProjectSmsRecordService.save(cdProjectSmsRecordEntity);
-        //如果存在信息 火狐狸删除手机
-        if (ObjectUtil.isNotNull(cdProjectSmsRecordEntity) && StrUtil.isNotEmpty(cdProjectSmsRecordEntity.getPhone())) {
-            //获取新的
-            List<PhoneList> phoneLists = new ArrayList<>();
-            PhoneList phoneList = new PhoneList("khm",cdProjectSmsRecordEntity.getPhone().replace(phonePre,""));
-            phoneLists.add(phoneList);
-            extracted(phoneLists,"PhoneDeleteBatch");
-        }
+
 
         if (ObjectUtil.isNotNull(cdProjectVO) && cdCardLock.getCode().contains(cdProjectVO.getName()) || cdCardLock.getCode().contains("拉黑")) {
             cdCardLockEntity.setId(cdCardLockEntity.getId());
@@ -352,6 +345,16 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
                 }
             }
         }
+
+        //如果存在信息 火狐狸删除手机
+        if (ObjectUtil.isNotNull(cdProjectSmsRecordEntity) && StrUtil.isNotEmpty(cdProjectSmsRecordEntity.getPhone())) {
+            //获取新的
+            List<PhoneList> phoneLists = new ArrayList<>();
+            PhoneList phoneList = new PhoneList("khm",cdProjectSmsRecordEntity.getPhone().replace(phonePre,""));
+            phoneLists.add(phoneList);
+            extracted(phoneLists,"PhoneDeleteBatch");
+        }
+
         return save;
     }
 
