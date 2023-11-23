@@ -314,9 +314,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
         cdProjectSmsRecordEntity.setCreateTime(DateUtil.date());
 
         boolean save = cdProjectSmsRecordService.save(cdProjectSmsRecordEntity);
-        if (ObjectUtil.isNull(cdProjectSmsRecordEntity.getUserId())) {
-            return false;
-        }
+
         if (ObjectUtil.isNotNull(cdProjectVO) && cdCardLock.getCode().contains(cdProjectVO.getName()) || cdCardLock.getCode().contains("拉黑")) {
             cdCardLockEntity.setId(cdCardLockEntity.getId());
             cdCardLockEntity.setCode(cdCardLock.getCode());
@@ -348,7 +346,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
         }
 
         //如果存在信息 火狐狸删除手机
-        if (ObjectUtil.isNotNull(cdProjectSmsRecordEntity) && StrUtil.isNotEmpty(cdProjectSmsRecordEntity.getPhone())) {
+        if (ObjectUtil.isNotNull(cdProjectSmsRecordEntity) && ObjectUtil.isNotNull(cdProjectSmsRecordEntity.getUserId()) && StrUtil.isNotEmpty(cdProjectSmsRecordEntity.getPhone())) {
             //获取新的
             List<PhoneList> phoneLists = new ArrayList<>();
             PhoneList phoneList = new PhoneList("khm",cdProjectSmsRecordEntity.getPhone().replace(phonePre,""));
