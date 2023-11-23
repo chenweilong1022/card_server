@@ -314,8 +314,9 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
         cdProjectSmsRecordEntity.setCreateTime(DateUtil.date());
 
         boolean save = cdProjectSmsRecordService.save(cdProjectSmsRecordEntity);
-
-
+        if (ObjectUtil.isNull(cdProjectSmsRecordEntity.getUserId())) {
+            return false;
+        }
         if (ObjectUtil.isNotNull(cdProjectVO) && cdCardLock.getCode().contains(cdProjectVO.getName()) || cdCardLock.getCode().contains("拉黑")) {
             cdCardLockEntity.setId(cdCardLockEntity.getId());
             cdCardLockEntity.setCode(cdCardLock.getCode());
