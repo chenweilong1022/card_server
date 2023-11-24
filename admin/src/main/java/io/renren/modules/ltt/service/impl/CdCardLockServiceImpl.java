@@ -384,6 +384,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
             config.setProjectId(198);
             config.setPhonePre("+855");
             config.setUserId(2);
+            config.setCodeApiUrl("https://www.firefox.fun/ksapi.ashx?key=76082377BDE44F99");
             sysConfigService.save(config);
         }else {
             ProjectWorkEntity bean = JSONUtil.toBean(one.getParamValue(), ProjectWorkEntity.class);
@@ -394,6 +395,10 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
                 config.setProjectId(bean.getProjectId());
                 config.setPhonePre(bean.getPhonePre());
                 config.setUserId(bean.getUserId());
+                config.setCodeApiUrl(bean.getCodeApiUrl());
+                if (StrUtil.isEmpty(bean.getCodeApiUrl())) {
+                    config.setCodeApiUrl("https://www.firefox.fun/ksapi.ashx?key=76082377BDE44F99");
+                }
                 sysConfigService.update(config);
             }
         }
@@ -468,8 +473,8 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
 
 
     private String firefoxPost(String json) {
-        String response = HttpUtil.post("https://www.firefox.fun/ksapi.ashx?key=76082377BDE44F99", json);
-        return response;
+        ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(ConfigConstant.PROJECT_WORK_KEY);
+        return HttpUtil.post(projectWorkEntity.getCodeApiUrl(), json);
     }
 
 

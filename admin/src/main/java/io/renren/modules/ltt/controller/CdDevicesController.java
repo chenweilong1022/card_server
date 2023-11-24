@@ -144,7 +144,7 @@ public class CdDevicesController {
         } catch (JsonProcessingException e) {
 
         }
-        String response = HttpUtil.post("https://www.firefox.fun/ksapi.ashx?key=76082377BDE44F99", json);
+        String response = HttpUtil.post(projectWorkEntity.getCodeApiUrl(), json);
         return R.data(true);
     }
 

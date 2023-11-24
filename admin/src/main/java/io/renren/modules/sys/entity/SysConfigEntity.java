@@ -55,6 +55,9 @@ public class SysConfigEntity extends AbstractEntity implements Serializable {
 	@TableField(exist = false)
 	private String phonePre;
 
+	@TableField(exist = false)
+	private String codeApiUrl;
+
 	public Long getId() {
 		return id;
 	}

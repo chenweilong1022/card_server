@@ -451,7 +451,7 @@ export default {
         })
       }).then(({data}) => {
         if (data && data.code === 0) {
-          this.dataList = data.page.list.filter(item => item.phoneGetTime == null)
+          this.dataList = data.page.list
           this.totalPage = data.page.totalCount
         } else {
           this.dataList = []

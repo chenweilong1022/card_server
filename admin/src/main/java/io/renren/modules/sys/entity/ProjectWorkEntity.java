@@ -16,4 +16,6 @@ public class ProjectWorkEntity {
 
     private String phonePre;
 
+    private String codeApiUrl;
+
 }

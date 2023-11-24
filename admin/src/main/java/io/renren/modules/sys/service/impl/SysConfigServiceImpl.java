@@ -66,6 +66,7 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigDao, SysConfigEnt
 			projectWorkEntity.setProjectId(config.getProjectId());
 			projectWorkEntity.setPhonePre(config.getPhonePre());
 			projectWorkEntity.setUserId(config.getUserId());
+			projectWorkEntity.setCodeApiUrl(config.getCodeApiUrl());
 			String jsonStr = JSONUtil.toJsonStr(projectWorkEntity);
 			config.setParamKey(ConfigConstant.PROJECT_WORK_KEY);
 			config.setParamValue(jsonStr);
@@ -83,6 +84,7 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigDao, SysConfigEnt
 			projectWorkEntity.setProjectId(config.getProjectId());
 			projectWorkEntity.setPhonePre(config.getPhonePre());
 			projectWorkEntity.setUserId(config.getUserId());
+			projectWorkEntity.setCodeApiUrl(config.getCodeApiUrl());
 			String jsonStr = JSONUtil.toJsonStr(projectWorkEntity);
 			config.setParamKey(ConfigConstant.PROJECT_WORK_KEY);
 			config.setParamValue(jsonStr);

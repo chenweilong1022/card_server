@@ -27,13 +27,16 @@
       </el-form-item>
 
       <el-form-item label="用户id" prop="userId" v-if="type === 2">
-        <el-input v-model="dataForm.userId" placeholder="参数名"></el-input>
+        <el-input v-model="dataForm.userId" placeholder="用户id"></el-input>
       </el-form-item>
       <el-form-item label="项目id" prop="projectId"  v-if="type === 2">
-        <el-input v-model="dataForm.projectId" placeholder="参数值"></el-input>
+        <el-input v-model="dataForm.projectId" placeholder="项目id"></el-input>
       </el-form-item>
       <el-form-item label="手机号前缀" prop="phonePre"  v-if="type === 2">
-        <el-input v-model="dataForm.phonePre" placeholder="备注"></el-input>
+        <el-input v-model="dataForm.phonePre" placeholder="手机号前缀"></el-input>
+      </el-form-item>
+      <el-form-item label="接码平台接口" prop="codeApiUrl"  v-if="type === 2">
+        <el-input v-model="dataForm.codeApiUrl" placeholder="备注"></el-input>
       </el-form-item>
 
 
@@ -70,6 +73,7 @@
           userId: '',
           projectId: '',
           phonePre: '',
+          codeApiUrl: '',
           remark: ''
         },
         dataRule: {
@@ -101,6 +105,7 @@
                 this.dataForm.userId = data.config.userId
                 this.dataForm.projectId = data.config.projectId
                 this.dataForm.phonePre = data.config.phonePre
+                this.dataForm.codeApiUrl = data.config.codeApiUrl
               }
             })
           }
@@ -120,6 +125,7 @@
                 'userId': this.dataForm.userId,
                 'projectId': this.dataForm.projectId,
                 'phonePre': this.dataForm.phonePre,
+                'codeApiUrl': this.dataForm.codeApiUrl,
                 'type': this.type,
                 'remark': this.dataForm.remark
               })
