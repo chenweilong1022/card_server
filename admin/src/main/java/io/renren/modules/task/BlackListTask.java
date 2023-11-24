@@ -83,7 +83,7 @@ public class BlackListTask {
     public void sayHello() {
         ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(ConfigConstant.PROJECT_WORK_KEY);
         try {
-            String response = HttpUtil.get(projectWorkEntity.getCodeApiUrl());
+            String response = HttpUtil.get(projectWorkEntity.getCodeApiUrl() + "&act=GetWaitPhoneList");
             ObjectMapper objectMapper = new ObjectMapper();
             GetWaitPhoneList phoneDeleteAllResponse = objectMapper.readValue(response, GetWaitPhoneList.class);
 
