@@ -2,7 +2,7 @@
   <div class="mod-config">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-input v-model="dataForm.key" placeholder="参数名" clearable></el-input>
+        <el-input v-model="dataForm.fq" placeholder="参数名" clearable></el-input>
       </el-form-item>
       <el-form-item>
         <el-input v-model="dataForm.packageVersion" placeholder="版本号" clearable></el-input>
@@ -45,6 +45,8 @@
         <el-button type="primary" @click="phoneDeleteAllHandle3()" :disabled="dataListSelections.length <= 0">火狐狸清空手机号</el-button>
         <el-button type="primary" @click="phoneDeleteAllHandle32()" :disabled="dataListSelections.length <= 0">火狐狸清空全部手机号</el-button>
         <el-button type="primary" @click="rebootHandler()" :disabled="dataListSelections.length <= 0">批量重启</el-button>
+        <el-button type="primary" @click="updateBatchHandler(null,1)" :disabled="dataListSelections.length <= 0">批量闲置</el-button>
+        <el-button type="primary" @click="updateBatchHandler(null,3)" :disabled="dataListSelections.length <= 0">批量工作</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -82,6 +84,24 @@
         header-align="center"
         align="center"
         label="版本号">
+      </el-table-column>
+      <el-table-column
+        prop="workFq"
+        header-align="center"
+        align="center"
+        label="当前板">
+        <template slot-scope="scope">
+          {{scope.row.heartbeatRequest == null ? 1 : scope.row.heartbeatRequest.workFq}}
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="fq"
+        header-align="center"
+        align="center"
+        label="板子数">
+        <template slot-scope="scope">
+          {{scope.row.heartbeatRequest == null ? 1 : scope.row.heartbeatRequest.fq}}
+        </template>
       </el-table-column>
       <el-table-column
         prop="initSuccessNumber"
@@ -148,6 +168,8 @@
           <el-button type="text" size="small" @click="initHandle(scope.row.id)">初始化</el-button>
           <el-button type="text" size="small" @click="initHandle2(scope.row.id)">初始化2</el-button>
           <el-button type="text" size="small" @click="rebootHandler(scope.row.id)">重启</el-button>
+          <el-button type="text" size="small" @click="updateBatchHandler(scope.row.id,1)">闲置</el-button>
+          <el-button type="text" size="small" @click="updateBatchHandler(scope.row.id,3)">工作</el-button>
           <el-button type="text" size="small" @click="cddevicesChangeCardHandle(scope.row.id)">切换卡</el-button>
           <!--          <el-button type="text" size="small" @click="cddevicesUpdateAppCardHandle(scope.row.id)">app更新</el-button>-->
         </template>
@@ -184,6 +206,7 @@ export default {
         workType: null,
         iccid: null,
         phone: null,
+        fq: null,
         packageVersion: null
       },
       options: [
@@ -230,6 +253,38 @@ export default {
     this.getDataList()
   },
   methods: {
+    updateBatchHandler (id, workType) {
+      var ids = id ? [id] : this.dataListSelections.map(item => {
+        return item.id
+      })
+      this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '修改状态' : '批量修改状态'}]操作?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$http({
+          url: this.$http.adornUrl('/ltt/cddevices/updateBatch'),
+          method: 'post',
+          data: {
+            'ids': ids,
+            'workType': workType
+          }
+        }).then(({data}) => {
+          if (data && data.code === 0) {
+            this.$message({
+              message: '操作成功',
+              type: 'success',
+              duration: 1500,
+              onClose: () => {
+                this.getDataList()
+              }
+            })
+          } else {
+            this.$message.error(data.msg)
+          }
+        })
+      })
+    },
     rebootHandler (id) {
       var ids = id ? [id] : this.dataListSelections.map(item => {
         return item.id
@@ -452,6 +507,9 @@ export default {
       }).then(({data}) => {
         if (data && data.code === 0) {
           this.dataList = data.page.list
+          if (this.dataForm.fq) {
+            this.dataList = this.dataList.filter(item => item.heartbeatRequest && item.heartbeatRequest.fq < this.dataForm.fq)
+          }
           this.totalPage = data.page.totalCount
         } else {
           this.dataList = []

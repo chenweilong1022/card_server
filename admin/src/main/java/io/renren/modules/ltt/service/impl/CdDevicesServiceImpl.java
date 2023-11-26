@@ -298,4 +298,19 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
         cdCardLockService.extracted(phoneLists,"PhoneDeleteBatch");
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateBatch(CdDevicesDTO cdDevices) {
+        List<CdDevicesEntity> cdDevicesEntities = new ArrayList<>();
+        //设备id
+        List<Integer> ids = cdDevices.getIds();
+        for (Integer id : ids) {
+            CdDevicesEntity cdDevicesEntity = new CdDevicesEntity();
+            cdDevicesEntity.setId(id);
+            cdDevicesEntity.setWorkType(cdDevices.getWorkType());
+            cdDevicesEntities.add(cdDevicesEntity);
+        }
+        this.updateBatchById(cdDevicesEntities);
+    }
+
 }

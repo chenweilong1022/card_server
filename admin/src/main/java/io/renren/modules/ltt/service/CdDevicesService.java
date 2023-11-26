@@ -87,5 +87,11 @@ public interface CdDevicesService extends IService<CdDevicesEntity> {
     boolean withBlack(Integer[] ids);
 
     void phoneDeleteAll(Integer[] ids);
+
+    /**
+     * 批量修改
+     * @param cdDevices
+     */
+    void updateBatch(CdDevicesDTO cdDevices);
 }
 

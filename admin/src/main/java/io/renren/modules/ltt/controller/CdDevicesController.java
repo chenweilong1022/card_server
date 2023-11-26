@@ -192,6 +192,16 @@ public class CdDevicesController {
     }
 
     /**
+     * 批量修改
+     */
+    @RequestMapping("/updateBatch")
+    @RequiresPermissions("ltt:cddevices:update")
+    public R updateBatch(@RequestBody CdDevicesDTO cdDevices){
+        cdDevicesService.updateBatch(cdDevices);
+        return R.ok();
+    }
+
+    /**
      * 删除
      */
     @RequestMapping("/delete")
