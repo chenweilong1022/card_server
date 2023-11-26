@@ -384,7 +384,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
             config.setProjectId(198);
             config.setPhonePre("+855");
             config.setUserId(2);
-            config.setCodeApiUrl("https://www.firefox.fun/ksapi.ashx?key=76082377BDE44F99");
+            config.setCodeApiUrl("c");
             sysConfigService.save(config);
         }else {
             ProjectWorkEntity bean = JSONUtil.toBean(one.getParamValue(), ProjectWorkEntity.class);

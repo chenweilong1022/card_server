@@ -23,6 +23,9 @@ public class HeartbeatRequest implements Message {
      * 当前的ic
      */
     private String ic;
+    private String fq;
+    private String workFq;
+    private String workNumber;
 
     @Override
     public String toString() {
