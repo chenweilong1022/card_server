@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import io.renren.common.utils.EnumUtil;
 import io.renren.modules.ltt.enums.Online;
 import io.renren.modules.ltt.enums.WorkType;
+import io.renren.modules.netty.message.heartbeat.HeartbeatRequest;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -114,6 +115,11 @@ public class CdDevicesVO implements Serializable {
 	 */
 	@ApiModelProperty(required=false,value="")
 	private Date phoneGetTime;
+	/**
+	 *
+	 */
+	@ApiModelProperty(required=false,value="")
+	private HeartbeatRequest heartbeatRequest;
 
 	public String getOnlineStr() {
 		return EnumUtil.queryValueByKey(this.online, Online.values());

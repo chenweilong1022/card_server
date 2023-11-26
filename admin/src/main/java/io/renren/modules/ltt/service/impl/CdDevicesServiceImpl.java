@@ -21,6 +21,7 @@ import io.renren.modules.ltt.service.*;
 import io.renren.modules.ltt.vo.GroupByDeviceIdVO;
 import io.renren.modules.netty.codec.Invocation;
 import io.renren.modules.netty.message.changecard.ChangeCardResponse;
+import io.renren.modules.netty.message.heartbeat.HeartbeatRequest;
 import io.renren.modules.netty.message.initcard.InitCard2Response;
 import io.renren.modules.netty.message.initcard.InitCardResponse;
 import io.renren.modules.netty.message.reboot.RebootResponse;
@@ -69,6 +70,9 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
     private CdUserService cdUserService;
     @Resource(name = "caffeineCacheProjectWorkEntity")
     private Cache<String, ProjectWorkEntity> caffeineCacheProjectWorkEntity;
+    @Resource(name = "stringHeartbeatRequestCache")
+    private Cache<String, HeartbeatRequest> stringHeartbeatRequestCache;
+
 
     @Override
     public PageUtils<CdDevicesVO> queryPage(CdDevicesDTO cdDevices) {
@@ -80,10 +84,14 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
         List<CdDevicesVO> cdDevicesVOS = page.getRecords();
         //设置number
         for (CdDevicesVO cdDevicesVO : cdDevicesVOS) {
-            GroupByDeviceIdVO groupByDeviceIdVO = collect1.get(cdDevicesVO.getIccid());
+            GroupByDeviceIdVO groupByDeviceIdVO = collect1.get(cdDevicesVO.getDeviceId());
             if (ObjectUtil.isNotNull(groupByDeviceIdVO)) {
                 cdDevicesVO.setInitSuccessNumber(groupByDeviceIdVO.getInitSuccessNumber());
                 cdDevicesVO.setInitTotalNumber(groupByDeviceIdVO.getInitTotalNumber());
+                HeartbeatRequest heartbeatRequest = stringHeartbeatRequestCache.getIfPresent(cdDevicesVO.getDeviceId());
+                if (ObjectUtil.isNotNull(heartbeatRequest)) {
+                    cdDevicesVO.setHeartbeatRequest(heartbeatRequest);
+                }
             }
         }
         return PageUtils.<CdDevicesVO>page(page).setList(cdDevicesVOS);
