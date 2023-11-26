@@ -107,7 +107,7 @@ public class CdDevicesController {
 
 
     /**
-     * 初始化
+     * 拉黑
      */
     @RequestMapping("/withBlack")
     @RequiresPermissions("ltt:cddevices:list")
@@ -135,6 +135,23 @@ public class CdDevicesController {
     @RequestMapping("/phoneDeleteAll2")
     @RequiresPermissions("ltt:cddevices:list")
     public R phoneDeleteAll2(@RequestBody Integer[] ids){
+        extracted();
+        return R.data(true);
+    }
+
+    /**
+     * 接码
+     */
+    @RequestMapping("/getCode")
+    @RequiresPermissions("ltt:cddevices:list")
+    public R getCode(@RequestBody Integer[] ids){
+        extracted();
+        cdDevicesService.phoneDeleteAll(ids);
+        cdDevicesService.initCard3(ids);
+        return R.data(true);
+    }
+
+    private void extracted() {
         ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(ConfigConstant.PROJECT_WORK_KEY);
         Root phoneAddBatch = new Root("PhoneDeleteAll");
         ObjectMapper objectMapper = new ObjectMapper();
@@ -145,7 +162,6 @@ public class CdDevicesController {
 
         }
         String response = HttpUtil.post(projectWorkEntity.getCodeApiUrl(), json);
-        return R.data(true);
     }
 
     /**

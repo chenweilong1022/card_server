@@ -26,17 +26,37 @@
         <el-input v-model="dataForm.remark" placeholder="备注"></el-input>
       </el-form-item>
 
-      <el-form-item label="用户id" prop="userId" v-if="type === 2">
-        <el-input v-model="dataForm.userId" placeholder="用户id"></el-input>
+      <el-form-item label="平台" prop="platform" v-if="type === 2">
+        <el-select v-model="platform" placeholder="平台" clearable @change="platformHandler">
+          <el-option
+            v-for="item in platformOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
       </el-form-item>
+      <el-form-item label="接码平台接口" prop="codeApiUrl"  v-if="type === 2">
+        <el-input v-model="dataForm.codeApiUrl" placeholder="备注"></el-input>
+      </el-form-item>
+
+
       <el-form-item label="项目id" prop="projectId"  v-if="type === 2">
-        <el-input v-model="dataForm.projectId" placeholder="项目id"></el-input>
+<!--        <el-input v-model="dataForm.projectId" placeholder="项目id"></el-input>-->
+        <el-select v-model="dataForm.projectId" placeholder="平台" clearable @change="platformHandler">
+          <el-option
+            v-for="item in projectDataList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id">
+          </el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="手机号前缀" prop="phonePre"  v-if="type === 2">
         <el-input v-model="dataForm.phonePre" placeholder="手机号前缀"></el-input>
       </el-form-item>
-      <el-form-item label="接码平台接口" prop="codeApiUrl"  v-if="type === 2">
-        <el-input v-model="dataForm.codeApiUrl" placeholder="备注"></el-input>
+      <el-form-item label="用户id" prop="userId" v-if="type === 2">
+        <el-input v-model="dataForm.userId" placeholder="用户id" readonly></el-input>
       </el-form-item>
 
 
@@ -55,7 +75,21 @@
     data () {
       return {
         type: 2,
+        platform: 1,
         visible: false,
+        projectDataList: [],
+        platformOptions: [
+          {
+            value: 1,
+            label: '火狐狸',
+            url: 'https://www.firefox.fun/ksapi.ashx?key=76082377BDE44F99'
+          },
+          {
+            value: 2,
+            label: '沃码',
+            url: 'https://www.worldcode.win/ksapi.ashx?key=066131D94DADB4B3'
+          }
+        ],
         options: [
           {
             value: 1,
@@ -71,6 +105,7 @@
           paramKey: '',
           paramValue: '',
           userId: '',
+          platform: null,
           projectId: '',
           phonePre: '',
           codeApiUrl: '',
@@ -87,9 +122,17 @@
       }
     },
     methods: {
+      platformHandler (item) {
+        for (let platformOption of this.platformOptions) {
+          if (platformOption.value === item) {
+            this.dataForm.codeApiUrl = platformOption.url
+          }
+        }
+      },
       init (id) {
         this.dataForm.id = id || 0
         this.visible = true
+        this.projectList()
         this.$nextTick(() => {
           this.$refs['dataForm'].resetFields()
           if (this.dataForm.id) {
@@ -111,6 +154,20 @@
           }
         })
       },
+      projectList () {
+        this.$http({
+          url: this.$http.adornUrl('/ltt/cdproject/list'),
+          method: 'get',
+          params: this.$http.adornParams({
+            'page': 1,
+            'limit': 100
+          })
+        }).then(({data}) => {
+          if (data && data.code === 0) {
+            this.projectDataList = data.page.list
+          }
+        })
+      },
       // 表单提交
       dataFormSubmit () {
         this.$refs['dataForm'].validate((valid) => {
@@ -127,6 +184,7 @@
                 'phonePre': this.dataForm.phonePre,
                 'codeApiUrl': this.dataForm.codeApiUrl,
                 'type': this.type,
+                'platform': this.platform,
                 'remark': this.dataForm.remark
               })
             }).then(({data}) => {

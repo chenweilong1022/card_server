@@ -40,10 +40,11 @@
         <el-button type="primary" @click="cddevicesUpdateAppCardHandle()" :disabled="dataListSelections.length <= 0">app更新</el-button>
         <el-button type="primary" @click="initHandle()" :disabled="dataListSelections.length <= 0">批量初始化</el-button>
         <el-button type="primary" @click="initHandle2()" :disabled="dataListSelections.length <= 0">批量初始化2</el-button>
-        <el-button type="primary" @click="withBlack()" :disabled="dataListSelections.length <= 0">火狐狸拉黑</el-button>
-        <el-button type="primary" @click="initHandle3()" :disabled="dataListSelections.length <= 0">火狐狸初始化</el-button>
-        <el-button type="primary" @click="phoneDeleteAllHandle3()" :disabled="dataListSelections.length <= 0">火狐狸清空手机号</el-button>
-        <el-button type="primary" @click="phoneDeleteAllHandle32()" :disabled="dataListSelections.length <= 0">火狐狸清空全部手机号</el-button>
+        <el-button type="primary" @click="withBlack()" :disabled="dataListSelections.length <= 0">号码拉黑</el-button>
+        <el-button type="primary" @click="getCode()" :disabled="dataListSelections.length <= 0">项目切换</el-button>
+<!--        <el-button type="primary" @click="initHandle3()" :disabled="dataListSelections.length <= 0">火狐狸初始化</el-button>-->
+<!--        <el-button type="primary" @click="phoneDeleteAllHandle3()" :disabled="dataListSelections.length <= 0">火狐狸清空手机号</el-button>-->
+<!--        <el-button type="primary" @click="phoneDeleteAllHandle32()" :disabled="dataListSelections.length <= 0">火狐狸清空全部手机号</el-button>-->
         <el-button type="primary" @click="rebootHandler()" :disabled="dataListSelections.length <= 0">批量重启</el-button>
         <el-button type="primary" @click="updateBatchHandler(null,1)" :disabled="dataListSelections.length <= 0">批量闲置</el-button>
         <el-button type="primary" @click="updateBatchHandler(null,3)" :disabled="dataListSelections.length <= 0">批量工作</el-button>
@@ -198,7 +199,7 @@ import CddevicesUpdateApp from './cddevices-update-app'
 export default {
   data () {
     return {
-      online: null,
+      online: 0,
       workType: null,
       dataForm: {
         key: '',
@@ -235,7 +236,7 @@ export default {
       ],
       dataList: [],
       pageIndex: 1,
-      pageSize: 10,
+      pageSize: 100,
       totalPage: 0,
       dataListLoading: false,
       dataListSelections: [],
@@ -354,6 +355,35 @@ export default {
       }).then(() => {
         this.$http({
           url: this.$http.adornUrl('/ltt/cddevices/initCard2'),
+          method: 'post',
+          data: this.$http.adornData(ids, false)
+        }).then(({data}) => {
+          if (data && data.code === 0) {
+            this.$message({
+              message: '操作成功',
+              type: 'success',
+              duration: 1500,
+              onClose: () => {
+                this.getDataList()
+              }
+            })
+          } else {
+            this.$message.error(data.msg)
+          }
+        })
+      })
+    },
+    getCode (id) {
+      var ids = id ? [id] : this.dataListSelections.map(item => {
+        return item.id
+      })
+      this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '重置接码' : '批量重置接码'}]操作?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$http({
+          url: this.$http.adornUrl('/ltt/cddevices/getCode'),
           method: 'post',
           data: this.$http.adornData(ids, false)
         }).then(({data}) => {
@@ -507,9 +537,9 @@ export default {
       }).then(({data}) => {
         if (data && data.code === 0) {
           this.dataList = data.page.list
-          if (this.dataForm.fq) {
-            this.dataList = this.dataList.filter(item => item.heartbeatRequest && item.heartbeatRequest.fq < this.dataForm.fq)
-          }
+          // if (this.dataForm.fq) {
+          //   this.dataList = this.dataList.filter(item => item.heartbeatRequest && item.heartbeatRequest.fq < this.dataForm.fq)
+          // }
           this.totalPage = data.page.totalCount
         } else {
           this.dataList = []

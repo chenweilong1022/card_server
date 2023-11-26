@@ -1,5 +1,6 @@
 package io.renren.modules.sys.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
 /**
@@ -18,4 +19,6 @@ public class ProjectWorkEntity {
 
     private String codeApiUrl;
 
+
+    private Integer platform;
 }

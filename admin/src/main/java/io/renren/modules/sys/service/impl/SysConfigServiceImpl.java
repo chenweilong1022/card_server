@@ -16,16 +16,24 @@
 
 package io.renren.modules.sys.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.google.gson.Gson;
+import io.renren.common.base.vo.EnumVo;
 import io.renren.common.exception.RRException;
 import io.renren.common.utils.ConfigConstant;
+import io.renren.common.utils.EnumUtil;
 import io.renren.common.utils.PageUtils;
 import io.renren.common.utils.Query;
+import io.renren.modules.ltt.entity.CdProjectEntity;
+import io.renren.modules.ltt.enums.FirefoxProjectItemId;
+import io.renren.modules.ltt.enums.WorldcodeProjectItemId;
+import io.renren.modules.ltt.service.CdProjectService;
+import io.renren.modules.ltt.vo.CdProjectVO;
 import io.renren.modules.sys.dao.SysConfigDao;
 import io.renren.modules.sys.entity.ProjectWorkEntity;
 import io.renren.modules.sys.entity.SysConfigEntity;
@@ -39,6 +47,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service("sysConfigService")
 public class SysConfigServiceImpl extends ServiceImpl<SysConfigDao, SysConfigEntity> implements SysConfigService {
@@ -46,6 +55,8 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigDao, SysConfigEnt
 	private SysConfigRedis sysConfigRedis;
 	@Resource(name = "caffeineCacheProjectWorkEntity")
 	private Cache<String, ProjectWorkEntity> caffeineCacheProjectWorkEntity;
+	@Autowired
+	private CdProjectService cdProjectService;
 
 	@Override
 	public PageUtils queryPage(SysConfigEntity sysConfigEntity) {
@@ -59,6 +70,7 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigDao, SysConfigEnt
 	}
 
 	@Override
+	@Transactional(rollbackFor = Exception.class)
 	public boolean save(SysConfigEntity config) {
 //		获取类型
 		if (2 == config.getType()) {
@@ -67,12 +79,38 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigDao, SysConfigEnt
 			projectWorkEntity.setPhonePre(config.getPhonePre());
 			projectWorkEntity.setUserId(config.getUserId());
 			projectWorkEntity.setCodeApiUrl(config.getCodeApiUrl());
+			projectWorkEntity.setPlatform(config.getPlatform());
 			String jsonStr = JSONUtil.toJsonStr(projectWorkEntity);
 			config.setParamKey(ConfigConstant.PROJECT_WORK_KEY);
 			config.setParamValue(jsonStr);
 			caffeineCacheProjectWorkEntity.put(ConfigConstant.PROJECT_WORK_KEY,projectWorkEntity);
+
+			//项目
+			CdProjectVO cdProjectVO = cdProjectService.getById(config.getProjectId());
+			if (ObjectUtil.isNotNull(cdProjectVO)) {
+				Integer itemId = null;
+				if (1 == config.getPlatform()) {
+					Map<String, Integer> collect = EnumUtil.enumToVo(FirefoxProjectItemId.values()).stream().collect(Collectors.toMap(EnumVo::getValue, EnumVo::getKey));
+					itemId = collect.get(cdProjectVO.getName());
+				}else if (2 == config.getPlatform()) {
+					Map<String, Integer> collect = EnumUtil.enumToVo(WorldcodeProjectItemId.values()).stream().collect(Collectors.toMap(EnumVo::getValue, EnumVo::getKey));
+					itemId = collect.get(cdProjectVO.getName());
+				}
+				if (ObjectUtil.isNotNull(itemId)) {
+					cdProjectService.update(new CdProjectEntity().setItemId(-1),new QueryWrapper<CdProjectEntity>());
+					CdProjectEntity cdProjectEntity = new CdProjectEntity();
+					cdProjectEntity.setId(cdProjectVO.getId());
+					cdProjectEntity.setItemId(itemId);
+					cdProjectService.updateById(cdProjectEntity);
+				}
+			}
 		}
 		baseMapper.insert(config);
+
+
+
+
+
 		return false;
 	}
 
@@ -85,10 +123,31 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigDao, SysConfigEnt
 			projectWorkEntity.setPhonePre(config.getPhonePre());
 			projectWorkEntity.setUserId(config.getUserId());
 			projectWorkEntity.setCodeApiUrl(config.getCodeApiUrl());
+			projectWorkEntity.setPlatform(config.getPlatform());
 			String jsonStr = JSONUtil.toJsonStr(projectWorkEntity);
 			config.setParamKey(ConfigConstant.PROJECT_WORK_KEY);
 			config.setParamValue(jsonStr);
 			caffeineCacheProjectWorkEntity.put(ConfigConstant.PROJECT_WORK_KEY,projectWorkEntity);
+
+			//项目
+			CdProjectVO cdProjectVO = cdProjectService.getById(config.getProjectId());
+			if (ObjectUtil.isNotNull(cdProjectVO)) {
+				Integer itemId = null;
+				if (1 == config.getPlatform()) {
+					Map<String, Integer> collect = EnumUtil.enumToVo(FirefoxProjectItemId.values()).stream().collect(Collectors.toMap(EnumVo::getValue, EnumVo::getKey));
+					itemId = collect.get(cdProjectVO.getName());
+				}else if (2 == config.getPlatform()) {
+					Map<String, Integer> collect = EnumUtil.enumToVo(WorldcodeProjectItemId.values()).stream().collect(Collectors.toMap(EnumVo::getValue, EnumVo::getKey));
+					itemId = collect.get(cdProjectVO.getName());
+				}
+				if (ObjectUtil.isNotNull(itemId)) {
+					cdProjectService.update(new CdProjectEntity().setItemId(-1),new QueryWrapper<CdProjectEntity>());
+					CdProjectEntity cdProjectEntity = new CdProjectEntity();
+					cdProjectEntity.setId(cdProjectVO.getId());
+					cdProjectEntity.setItemId(itemId);
+					cdProjectService.updateById(cdProjectEntity);
+				}
+			}
 		}
 		this.updateById(config);
 	}

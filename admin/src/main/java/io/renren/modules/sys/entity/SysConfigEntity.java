@@ -53,6 +53,9 @@ public class SysConfigEntity extends AbstractEntity implements Serializable {
 	private Integer type;
 
 	@TableField(exist = false)
+	private Integer platform;
+
+	@TableField(exist = false)
 	private String phonePre;
 
 	@TableField(exist = false)
