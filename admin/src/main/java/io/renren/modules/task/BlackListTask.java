@@ -78,12 +78,20 @@ public class BlackListTask {
 //        cdDevicesService.initCard3(ArrayUtil.toArray(ids,Integer.class));
     }
 
+
+    public static void main(String[] args) {
+        String response = HttpUtil.get("https://www.firefox.fun/ksapi.ashx?key=76082377BDE44F99" + "&act=GetWaitPhoneList");
+        System.out.println(response);
+    }
+
     @Scheduled(fixedDelay = 5000)
     @Transactional(rollbackFor = Exception.class)
     public void sayHello() {
         ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(ConfigConstant.PROJECT_WORK_KEY);
         try {
             String response = HttpUtil.get(projectWorkEntity.getCodeApiUrl() + "&act=GetWaitPhoneList");
+            log.info("response = {}",response);
+            log.info(response);
             ObjectMapper objectMapper = new ObjectMapper();
             GetWaitPhoneList phoneDeleteAllResponse = objectMapper.readValue(response, GetWaitPhoneList.class);
 
