@@ -23,6 +23,7 @@ public interface CdCardLockConver {
     List<CdCardLockEntity> converDTO(List<CdCardLockDTO> cdCardLockDTOs);
 
     CdCardLockVO conver(CdCardLockEntity cdCardLockEntities);
+    CdCardLockDTO conver1(CdCardLockEntity cdCardLockEntities);
 
     List<CdCardLockVO> conver(List<CdCardLockEntity> cdCardLockEntities);
 

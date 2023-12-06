@@ -65,6 +65,18 @@ public class AppCdCardLockController extends AbstractController {
     }
 
     /**
+     * 拉黑手机
+     * @param cdCardLock
+     * @return
+     */
+    @RequestMapping("/withBlackMobile")
+    @Login
+    public R withBlackMobile(@RequestBody CdCardLockDTO cdCardLock){
+        cdCardLockService.withBlackMobile(cdCardLock,this.cdUserEntity);
+        return R.ok();
+    }
+
+    /**
      * 释放手机号
      * @param cdCardLock
      * @return

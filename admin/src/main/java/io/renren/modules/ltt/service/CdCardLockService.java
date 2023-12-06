@@ -106,5 +106,7 @@ public interface CdCardLockService extends IService<CdCardLockEntity> {
     void init3(Integer[] ids);
 
     public void extracted(List<PhoneList> phoneLists, String act);
+
+    void withBlackMobile(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity);
 }
 

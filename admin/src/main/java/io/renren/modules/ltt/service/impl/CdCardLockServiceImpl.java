@@ -347,11 +347,13 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
 
         //如果存在信息 火狐狸删除手机
         if (ObjectUtil.isNotNull(cdProjectSmsRecordEntity) && ObjectUtil.isNotNull(cdProjectSmsRecordEntity.getUserId()) && StrUtil.isNotEmpty(cdProjectSmsRecordEntity.getPhone())) {
-            //获取新的
-            List<PhoneList> phoneLists = new ArrayList<>();
-            PhoneList phoneList = new PhoneList("khm",cdProjectSmsRecordEntity.getPhone().replace(phonePre,""));
-            phoneLists.add(phoneList);
-            extracted(phoneLists,"PhoneDeleteBatch");
+            if (userId.equals(cdCardLockEntity.getUserId()) && projectId.equals(cdCardLockEntity.getProjectId())) {
+                //获取新的
+                List<PhoneList> phoneLists = new ArrayList<>();
+                PhoneList phoneList = new PhoneList("khm",cdProjectSmsRecordEntity.getPhone().replace(phonePre,""));
+                phoneLists.add(phoneList);
+                extracted(phoneLists,"PhoneDeleteBatch");
+            }
         }
 
         return save;
@@ -459,6 +461,25 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
         }catch (Exception e) {
 
         }
+    }
+
+    @Override
+    public void withBlackMobile(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity) {
+        //获取当前手机号占用的设备
+        CdCardLockEntity cdCardLockEntity = this.getOne(new QueryWrapper<CdCardLockEntity>().lambda()
+                .eq(CdCardLockEntity::getIccid, cdCardLock.getIccid())
+                .eq(CdCardLockEntity::getProjectId, cdCardLock.getProjectId())
+        );
+        Assert.isNull(cdCardLockEntity,"NoAssociatedDevices");
+        Assert.isNull(cdCardLockEntity.getUserId(),"NoPermissionReleaseDevice");
+        Assert.isTrue(!cdCardLockEntity.getUserId().equals(cdUserEntity.getId()),"NoPermissionReleaseDevice");
+
+        CdCardLockDTO cdCardLockDTO = CdCardLockConver.MAPPER.conver1(cdCardLockEntity);
+
+        cdCardLockDTO.setCode("拉黑");
+        cdCardLockDTO.setDeviceId(cdCardLockEntity.getDeviceId());
+        cdCardLockDTO.setProjectId(cdCardLockEntity.getProjectId());
+        boolean b = this.uploadSms(cdCardLockDTO, cdUserEntity);
     }
 
     private void uploadSms(CdCardLockDTO cdCardLock, CdCardLockEntity cdCardLockEntity){

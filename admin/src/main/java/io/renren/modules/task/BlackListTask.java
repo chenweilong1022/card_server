@@ -114,7 +114,8 @@ public class BlackListTask {
                     DateTime parse = DateUtil.parse(phoneGetTime.replace("T", " "));
                     cdCardLockEntity.setPhoneGetTime(parse);
                     cdCardLockEntity.setCreateTime(DateUtil.date());
-                    cdCardLockService.updateById(cdCardLockEntity);
+                    boolean b = cdCardLockService.updateById(cdCardLockEntity);
+                    log.info("GetWaitPhoneList = {} flag = {}",response,b);
                 }
             }
         }catch (Exception e) {
