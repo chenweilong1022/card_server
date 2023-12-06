@@ -119,6 +119,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public CdCardLockVO getMobile(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity,String deviceId) {
         //获取项目
         CdProjectVO cdProjectVO = cdProjectService.getById(cdCardLock.getProjectId());
@@ -360,6 +361,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public TaskDto deviceTaskGet(CdCardLockDTO cdCardLock) {
         TaskDto taskDto = caffeineCacheCodeTaskDto.getIfPresent(cdCardLock.getDeviceId());
         //清除任務
@@ -412,6 +414,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
     }
 
 
+    @Transactional(rollbackFor = Exception.class)
     public void init3(Integer[] ids){
 
         ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(ConfigConstant.PROJECT_WORK_KEY);
@@ -464,6 +467,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void withBlackMobile(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity) {
         //获取当前手机号占用的设备
         CdCardLockEntity cdCardLockEntity = this.getOne(new QueryWrapper<CdCardLockEntity>().lambda()
