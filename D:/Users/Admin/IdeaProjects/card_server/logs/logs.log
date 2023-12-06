@@ -1484,3 +1484,549 @@
 2023-12-06 22:11:50.650  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
 2023-12-06 22:11:57.184  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
 2023-12-06 22:11:57.185  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:12:03.686  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:12:03.686  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:12:10.226  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:12:10.226  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:12:16.804  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:12:16.804  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:12:23.055  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:12:23.055  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:12:30.262  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:12:30.262  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:12:37.136  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:12:37.137  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:12:43.619  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:12:43.620  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:12:50.463  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:12:50.463  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:12:56.922  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:12:56.922  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:13:03.456  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:13:03.457  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:13:09.804  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:13:09.804  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:13:16.901  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:13:16.901  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:13:23.373  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:13:23.373  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:13:31.014  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:13:31.014  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:13:37.573  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:13:37.573  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:13:44.855  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:13:44.855  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:13:51.809  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:13:51.810  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:13:58.261  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:13:58.262  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:14:04.603  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:14:04.603  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:14:11.252  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:14:11.253  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:14:18.088  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:14:18.088  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:14:24.680  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:14:24.680  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:14:31.061  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:14:31.062  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:14:37.647  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:14:37.647  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:14:44.036  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:14:44.036  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:14:50.470  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:14:50.471  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:14:56.785  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:14:56.785  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:15:26.389  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:15:26.389  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:15:33.382  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:15:33.384  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:15:41.400  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:15:41.400  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:15:48.195  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:15:48.196  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:15:55.930  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:15:55.930  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:16:02.967  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:16:02.969  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:16:10.162  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:16:10.162  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:16:17.547  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:16:17.547  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:16:23.883  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:16:23.883  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:16:30.226  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:16:30.226  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:16:36.754  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:16:36.756  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:16:43.277  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:16:43.277  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:16:49.788  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:16:49.789  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:16:57.052  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:16:57.052  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:17:04.225  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:17:04.225  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:17:10.883  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:17:10.883  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:17:17.529  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:17:17.530  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:17:23.986  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:17:24.003  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:17:30.649  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:17:30.649  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:17:37.277  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:17:37.277  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:17:44.143  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:17:44.143  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:17:51.230  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:17:51.230  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:17:57.598  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:17:57.598  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:18:31.274  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:18:31.274  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:18:38.328  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:18:38.330  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:18:44.785  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:18:44.785  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:18:51.494  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:18:51.495  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:18:58.092  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:18:58.094  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:19:04.677  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:19:04.677  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:19:11.817  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:19:11.817  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:19:19.006  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:19:19.006  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:19:25.580  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:19:25.581  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:19:32.871  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:19:32.872  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:19:39.423  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:19:39.424  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:19:45.924  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:19:45.925  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:19:52.579  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:19:52.579  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:19:58.942  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:19:58.942  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:20:06.575  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:20:06.576  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:20:13.205  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:20:13.206  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:20:19.728  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:20:19.728  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:20:26.062  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:20:26.063  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:20:32.646  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:20:32.647  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:20:38.972  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:20:38.973  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:20:48.866  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:20:48.867  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:20:55.779  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:20:55.780  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:21:03.505  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:21:03.505  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:21:12.590  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:21:12.590  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:21:43.528  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:21:43.528  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:21:50.042  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:21:50.043  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:21:56.370  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:21:56.370  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:22:02.754  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:22:02.754  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:22:09.399  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:22:09.399  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:22:16.677  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:22:16.677  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:22:23.118  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:22:23.118  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:22:30.389  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:22:30.389  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:22:37.205  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:22:37.205  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:22:43.818  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:22:43.818  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:22:50.363  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:22:50.363  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:22:57.024  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:22:57.024  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:23:03.503  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:23:03.503  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:23:10.380  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:23:10.381  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:23:17.515  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:23:17.515  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:23:24.721  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:23:24.721  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:23:31.476  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:23:31.482  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:23:37.986  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:23:37.986  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:23:44.494  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:23:44.494  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:23:50.872  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:23:50.872  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:23:57.363  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:23:57.364  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:24:04.416  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:24:04.417  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:24:43.616  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:24:43.616  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:24:50.861  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:24:50.862  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:24:57.315  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:24:57.316  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:25:03.739  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:25:03.739  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:25:10.998  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:25:10.998  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:25:18.156  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:25:18.156  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:25:30.035  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:25:30.040  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:25:36.815  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:25:36.815  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:25:44.904  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:25:44.906  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:25:51.457  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:25:51.457  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:25:57.908  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:25:57.908  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:26:04.186  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:26:04.186  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:26:10.744  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:26:10.745  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:26:22.137  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:26:22.138  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:26:30.062  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:26:30.062  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:26:37.536  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:26:37.571  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:26:43.969  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:26:43.969  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:26:54.889  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:26:54.890  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:27:01.520  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:27:01.521  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:27:07.912  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:27:07.912  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:27:14.504  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:27:14.505  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:27:21.192  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:27:21.192  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:27:27.761  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:27:27.761  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:27:34.424  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:27:34.425  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:27:40.831  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:27:40.831  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:27:48.091  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:27:48.091  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:27:55.301  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:27:55.302  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:28:01.774  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:28:01.775  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:28:08.999  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:28:08.999  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:28:15.301  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:28:15.301  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:28:22.580  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:28:22.580  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:28:29.830  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:28:29.830  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:28:36.961  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:28:36.961  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:28:43.983  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:28:43.984  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:28:50.243  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:28:50.243  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:28:56.906  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:28:56.906  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:29:03.408  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:29:03.408  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:29:09.923  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:29:09.938  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:29:17.096  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:29:17.097  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:29:23.550  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:29:23.550  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:29:29.932  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:29:29.932  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:29:36.365  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:29:36.366  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:29:42.995  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:29:42.995  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:29:49.560  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:29:49.561  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:29:56.704  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:29:56.706  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:30:03.203  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:30:03.203  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:30:09.619  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:30:09.619  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:30:16.202  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:30:16.202  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:30:22.641  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:30:22.641  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:30:29.200  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:30:29.200  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:30:35.543  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:30:35.543  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:30:41.996  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:30:41.996  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:30:48.335  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:30:48.335  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:30:54.778  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:30:54.778  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:31:01.343  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:31:01.344  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:31:07.788  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:31:07.790  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:31:14.359  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:31:14.360  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:31:20.797  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:31:20.797  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:31:28.105  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:31:28.105  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:31:34.429  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:31:34.430  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:31:40.862  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:31:40.862  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:31:47.206  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:31:47.207  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:31:53.551  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:31:53.551  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:31:59.936  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:31:59.936  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:32:06.288  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:32:06.289  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:32:12.730  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:32:12.730  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:32:19.379  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:32:19.379  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:32:24.797  INFO 79965 --- [SessionValidationThread-1] a.s.s.m.AbstractValidatingSessionManager : Validating all active sessions...
+2023-12-06 22:32:24.826  INFO 79965 --- [SessionValidationThread-1] a.s.s.m.AbstractValidatingSessionManager : Finished session validation.  [1] sessions were stopped.
+2023-12-06 22:32:25.941  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:32:25.941  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:32:33.195  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:32:33.195  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:32:39.945  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:32:39.946  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:32:46.402  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:32:46.402  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:32:53.574  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:32:53.574  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:32:59.916  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:32:59.918  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:33:06.448  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:33:06.449  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:33:12.786  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:33:12.786  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:33:19.816  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:33:19.816  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:33:26.336  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:33:26.336  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:33:33.019  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:33:33.020  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:33:40.035  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:33:40.036  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:33:46.592  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:33:46.592  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:33:53.194  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:33:53.194  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:33:59.520  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:33:59.520  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:34:05.871  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:34:05.872  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:34:12.597  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:34:12.597  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:34:19.114  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:34:19.114  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:34:25.740  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:34:25.740  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:34:32.945  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:34:32.946  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:34:39.330  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:34:39.331  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:34:45.708  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:34:45.708  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:34:52.040  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:34:52.041  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:34:58.515  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:34:58.516  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:35:05.951  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:35:05.952  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:35:12.312  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:35:12.313  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:35:18.583  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:35:18.583  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:35:25.100  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:35:25.100  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:35:31.609  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:35:31.609  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:35:38.022  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:35:38.022  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:35:44.426  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:35:44.426  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:35:50.955  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:35:50.956  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:35:57.404  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:35:57.404  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:36:04.110  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:36:04.110  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:36:10.553  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:36:10.553  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:36:17.165  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:36:17.166  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:36:23.550  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:36:23.552  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:36:30.076  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:36:30.077  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:36:36.523  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:36:36.524  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:36:42.957  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:36:42.957  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:36:50.234  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:36:50.234  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:36:56.897  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:36:56.906  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:37:03.560  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:37:03.560  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:37:10.578  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:37:10.579  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:37:17.167  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:37:17.167  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:37:23.671  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:37:23.672  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:37:30.077  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:37:30.077  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:37:36.895  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:37:36.896  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:37:43.391  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:37:43.392  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:37:49.916  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:37:49.916  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:37:56.556  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:37:56.557  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:38:03.030  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:38:03.031  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:38:09.384  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:38:09.384  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:38:15.861  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:38:15.862  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:38:22.167  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:38:22.167  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:38:28.549  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:38:28.549  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:38:34.986  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:38:34.986  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:38:41.682  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:38:41.682  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:38:48.471  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:38:48.471  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:38:55.664  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:38:55.664  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:39:02.032  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:39:02.033  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:39:08.543  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:39:08.554  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:39:15.117  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:39:15.117  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:39:53.747  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:39:53.747  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:40:02.874  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:40:02.874  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:40:09.982  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:40:09.983  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:40:16.437  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:40:16.437  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:40:24.008  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:40:24.010  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:40:30.416  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:40:30.416  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:40:37.013  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:40:37.013  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:40:43.603  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:40:43.604  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:40:50.077  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:40:50.077  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:40:56.591  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:40:56.593  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:41:03.273  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:41:03.274  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:41:09.717  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:41:09.717  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:41:17.590  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:41:17.591  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:41:24.048  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:41:24.048  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:41:31.296  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:41:31.306  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:41:38.572  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:41:38.572  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:41:47.078  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:41:47.078  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:41:53.548  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:41:53.548  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:41:59.812  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:41:59.812  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:42:06.371  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:42:06.371  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:42:12.875  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:42:12.875  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:42:19.382  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:42:19.383  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:42:25.828  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:42:25.829  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:42:32.172  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:42:32.172  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:42:38.573  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:42:38.573  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:42:44.973  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:42:44.973  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:42:51.493  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:42:51.493  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:42:57.884  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:42:57.885  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:43:04.157  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:43:04.157  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:43:10.568  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:43:10.568  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:43:17.007  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:43:17.009  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:43:23.649  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:43:23.649  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:43:30.080  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:43:30.080  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:43:36.747  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:43:36.747  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:43:43.212  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:43:43.212  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:43:49.768  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:43:49.769  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:43:56.132  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:43:56.132  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:44:02.468  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:44:02.468  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:44:09.036  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:44:09.037  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:44:15.570  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:44:15.571  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:44:21.882  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:44:21.882  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:44:28.265  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:44:28.265  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:44:34.967  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:44:34.967  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:44:41.497  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : response = {"code":"0","data":[]}
+2023-12-06 22:44:41.497  INFO 79965 --- [pool-3-thread-1] io.renren.modules.task.BlackListTask     : {"code":"0","data":[]}
+2023-12-06 22:44:46.835  INFO 79965 --- [Thread-26] ConfigServletWebServerApplicationContext : Closing org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@bae7dc0: startup date [Wed Dec 06 21:29:05 ICT 2023]; root of context hierarchy
+2023-12-06 22:44:46.923  INFO 79965 --- [Thread-26] o.s.c.support.DefaultLifecycleProcessor  : Stopping beans in phase 2147483647
+2023-12-06 22:44:46.931  INFO 79965 --- [Thread-26] o.s.j.e.a.AnnotationMBeanExporter        : Unregistering JMX-exposed beans on shutdown
+2023-12-06 22:44:46.934  INFO 79965 --- [Thread-26] o.s.j.e.a.AnnotationMBeanExporter        : Unregistering JMX-exposed beans

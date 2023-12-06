@@ -480,6 +480,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
         cdCardLockDTO.setDeviceId(cdCardLockEntity.getDeviceId());
         cdCardLockDTO.setProjectId(cdCardLockEntity.getProjectId());
         boolean b = this.uploadSms(cdCardLockDTO, cdUserEntity);
+        this.releaseMobile(cdCardLock,cdUserEntity);
     }
 
     private void uploadSms(CdCardLockDTO cdCardLock, CdCardLockEntity cdCardLockEntity){
