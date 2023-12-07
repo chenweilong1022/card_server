@@ -12,7 +12,7 @@ token: 21b586486f4b4744a30438ad11181f59
 
 //获取手机号
 Request URL: http://134.122.130.178:8880/app/cdcardlock/getMobile
-{"projectId":7}
+{"projectId": 197}
 {"msg":"success","code":0,"data":{"id":null,"code":null,"userId":null,"projectId":null,"deviceId":null,"lock":null,"phone":"+855968261399","iccid":"8985506082401385191F","deleteFlag":null,"createTime":null}}
 
 //获取短信信息 //10s请求一次
@@ -20,8 +20,7 @@ Request URL: http://134.122.130.178:8880/app/cdcardlock/getSms
 {"iccid":"8985506082401385191F","projectId":7}
 {"msg":"success","code":0,"data":null}
 
-
-//释放手机号
-Request URL: http://134.122.130.178:8880/app/cdcardlock/releaseMobile
-{"iccid":"8985506082401385191F","projectId":7}
+//拉黑手机号
+Request URL: http://134.122.130.178:8880/app/cdcardlock/withBlackMobile
+{"iccid":"8985506082401385191F","projectId": 197}
 {"msg":"success","code":0,"data":true}

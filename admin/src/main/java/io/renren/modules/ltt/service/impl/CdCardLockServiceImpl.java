@@ -165,11 +165,19 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
                     .eq(CdProjectSmsRecordEntity::getDeviceId,cdCardLockEntity.getDeviceId())
             );
 
-            if (StrUtil.isNotEmpty(cdCardLock.getNumberSegment())) {
-                cdCardEntities = cdCardEntities.stream().filter(cdCardEntity -> cdCardEntity.getPhone().startsWith(cdCardLock.getNumberSegment())).collect(Collectors.toList());
-            }
             //已经使用的id
             List<String> iccids = cdProjectSmsRecordEntities.stream().map(CdProjectSmsRecordEntity::getIccid).collect(Collectors.toList());
+
+            if (StrUtil.isNotEmpty(cdCardLock.getNumberSegment())) {
+                cdCardEntities = cdCardEntities.stream().filter(cdCardEntity -> cdCardEntity.getPhone().startsWith(cdCardLock.getNumberSegment())).collect(Collectors.toList());
+                if (CollUtil.isNotEmpty(cdCardEntities) && 1 == cdCardEntities.size()) {
+                    CdCardEntity cdCardEntity = cdCardEntities.get(0);
+                    if (cdCardEntity.getPhone().equals(cdCardLock.getNumberSegment())) {
+                        iccids = CollUtil.newArrayList();
+                    }
+                }
+            }
+
             for (CdCardEntity cdDevicesEntity : cdCardEntities) {
                 if (iccids.contains(cdDevicesEntity.getIccid()) || StrUtil.isEmpty(cdDevicesEntity.getPhone())) {
                     continue;
