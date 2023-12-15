@@ -10,12 +10,10 @@ import io.renren.common.utils.ConfigConstant;
 import io.renren.datasources.annotation.Game;
 import io.renren.modules.app.dto.TaskDto;
 import io.renren.modules.ltt.dto.CdCardLockDTO;
+import io.renren.modules.ltt.dto.CdDevicesInitDTO;
 import io.renren.modules.ltt.dto.CdDevicesUpdateAppDTO;
 import io.renren.modules.ltt.entity.*;
-import io.renren.modules.ltt.enums.DeleteFlag;
-import io.renren.modules.ltt.enums.Lock;
-import io.renren.modules.ltt.enums.Online;
-import io.renren.modules.ltt.enums.WorkType;
+import io.renren.modules.ltt.enums.*;
 import io.renren.modules.ltt.firefox.PhoneList;
 import io.renren.modules.ltt.service.*;
 import io.renren.modules.ltt.vo.GroupByDeviceIdVO;
@@ -165,13 +163,18 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
     }
 
     @Override
-    public boolean initCard(Integer[] ids) {
-        List<CdDevicesEntity> cdDevicesEntities = this.listByIds(Arrays.asList(ids));
+    public boolean initCard(CdDevicesInitDTO initDTO) {
+        List<CdDevicesEntity> cdDevicesEntities = this.listByIds(Arrays.asList(initDTO.getIds()));
         List<CdDevicesEntity> updates = new ArrayList<>();
         for (CdDevicesEntity cdDevicesEntity : cdDevicesEntities) {
             InitCardResponse response = new InitCardResponse();
             response.setDeviceId(cdDevicesEntity.getIccid());
-            nettyChannelManager.send(cdDevicesEntity.getIccid(),new Invocation(InitCardResponse.TYPE, response));
+            response.setUssd(initDTO.getUssd());
+            if (InitType.InitType1.getKey().equals(initDTO.getType())) {
+                nettyChannelManager.send(cdDevicesEntity.getIccid(),new Invocation(InitCardResponse.TYPE, response));
+            }else if (InitType.InitType2.getKey().equals(initDTO.getType())) {
+                nettyChannelManager.send(cdDevicesEntity.getIccid(),new Invocation(InitCard2Response.TYPE, response));
+            }
             CdDevicesEntity update = new CdDevicesEntity();
             update.setId(cdDevicesEntity.getId());
             update.setWorkType(WorkType.WorkType2.getKey());
@@ -182,23 +185,23 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
         return true;
     }
 
-    @Override
-    public boolean initCard2(Integer[] ids) {
-        List<CdDevicesEntity> cdDevicesEntities = this.listByIds(Arrays.asList(ids));
-        List<CdDevicesEntity> updates = new ArrayList<>();
-        for (CdDevicesEntity cdDevicesEntity : cdDevicesEntities) {
-            InitCardResponse response = new InitCardResponse();
-            response.setDeviceId(cdDevicesEntity.getIccid());
-            nettyChannelManager.send(cdDevicesEntity.getIccid(),new Invocation(InitCard2Response.TYPE, response));
-            CdDevicesEntity update = new CdDevicesEntity();
-            update.setId(cdDevicesEntity.getId());
-            update.setWorkType(WorkType.WorkType2.getKey());
-            updates.add(update);
-        }
-        //批量修改为初始化状态
-        this.updateBatchById(updates);
-        return true;
-    }
+//    @Override
+//    public boolean initCard2(Integer[] ids) {
+//        List<CdDevicesEntity> cdDevicesEntities = this.listByIds(Arrays.asList(ids));
+//        List<CdDevicesEntity> updates = new ArrayList<>();
+//        for (CdDevicesEntity cdDevicesEntity : cdDevicesEntities) {
+//            InitCardResponse response = new InitCardResponse();
+//            response.setDeviceId(cdDevicesEntity.getIccid());
+//            nettyChannelManager.send(cdDevicesEntity.getIccid(),new Invocation(InitCard2Response.TYPE, response));
+//            CdDevicesEntity update = new CdDevicesEntity();
+//            update.setId(cdDevicesEntity.getId());
+//            update.setWorkType(WorkType.WorkType2.getKey());
+//            updates.add(update);
+//        }
+//        //批量修改为初始化状态
+//        this.updateBatchById(updates);
+//        return true;
+//    }
 
     @Override
     public boolean changeCard(CdDevicesDTO cdDevices) {

@@ -19,6 +19,7 @@ public class InitCardResponse implements Message {
 
     private String httpUrl;
     private String deviceId;
+    private String ussd;
     /**
      * 板子
      */

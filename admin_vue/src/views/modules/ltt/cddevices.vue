@@ -189,6 +189,7 @@
     <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
     <cddevices-change-card v-if="cddevicesChangeCardVisible" ref="cddevicesChangeCard" @refreshDataList="getDataList"></cddevices-change-card>
     <cddevices-update-app  v-if="cddevicesUpdateAppVisible" ref="cddevicesUpdateApp" @refreshDataList="getDataList"></cddevices-update-app>
+    <cddevices-init v-if="cddevicesInitVisible" ref="cddevicesInit" @refreshDataList="getDataList"></cddevices-init>
   </div>
 </template>
 
@@ -196,6 +197,7 @@
 import AddOrUpdate from './cddevices-add-or-update'
 import CddevicesChangeCard from './cddevices-change-card'
 import CddevicesUpdateApp from './cddevices-update-app'
+import CddevicesInit from './cddevices-init.vue'
 export default {
   data () {
     return {
@@ -242,13 +244,15 @@ export default {
       dataListSelections: [],
       addOrUpdateVisible: false,
       cddevicesChangeCardVisible: false,
+      cddevicesInitVisible: false,
       cddevicesUpdateAppVisible: false
     }
   },
   components: {
     AddOrUpdate,
     CddevicesChangeCard,
-    CddevicesUpdateApp
+    CddevicesUpdateApp,
+    CddevicesInit
   },
   activated () {
     this.getDataList()
@@ -316,33 +320,39 @@ export default {
       })
     },
     initHandle (id) {
-      var ids = id ? [id] : this.dataListSelections.map(item => {
-        return item.id
-      })
-      this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '初始化' : '批量初始化'}]操作?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.$http({
-          url: this.$http.adornUrl('/ltt/cddevices/initCard'),
-          method: 'post',
-          data: this.$http.adornData(ids, false)
-        }).then(({data}) => {
-          if (data && data.code === 0) {
-            this.$message({
-              message: '操作成功',
-              type: 'success',
-              duration: 1500,
-              onClose: () => {
-                this.getDataList()
-              }
-            })
-          } else {
-            this.$message.error(data.msg)
-          }
+
+      this.cddevicesInitVisible = true
+      this.$nextTick(() => {
+        var ids = id ? [id] : this.dataListSelections.map(item => {
+          return item.id
         })
+        this.$refs.cddevicesInit.init(ids)
       })
+
+      // this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '初始化' : '批量初始化'}]操作?`, '提示', {
+      //   confirmButtonText: '确定',
+      //   cancelButtonText: '取消',
+      //   type: 'warning'
+      // }).then(() => {
+      //   this.$http({
+      //     url: this.$http.adornUrl('/ltt/cddevices/initCard'),
+      //     method: 'post',
+      //     data: this.$http.adornData(ids, false)
+      //   }).then(({data}) => {
+      //     if (data && data.code === 0) {
+      //       this.$message({
+      //         message: '操作成功',
+      //         type: 'success',
+      //         duration: 1500,
+      //         onClose: () => {
+      //           this.getDataList()
+      //         }
+      //       })
+      //     } else {
+      //       this.$message.error(data.msg)
+      //     }
+      //   })
+      // })
     },
     initHandle2 (id) {
       var ids = id ? [id] : this.dataListSelections.map(item => {

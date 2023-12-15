@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.benmanes.caffeine.cache.Cache;
 import io.renren.common.utils.ConfigConstant;
 import io.renren.modules.ltt.dto.CdCardLockDTO;
+import io.renren.modules.ltt.dto.CdDevicesInitDTO;
 import io.renren.modules.ltt.dto.CdDevicesUpdateAppDTO;
 import io.renren.modules.ltt.entity.CdCardLockEntity;
 import io.renren.modules.ltt.entity.CdUserEntity;
@@ -92,8 +93,8 @@ public class CdDevicesController {
      */
     @RequestMapping("/initCard")
     @RequiresPermissions("ltt:cddevices:list")
-    public R initCard(@RequestBody Integer[] ids){
-        return R.data(cdDevicesService.initCard(ids));
+    public R initCard(@RequestBody CdDevicesInitDTO initDTO){
+        return R.data(cdDevicesService.initCard(initDTO));
     }
 
     /**
@@ -164,14 +165,14 @@ public class CdDevicesController {
         String response = HttpUtil.post(projectWorkEntity.getCodeApiUrl(), json);
     }
 
-    /**
-     * 初始化
-     */
-    @RequestMapping("/initCard2")
-    @RequiresPermissions("ltt:cddevices:list")
-    public R initCard2(@RequestBody Integer[] ids){
-        return R.data(cdDevicesService.initCard2(ids));
-    }
+//    /**
+//     * 初始化
+//     */
+//    @RequestMapping("/initCard2")
+//    @RequiresPermissions("ltt:cddevices:list")
+//    public R initCard2(@RequestBody Integer[] ids){
+//        return R.data(cdDevicesService.initCard2(ids));
+//    }
 
 
     /**
