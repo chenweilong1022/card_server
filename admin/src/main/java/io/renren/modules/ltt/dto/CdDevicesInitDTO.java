@@ -2,6 +2,8 @@ package io.renren.modules.ltt.dto;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @author liuyuchan
  * @email liuyuchan286@gmail.com
@@ -9,7 +11,7 @@ import lombok.Data;
  */
 @Data
 public class CdDevicesInitDTO {
-    private Integer[] ids;
+    private List<Integer> ids;
     private Integer type;
     private String ussd;
 }
