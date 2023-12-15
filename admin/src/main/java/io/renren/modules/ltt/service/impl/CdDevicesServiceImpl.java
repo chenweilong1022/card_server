@@ -164,7 +164,7 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
 
     @Override
     public boolean initCard(CdDevicesInitDTO initDTO) {
-        List<CdDevicesEntity> cdDevicesEntities = this.listByIds(Arrays.asList(initDTO.getIds()));
+        List<CdDevicesEntity> cdDevicesEntities = this.listByIds(initDTO.getIds());
         List<CdDevicesEntity> updates = new ArrayList<>();
         for (CdDevicesEntity cdDevicesEntity : cdDevicesEntities) {
             InitCardResponse response = new InitCardResponse();
