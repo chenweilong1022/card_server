@@ -58,6 +58,9 @@
             <if test="dto.iccid != null and dto.iccid != ''">
                 and d.iccid = #{dto.iccid}
             </if>
+            <if test="dto.groupId != null and dto.groupId != ''">
+                and d.group_id = #{dto.groupId}
+            </if>
             <if test="dto.phone != null and dto.phone != ''">
                 and l.phone = #{dto.phone}
             </if>

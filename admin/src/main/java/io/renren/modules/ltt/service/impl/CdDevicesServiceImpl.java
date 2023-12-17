@@ -316,4 +316,18 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
         this.updateBatchById(cdDevicesEntities);
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean changeGroup(CdDevicesDTO cdDevices) {
+        List<Integer> ids = cdDevices.getIds();
+        List<CdDevicesEntity> cdDevicesEntities = new ArrayList<>();
+        for (Integer id : ids) {
+            CdDevicesEntity cdDevicesEntity = new CdDevicesEntity();
+            cdDevicesEntity.setId(id);
+            cdDevicesEntity.setGroupId(cdDevices.getGroupId());
+            cdDevicesEntities.add(cdDevicesEntity);
+        }
+        return this.updateBatchById(cdDevicesEntities);
+    }
+
 }

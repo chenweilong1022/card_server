@@ -78,6 +78,16 @@ public class CdDevicesController {
         return R.data(cdDevicesService.changeCard(cdDevices));
     }
 
+
+    /**
+     * 切换分组
+     */
+    @RequestMapping("/changeGroup")
+    @RequiresPermissions("ltt:cddevices:list")
+    public R changeGroup(@RequestBody CdDevicesDTO cdDevices){
+        return R.data(cdDevicesService.changeGroup(cdDevices));
+    }
+
     /**
      * 切换卡
      */

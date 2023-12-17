@@ -101,6 +101,11 @@ public class CdDevicesVO implements Serializable {
 	@ApiModelProperty(required=false,value="")
 	private Integer projectId;
 	/**
+	 * 分组id
+	 */
+	@ApiModelProperty(required=false,value="")
+	private Integer groupId;
+	/**
 	 *
 	 */
 	@ApiModelProperty(required=false,value="")

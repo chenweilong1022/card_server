@@ -115,6 +115,17 @@ CREATE TABLE `cd_firefox_card` (
 
 
 
+CREATE TABLE `cd_card_group` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `group_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `param_value` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `delete_flag` int(11) DEFAULT NULL,
+  `create_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=264949 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+
 
 
 

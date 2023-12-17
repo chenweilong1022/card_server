@@ -17,7 +17,7 @@ public class RenrenApplicationTests {
 	@Test
 	public void contextLoads() {
 		sysGeneratorService.generatorCode(new String[]{
-				"cd_devices_number",
+				"cd_card_group",
 		});
 	}
 

@@ -23,7 +23,6 @@
           </el-option>
         </el-select>
       </el-form-item>
-
       <el-form-item>
         <el-select v-model="workType" placeholder="工作流程" clearable>
           <el-option
@@ -36,10 +35,20 @@
       </el-form-item>
 
       <el-form-item>
+        <el-select v-model="groupId" placeholder="分组" clearable>
+          <el-option
+            v-for="item in dataListGroup"
+            :key="item.id"
+            :label="item.groupName"
+            :value="item.id">
+          </el-option>
+        </el-select>
+      </el-form-item>
+
+      <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
         <el-button type="primary" @click="cddevicesUpdateAppCardHandle()" :disabled="dataListSelections.length <= 0">app更新</el-button>
         <el-button type="primary" @click="initHandle()" :disabled="dataListSelections.length <= 0">批量初始化</el-button>
-        <el-button type="primary" @click="initHandle2()" :disabled="dataListSelections.length <= 0">批量初始化2</el-button>
         <el-button type="primary" @click="withBlack()" :disabled="dataListSelections.length <= 0">号码拉黑</el-button>
         <el-button type="primary" @click="getCode()" :disabled="dataListSelections.length <= 0">项目切换</el-button>
 <!--        <el-button type="primary" @click="initHandle3()" :disabled="dataListSelections.length <= 0">火狐狸初始化</el-button>-->
@@ -48,6 +57,7 @@
         <el-button type="primary" @click="rebootHandler()" :disabled="dataListSelections.length <= 0">批量重启</el-button>
         <el-button type="primary" @click="updateBatchHandler(null,1)" :disabled="dataListSelections.length <= 0">批量闲置</el-button>
         <el-button type="primary" @click="updateBatchHandler(null,3)" :disabled="dataListSelections.length <= 0">批量工作</el-button>
+        <el-button type="primary" @click="cddevicesGroupChangeHandle()" :disabled="dataListSelections.length <= 0">分组</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -63,22 +73,16 @@
         width="50">
       </el-table-column>
       <el-table-column
-        prop="id"
+        prop="number"
         header-align="center"
         align="center"
-        label="主键">
+        label="编号">
       </el-table-column>
       <el-table-column
         prop="deviceId"
         header-align="center"
         align="center"
         label="设备id">
-      </el-table-column>
-      <el-table-column
-        prop="number"
-        header-align="center"
-        align="center"
-        label="编号">
       </el-table-column>
       <el-table-column
         prop="packageVersion"
@@ -190,6 +194,8 @@
     <cddevices-change-card v-if="cddevicesChangeCardVisible" ref="cddevicesChangeCard" @refreshDataList="getDataList"></cddevices-change-card>
     <cddevices-update-app  v-if="cddevicesUpdateAppVisible" ref="cddevicesUpdateApp" @refreshDataList="getDataList"></cddevices-update-app>
     <cddevices-init v-if="cddevicesInitVisible" ref="cddevicesInit" @refreshDataList="getDataList"></cddevices-init>
+
+    <cddevices-group-change v-if="cddevicesGroupChangeVisible" ref="cddevicesGroupChange" @refreshDataList="getDataList"></cddevices-group-change>
   </div>
 </template>
 
@@ -197,12 +203,14 @@
 import AddOrUpdate from './cddevices-add-or-update'
 import CddevicesChangeCard from './cddevices-change-card'
 import CddevicesUpdateApp from './cddevices-update-app'
+import CddevicesGroupChange from './cddevices-group-change'
 import CddevicesInit from './cddevices-init.vue'
 export default {
   data () {
     return {
       online: 0,
       workType: null,
+      groupId: null,
       dataForm: {
         key: '',
         online: null,
@@ -237,6 +245,7 @@ export default {
         }
       ],
       dataList: [],
+      dataListGroup: [],
       pageIndex: 1,
       pageSize: 100,
       totalPage: 0,
@@ -245,6 +254,7 @@ export default {
       addOrUpdateVisible: false,
       cddevicesChangeCardVisible: false,
       cddevicesInitVisible: false,
+      cddevicesGroupChangeVisible: false,
       cddevicesUpdateAppVisible: false
     }
   },
@@ -252,12 +262,31 @@ export default {
     AddOrUpdate,
     CddevicesChangeCard,
     CddevicesUpdateApp,
+    CddevicesGroupChange,
     CddevicesInit
   },
   activated () {
     this.getDataList()
+    this.getGroupDataList()
   },
   methods: {
+    // 获取数据列表
+    getGroupDataList () {
+      this.$http({
+        url: this.$http.adornUrl('/ltt/cdcardgroup/list'),
+        method: 'get',
+        params: this.$http.adornParams({
+          'page': 1,
+          'limit': 100
+        })
+      }).then(({data}) => {
+        if (data && data.code === 0) {
+          this.dataListGroup = data.page.list
+        } else {
+          this.dataListGroup = []
+        }
+      })
+    },
     updateBatchHandler (id, workType) {
       var ids = id ? [id] : this.dataListSelections.map(item => {
         return item.id
@@ -319,8 +348,16 @@ export default {
         })
       })
     },
+    cddevicesGroupChangeHandle (id) {
+      this.cddevicesGroupChangeVisible = true
+      this.$nextTick(() => {
+        var ids = id ? [id] : this.dataListSelections.map(item => {
+          return item.id
+        })
+        this.$refs.cddevicesGroupChange.init(ids)
+      })
+    },
     initHandle (id) {
-
       this.cddevicesInitVisible = true
       this.$nextTick(() => {
         var ids = id ? [id] : this.dataListSelections.map(item => {
@@ -328,31 +365,6 @@ export default {
         })
         this.$refs.cddevicesInit.init(ids)
       })
-
-      // this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '初始化' : '批量初始化'}]操作?`, '提示', {
-      //   confirmButtonText: '确定',
-      //   cancelButtonText: '取消',
-      //   type: 'warning'
-      // }).then(() => {
-      //   this.$http({
-      //     url: this.$http.adornUrl('/ltt/cddevices/initCard'),
-      //     method: 'post',
-      //     data: this.$http.adornData(ids, false)
-      //   }).then(({data}) => {
-      //     if (data && data.code === 0) {
-      //       this.$message({
-      //         message: '操作成功',
-      //         type: 'success',
-      //         duration: 1500,
-      //         onClose: () => {
-      //           this.getDataList()
-      //         }
-      //       })
-      //     } else {
-      //       this.$message.error(data.msg)
-      //     }
-      //   })
-      // })
     },
     initHandle2 (id) {
       var ids = id ? [id] : this.dataListSelections.map(item => {
@@ -538,6 +550,7 @@ export default {
           'page': this.pageIndex,
           'limit': this.pageSize,
           'online': this.online,
+          'groupId': this.groupId,
           'workType': this.workType,
           'iccid': this.dataForm.iccid,
           'phone': this.dataForm.phone,

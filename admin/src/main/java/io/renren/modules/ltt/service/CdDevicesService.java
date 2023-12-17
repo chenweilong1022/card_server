@@ -94,5 +94,12 @@ public interface CdDevicesService extends IService<CdDevicesEntity> {
      * @param cdDevices
      */
     void updateBatch(CdDevicesDTO cdDevices);
+
+    /**
+     * 切换分组
+     * @param cdDevices
+     * @return
+     */
+    boolean changeGroup(CdDevicesDTO cdDevices);
 }
 
