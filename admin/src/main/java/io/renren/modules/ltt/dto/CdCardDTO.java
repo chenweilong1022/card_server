@@ -62,6 +62,11 @@ public class CdCardDTO extends PageParam implements Serializable {
 	@ApiModelProperty(required=false,value="删除标志")
 	private Integer deleteFlag;
 	/**
+	 * 使用状态
+	 */
+	@ApiModelProperty(required=false,value="使用状态")
+	private Integer useStatus;
+	/**
 	 * 创建时间
 	 */
 	@ApiModelProperty(required=false,value="创建时间")

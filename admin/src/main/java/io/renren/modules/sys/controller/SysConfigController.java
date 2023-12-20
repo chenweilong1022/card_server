@@ -77,6 +77,7 @@ public class SysConfigController extends AbstractController {
 			config.setUserId(projectWorkEntity.getUserId());
 			config.setCodeApiUrl(projectWorkEntity.getCodeApiUrl());
 			config.setPlatform(projectWorkEntity.getPlatform());
+			config.setCodeAcquisitionType(projectWorkEntity.getCodeAcquisitionType());
 		}
 		return R.ok().put("config", config);
 	}

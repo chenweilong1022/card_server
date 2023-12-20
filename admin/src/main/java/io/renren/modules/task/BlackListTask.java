@@ -10,10 +10,12 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.benmanes.caffeine.cache.Cache;
 import io.renren.common.utils.ConfigConstant;
+import io.renren.modules.ltt.conver.CdCardLockConver;
 import io.renren.modules.ltt.dto.CdCardLockDTO;
 import io.renren.modules.ltt.entity.CdCardLockEntity;
 import io.renren.modules.ltt.entity.CdProjectEntity;
 import io.renren.modules.ltt.entity.CdUserEntity;
+import io.renren.modules.ltt.enums.CodeAcquisitionType;
 import io.renren.modules.ltt.enums.Lock;
 import io.renren.modules.ltt.firefox.GetWaitPhoneList;
 import io.renren.modules.ltt.firefox.GetWaitPhoneListDaum;
@@ -21,6 +23,7 @@ import io.renren.modules.ltt.service.CdCardLockService;
 import io.renren.modules.ltt.service.CdDevicesService;
 import io.renren.modules.ltt.service.CdProjectService;
 import io.renren.modules.ltt.service.CdUserService;
+import io.renren.modules.ltt.vo.CdCardLockVO;
 import io.renren.modules.ltt.vo.CdProjectVO;
 import io.renren.modules.sys.entity.ProjectWorkEntity;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +38,7 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 /**
@@ -57,25 +61,52 @@ public class BlackListTask {
     private CdProjectService cdProjectService;
     @Autowired
     private CdDevicesService cdDevicesService;
-    @Scheduled(fixedDelay = 60000)
+
+    static ReentrantLock task10Lock = new ReentrantLock();
+
+    @Scheduled(fixedDelay = 5000)
     @Transactional(rollbackFor = Exception.class)
     public void withBlack() {
-        List<Integer> ids = new ArrayList<>();
-        List<CdCardLockEntity> list = cdCardLockService.list();
-        for (CdCardLockEntity cdCardLockEntity : list) {
-            if (ObjectUtil.isNull(cdCardLockEntity.getPhoneGetTime())) {
-                continue;
-            }
-            DateTime dateTime = DateUtil.offsetMinute(cdCardLockEntity.getPhoneGetTime(), 2);
-            DateTime now = DateUtil.date();
-            if (now.toJdkDate().getTime()> dateTime.toJdkDate().getTime()) {
-                ids.add(cdCardLockEntity.getId());
-            }
+        boolean b = task10Lock.tryLock();
+        if (!b) {
+            return;
         }
-        //自动拉黑
-        cdDevicesService.withBlack(ArrayUtil.toArray(ids,Integer.class));
-        //自动切号
-//        cdDevicesService.initCard3(ArrayUtil.toArray(ids,Integer.class));
+
+        try {
+            ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(ConfigConstant.PROJECT_WORK_KEY);
+
+            if (ObjectUtil.isNull(projectWorkEntity)) {
+                return;
+            }
+
+            CdUserEntity cdUserEntity = cdUserService.getById((Serializable) projectWorkEntity.getUserId());
+            // 挂机模式
+            if (CodeAcquisitionType.CodeAcquisitionType2.getKey().equals(projectWorkEntity.getCodeAcquisitionType())) {
+                List<CdCardLockEntity> list = cdCardLockService.list();
+                for (CdCardLockEntity cdCardLockEntity : list) {
+                    CdCardLockDTO cdCardLockDTO = CdCardLockConver.MAPPER.conver1(cdCardLockEntity);
+                    //获取手机号码
+                    CdCardLockVO cdCardLockVO = cdCardLockService.getMobile2(cdCardLockDTO, cdUserEntity, cdCardLockDTO.getDeviceId());
+                }
+                return;
+            }
+            List<Integer> ids = new ArrayList<>();
+            List<CdCardLockEntity> list = cdCardLockService.list();
+            for (CdCardLockEntity cdCardLockEntity : list) {
+                if (ObjectUtil.isNull(cdCardLockEntity.getPhoneGetTime())) {
+                    continue;
+                }
+                DateTime dateTime = DateUtil.offsetMinute(cdCardLockEntity.getPhoneGetTime(), 2);
+                DateTime now = DateUtil.date();
+                if (now.toJdkDate().getTime()> dateTime.toJdkDate().getTime()) {
+                    ids.add(cdCardLockEntity.getId());
+                }
+            }
+            //自动拉黑
+            cdDevicesService.withBlack(ArrayUtil.toArray(ids,Integer.class));
+        }finally {
+            task10Lock.unlock();
+        }
     }
 
 

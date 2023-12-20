@@ -42,7 +42,6 @@
 
 
       <el-form-item label="项目id" prop="projectId"  v-if="type === 2">
-<!--        <el-input v-model="dataForm.projectId" placeholder="项目id"></el-input>-->
         <el-select v-model="dataForm.projectId" placeholder="平台" clearable @change="platformHandler">
           <el-option
             v-for="item in projectDataList"
@@ -58,10 +57,17 @@
       <el-form-item label="用户id" prop="userId" v-if="type === 2">
         <el-input v-model="dataForm.userId" placeholder="用户id" readonly></el-input>
       </el-form-item>
+      <el-form-item label="取码类型" prop="codeAcquisitionType" v-if="type === 2">
+        <el-select v-model="codeAcquisitionType" placeholder="取码类型" clearable>
+          <el-option
+            v-for="item in codeAcquisitionTypeOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
 
-
-
-
+      </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>
@@ -74,10 +80,21 @@
   export default {
     data () {
       return {
+        codeAcquisitionType: null,
         type: 2,
         platform: 1,
         visible: false,
         projectDataList: [],
+        codeAcquisitionTypeOptions: [
+          {
+            value: 1,
+            label: '指定项目'
+          },
+          {
+            value: 2,
+            label: '挂机模式'
+          }
+        ],
         platformOptions: [
           {
             value: 1,
@@ -106,6 +123,7 @@
           paramValue: '',
           userId: '',
           platform: null,
+          codeAcquisitionType: null,
           projectId: '',
           phonePre: '',
           codeApiUrl: '',
@@ -149,6 +167,7 @@
                 this.dataForm.projectId = data.config.projectId
                 this.dataForm.phonePre = data.config.phonePre
                 this.dataForm.codeApiUrl = data.config.codeApiUrl
+                this.codeAcquisitionType = data.config.codeAcquisitionType
               }
             })
           }
@@ -185,6 +204,7 @@
                 'codeApiUrl': this.dataForm.codeApiUrl,
                 'type': this.type,
                 'platform': this.platform,
+                'codeAcquisitionType': this.codeAcquisitionType,
                 'remark': this.dataForm.remark
               })
             }).then(({data}) => {

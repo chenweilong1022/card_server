@@ -19,6 +19,7 @@ public class ProjectWorkEntity {
 
     private String codeApiUrl;
 
-
     private Integer platform;
+
+    private Integer codeAcquisitionType;
 }

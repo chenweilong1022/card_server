@@ -13,10 +13,7 @@ import io.renren.common.validator.Assert;
 import io.renren.datasources.annotation.Game;
 import io.renren.modules.app.dto.TaskDto;
 import io.renren.modules.ltt.entity.*;
-import io.renren.modules.ltt.enums.DeleteFlag;
-import io.renren.modules.ltt.enums.Lock;
-import io.renren.modules.ltt.enums.Online;
-import io.renren.modules.ltt.enums.WorkType;
+import io.renren.modules.ltt.enums.*;
 import io.renren.modules.ltt.firefox.*;
 import io.renren.modules.ltt.service.*;
 import io.renren.modules.ltt.vo.CdProjectVO;
@@ -221,6 +218,87 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
     }
 
     @Override
+    public CdCardLockVO getMobile2(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity, String deviceId) {
+
+        //获取设备
+        List<CdCardLockEntity> list = this.list(new QueryWrapper<CdCardLockEntity>().lambda()
+                .eq(StrUtil.isNotEmpty(deviceId),CdCardLockEntity::getDeviceId,deviceId)
+        );
+        //如果设备为空返回null
+        if (CollUtil.isEmpty(list)) {
+            return null;
+        }
+        //如果设备不在线，跳出循环
+        for (CdCardLockEntity cdCardLockEntity : list) {
+            CdDevicesEntity one1 = cdDevicesService.getOne(new QueryWrapper<CdDevicesEntity>().lambda()
+                    .eq(CdDevicesEntity::getIccid,cdCardLockEntity.getDeviceId())
+            );
+            if (ObjectUtil.isNull(one1)) {
+                continue;
+            }
+            if (ObjectUtil.isNotNull(one1) && Online.NO.getKey().equals(one1.getOnline())) {
+                continue;
+            }
+            if (!WorkType.WorkType3.getKey().equals(one1.getWorkType())) {
+                continue;
+            }
+            //获取设备下所有的信息列表 所有卡的信息
+            List<CdCardEntity> cdCardEntities = cdCardService.list(new QueryWrapper<CdCardEntity>().lambda()
+                    .eq(CdCardEntity::getDeviceId,cdCardLockEntity.getDeviceId())
+                    .eq(CdCardEntity::getUseStatus, UseStatus.UseStatus1.getKey())
+                    .notIn(CdCardEntity::getIccid,"无卡")
+                    .notIn(CdCardEntity::getPhone,"无卡")
+            );
+            CdCardEntity cdCardEntity = null;
+            if (CollUtil.isEmpty(cdCardEntities)) {
+                //获取设备下所有的信息列表 所有卡的信息
+                List<CdCardEntity> useCdCardEntities = cdCardService.list(new QueryWrapper<CdCardEntity>().lambda()
+                        .eq(CdCardEntity::getDeviceId,cdCardLockEntity.getDeviceId())
+                        .eq(CdCardEntity::getUseStatus, UseStatus.UseStatus2.getKey())
+                        .notIn(CdCardEntity::getIccid,"无卡")
+                        .notIn(CdCardEntity::getPhone,"无卡")
+                );
+                //修改卡
+                for (int i = 0; i < useCdCardEntities.size(); i++) {
+                    if (i == 0) {
+                        cdCardEntity = useCdCardEntities.get(i);
+                    }else {
+                        CdCardEntity currentCdCardEntity = useCdCardEntities.get(i);
+                        currentCdCardEntity.setUseStatus(UseStatus.UseStatus1.getKey());
+                    }
+                }
+                cdCardService.updateBatchById(useCdCardEntities);
+            }else {
+                //修改当前卡为已使用
+                cdCardEntity = cdCardEntities.get(0);
+                cdCardEntity.setUseStatus(UseStatus.UseStatus2.getKey());
+                cdCardService.updateById(cdCardEntity);
+            }
+
+            //将当前手机上锁
+            CdCardLockEntity update = new CdCardLockEntity();
+            update.setId(cdCardLockEntity.getId());
+            update.setUserId(cdUserEntity.getId());
+            update.setProjectId(cdCardLock.getProjectId());
+            update.setDeviceId(cdCardLockEntity.getDeviceId());
+            update.setPhone(cdCardEntity.getPhone());
+            update.setLock(Lock.YES.getKey());
+            update.setIccid(cdCardEntity.getIccid());
+            update.setDeleteFlag(DeleteFlag.NO.getKey());
+            update.setCreateTime(DateUtil.date());
+            this.updateById(update);
+            //通知客戶端修改卡
+            ChangeCardResponse taskDto = new ChangeCardResponse();
+            taskDto.setBoardIndexed(cdCardEntity.getBoardIndexed());
+            taskDto.setIndexed(cdCardEntity.getIndexed());
+            taskDto.setDeviceId(cdCardEntity.getIccid());
+            nettyChannelManager.send(cdCardLockEntity.getDeviceId(),new Invocation(ChangeCardResponse.TYPE, taskDto));
+            return new CdCardLockVO().setPhone(update.getPhone()).setIccid(update.getIccid());
+        }
+        return null;
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean releaseMobile(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity) {
         //获取当前手机号占用的设备
@@ -398,6 +476,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
             config.setUserId(2);
             config.setCodeApiUrl("https://www.firefox.fun/ksapi.ashx?key=76082377BDE44F99");
             config.setPlatform(1);
+            config.setCodeAcquisitionType(CodeAcquisitionType.CodeAcquisitionType1.getKey());
             sysConfigService.save(config);
         }else {
             ProjectWorkEntity bean = JSONUtil.toBean(one.getParamValue(), ProjectWorkEntity.class);
@@ -410,6 +489,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
                 config.setUserId(bean.getUserId());
                 config.setCodeApiUrl(bean.getCodeApiUrl());
                 config.setPlatform(bean.getPlatform());
+                config.setCodeAcquisitionType(bean.getCodeAcquisitionType());
                 if (ObjectUtil.isNull(bean.getPlatform())) {
                     config.setPlatform(1);
                 }

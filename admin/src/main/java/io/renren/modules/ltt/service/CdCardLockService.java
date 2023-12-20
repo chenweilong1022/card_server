@@ -70,6 +70,12 @@ public interface CdCardLockService extends IService<CdCardLockEntity> {
      * @return
      */
     CdCardLockVO getMobile(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity,String deviceId);
+    /**
+     * 获取手机号
+     * @param cdCardLock
+     * @return
+     */
+    CdCardLockVO getMobile2(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity,String deviceId);
 
     /**
      * 释放手机号
