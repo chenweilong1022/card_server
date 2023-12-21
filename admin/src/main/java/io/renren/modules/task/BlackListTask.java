@@ -84,9 +84,19 @@ public class BlackListTask {
             if (CodeAcquisitionType.CodeAcquisitionType2.getKey().equals(projectWorkEntity.getCodeAcquisitionType())) {
                 List<CdCardLockEntity> list = cdCardLockService.list();
                 for (CdCardLockEntity cdCardLockEntity : list) {
-                    CdCardLockDTO cdCardLockDTO = CdCardLockConver.MAPPER.conver1(cdCardLockEntity);
-                    //获取手机号码
-                    CdCardLockVO cdCardLockVO = cdCardLockService.getMobile2(cdCardLockDTO, cdUserEntity, cdCardLockDTO.getDeviceId());
+                    if (ObjectUtil.isNull(cdCardLockEntity.getPhoneGetTime())) {
+                        CdCardLockDTO cdCardLockDTO = CdCardLockConver.MAPPER.conver1(cdCardLockEntity);
+                        //获取手机号码
+                        CdCardLockVO cdCardLockVO = cdCardLockService.getMobile2(cdCardLockDTO, cdUserEntity, cdCardLockDTO.getDeviceId());
+                        continue;
+                    }
+                    DateTime dateTime = DateUtil.offsetMinute(cdCardLockEntity.getPhoneGetTime(), 0);
+                    DateTime now = DateUtil.date();
+                    if (now.toJdkDate().getTime()> dateTime.toJdkDate().getTime()) {
+                        CdCardLockDTO cdCardLockDTO = CdCardLockConver.MAPPER.conver1(cdCardLockEntity);
+                        //获取手机号码
+                        CdCardLockVO cdCardLockVO = cdCardLockService.getMobile2(cdCardLockDTO, cdUserEntity, cdCardLockDTO.getDeviceId());
+                    }
                 }
                 return;
             }

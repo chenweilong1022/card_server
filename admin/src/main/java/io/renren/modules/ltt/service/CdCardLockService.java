@@ -106,6 +106,13 @@ public interface CdCardLockService extends IService<CdCardLockEntity> {
      * @return
      */
     boolean uploadSms(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity);
+    /**
+     * 上传短信2
+     * @param cdCardLock
+     * @param cdUserEntity
+     * @return
+     */
+    boolean uploadSms2(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity);
 
     TaskDto deviceTaskGet(CdCardLockDTO cdCardLock);
 

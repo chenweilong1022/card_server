@@ -286,6 +286,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
             update.setIccid(cdCardEntity.getIccid());
             update.setDeleteFlag(DeleteFlag.NO.getKey());
             update.setCreateTime(DateUtil.date());
+            update.setPhoneGetTime(DateUtil.offsetMinute(DateUtil.date(),1));
             this.updateById(update);
             //通知客戶端修改卡
             ChangeCardResponse taskDto = new ChangeCardResponse();
@@ -374,7 +375,9 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
     @Transactional(rollbackFor = Exception.class)
     public boolean uploadSms(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity) {
         ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(ConfigConstant.PROJECT_WORK_KEY);
-
+        if (CodeAcquisitionType.CodeAcquisitionType2.getKey().equals(projectWorkEntity.getCodeAcquisitionType())) {
+            return uploadSms2(cdCardLock,cdUserEntity);
+        }
         Integer userId = projectWorkEntity.getUserId();
         Integer projectId = projectWorkEntity.getProjectId();
         //获取当前的设备
@@ -443,6 +446,31 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
             }
         }
 
+        return save;
+    }
+
+    @Override
+    public boolean uploadSms2(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity) {
+
+        //获取当前的设备
+        CdCardLockEntity cdCardLockEntity = this.getOne(new QueryWrapper<CdCardLockEntity>().lambda()
+                .eq(CdCardLockEntity::getDeviceId, cdCardLock.getDeviceId())
+        );
+        Assert.isNull(cdCardLockEntity,"NoAssociatedDevices");
+        //获取验证码的key
+        String key = String.format("code_%s_%s", cdCardLockEntity.getIccid(), cdCardLockEntity.getProjectId());
+        CdProjectVO cdProjectVO = cdProjectService.getById(cdCardLockEntity.getProjectId());
+        //保存短信的记录
+        CdProjectSmsRecordEntity cdProjectSmsRecordEntity = new CdProjectSmsRecordEntity();
+        cdProjectSmsRecordEntity.setKey(key);
+        cdProjectSmsRecordEntity.setCode(cdCardLock.getCode());
+        cdProjectSmsRecordEntity.setDeviceId(cdCardLockEntity.getDeviceId());
+        cdProjectSmsRecordEntity.setPhone(cdCardLockEntity.getPhone());
+        cdProjectSmsRecordEntity.setIccid(cdCardLockEntity.getIccid());
+        cdProjectSmsRecordEntity.setDeleteFlag(DeleteFlag.YES.getKey());
+        cdProjectSmsRecordEntity.setCreateTime(DateUtil.date());
+        boolean save = cdProjectSmsRecordService.save(cdProjectSmsRecordEntity);
+        uploadSms(cdCardLock, cdCardLockEntity);
         return save;
     }
 
