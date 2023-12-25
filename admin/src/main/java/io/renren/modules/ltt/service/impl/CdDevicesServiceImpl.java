@@ -143,6 +143,7 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
             CdDevicesEntity update = new CdDevicesEntity();
             update.setId(one.getId());
             update.setPackageVersion(cdDevices.getPackageVersion());
+            update.setCreateTime(DateUtil.date());
             if (StrUtil.isEmpty(update.getPackageVersion())) {
                 update.setPackageVersion(one.getPackageVersion());
             }
