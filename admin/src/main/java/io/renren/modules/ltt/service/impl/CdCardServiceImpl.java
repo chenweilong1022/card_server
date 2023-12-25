@@ -146,6 +146,8 @@ public class CdCardServiceImpl extends ServiceImpl<CdCardDao, CdCardEntity> impl
                 continue;
             }else if (s.contains("phoneNumber")) {
                 continue;
+            }else if (s.contains("ussd")) {
+                continue;
             }
             String[] rs = s.split("R");
             int boardIndexed = Integer.parseInt(rs[0], 10);
