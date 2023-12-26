@@ -6,6 +6,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.http.HttpUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.benmanes.caffeine.cache.Cache;
@@ -132,7 +133,6 @@ public class BlackListTask {
         try {
             String response = HttpUtil.get(projectWorkEntity.getCodeApiUrl() + "&act=GetWaitPhoneList");
             log.info("response = {}",response);
-            log.info(response);
             ObjectMapper objectMapper = new ObjectMapper();
             GetWaitPhoneList phoneDeleteAllResponse = objectMapper.readValue(response, GetWaitPhoneList.class);
 
@@ -142,6 +142,7 @@ public class BlackListTask {
             }
             //获取所有的手机
             Map<String, GetWaitPhoneListDaum> stringGetWaitPhoneListDaumMap = data.stream().collect(Collectors.toMap(x -> projectWorkEntity.getPhonePre() + x.getPhoneNum() + "=" + x.getItemId(), y -> y));
+            log.info("stringGetWaitPhoneListDaumMap = {}", JSONUtil.toJsonStr(stringGetWaitPhoneListDaumMap));
             //获取所有的手机号
             List<CdCardLockEntity> list = cdCardLockService.list(new QueryWrapper<CdCardLockEntity>().lambda()
                     .in(CdCardLockEntity::getPhone,stringGetWaitPhoneListDaumMap.keySet().stream().map(x -> x.split("=")[0]).collect(Collectors.toList()))
@@ -149,7 +150,10 @@ public class BlackListTask {
             for (CdCardLockEntity cdCardLockEntity : list) {
                 Integer projectId = cdCardLockEntity.getProjectId();
                 CdProjectVO cdProjectVO = cdProjectService.getById(projectId);
-                GetWaitPhoneListDaum getWaitPhoneListDaum = stringGetWaitPhoneListDaumMap.get(cdCardLockEntity.getPhone() + "=" + cdProjectVO.getItemId());
+                String key = cdCardLockEntity.getPhone() + "=" + cdProjectVO.getItemId();
+                log.info("key = {}", key);
+                GetWaitPhoneListDaum getWaitPhoneListDaum = stringGetWaitPhoneListDaumMap.get(key);
+                log.info("getWaitPhoneListDaum = {}", JSONUtil.toJsonStr(getWaitPhoneListDaum));
                 if (ObjectUtil.isNotNull(getWaitPhoneListDaum) || ObjectUtil.isNull(cdCardLockEntity.getPhoneGetTime())) {
                     String phoneGetTime = getWaitPhoneListDaum.getPhoneGetTime();
                     DateTime parse = DateUtil.parse(phoneGetTime.replace("T", " "));
