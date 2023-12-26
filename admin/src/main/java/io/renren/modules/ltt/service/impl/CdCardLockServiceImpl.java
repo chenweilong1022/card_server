@@ -25,6 +25,7 @@ import io.renren.modules.netty.server.NettyChannelManager;
 import io.renren.modules.sys.entity.ProjectWorkEntity;
 import io.renren.modules.sys.entity.SysConfigEntity;
 import io.renren.modules.sys.service.SysConfigService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -52,6 +53,7 @@ import java.util.stream.Collectors;
 
 @Service("cdCardLockService")
 @Game
+@Slf4j
 public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLockEntity> implements CdCardLockService {
 
 
@@ -374,6 +376,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean uploadSms(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity) {
+        log.info("uploadSms = {}",JSONUtil.toJsonStr(cdCardLock));
         //获取当前的设备
         CdCardLockEntity cdCardLockEntity = this.getOne(new QueryWrapper<CdCardLockEntity>().lambda()
                 .eq(CdCardLockEntity::getDeviceId, cdCardLock.getDeviceId())
@@ -385,6 +388,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
         String cacheKey = String.format("%s_%s", ConfigConstant.PROJECT_WORK_KEY, cdDevicesEntity.getGroupId());
 
         ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(cacheKey);
+        log.info("ProjectWorkEntity = {}",JSONUtil.toJsonStr(projectWorkEntity));
         //如果存在配置 并且是挂机接码状态
         if (ObjectUtil.isNotNull(projectWorkEntity) && CodeAcquisitionType.CodeAcquisitionType2.getKey().equals(projectWorkEntity.getCodeAcquisitionType())) {
             return uploadSms2(cdCardLock,cdUserEntity,projectWorkEntity.getCodeApiUrl());
