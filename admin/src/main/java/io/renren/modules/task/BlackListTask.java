@@ -156,7 +156,7 @@ public class BlackListTask {
                 if (ObjectUtil.isNotNull(getWaitPhoneListDaum)) {
                     log.info("getWaitPhoneListDaum = {}", JSONUtil.toJsonStr(getWaitPhoneListDaum));
                 }
-                if (ObjectUtil.isNotNull(getWaitPhoneListDaum) || ObjectUtil.isNull(cdCardLockEntity.getPhoneGetTime())) {
+                if (ObjectUtil.isNotNull(getWaitPhoneListDaum) && ObjectUtil.isNull(cdCardLockEntity.getPhoneGetTime())) {
                     String phoneGetTime = getWaitPhoneListDaum.getPhoneGetTime();
                     DateTime parse = DateUtil.parse(phoneGetTime.replace("T", " "));
                     cdCardLockEntity.setPhoneGetTime(parse);
