@@ -7,9 +7,9 @@ services:
       MYSQL_ROOT_PASSWORD: SEW2018!
       MYSQL_ROOT_HOST: "%"
     volumes:
-      - /home/webfile/mysql/home/mysql:/var/lib/mysql
-      - /home/webfile/mysql/var/lib/mysql-files:/var/lib/mysql-files
-      - /home/webfile/mysql/etc/mysql:/etc/mysql
+      - /Users/chenweilong/Desktop/data/mysql/home/mysql:/var/lib/mysql
+      - /Users/chenweilong/Desktop/data/mysql/var/lib/mysql-files:/var/lib/mysql-files
+      - /Users/chenweilong/Desktop/data/mysql/etc/mysql:/etc/mysql
     ports:
       - "3308:3306"
     restart: always

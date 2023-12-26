@@ -8,6 +8,7 @@ import io.renren.modules.ltt.entity.CdUserEntity;
 import io.renren.modules.ltt.firefox.PhoneList;
 import io.renren.modules.ltt.vo.CdCardLockVO;
 import io.renren.modules.ltt.entity.CdCardLockEntity;
+import io.renren.modules.ltt.vo.GetListByIdsVO;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -106,19 +107,25 @@ public interface CdCardLockService extends IService<CdCardLockEntity> {
      * @return
      */
     boolean uploadSms(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity);
+
+    /**
+     * 获取list根据ids
+     * @return
+     */
+    List<GetListByIdsVO> getListByIds(List<Integer> ids);
     /**
      * 上传短信2
      * @param cdCardLock
      * @param cdUserEntity
      * @return
      */
-    boolean uploadSms2(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity);
+    boolean uploadSms2(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity,String codeApiUrl);
 
     TaskDto deviceTaskGet(CdCardLockDTO cdCardLock);
 
     void init3(Integer[] ids);
 
-    public void extracted(List<PhoneList> phoneLists, String act);
+    public void extracted(List<PhoneList> phoneLists, String act,String codeApiUrl);
 
     void withBlackMobile(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity);
 }

@@ -3,6 +3,7 @@ package io.renren.modules.ltt.conver;
 import io.renren.modules.ltt.dto.CdCardLockDTO;
 import io.renren.modules.ltt.entity.CdCardLockEntity;
 import io.renren.modules.ltt.vo.CdCardLockVO;
+import io.renren.modules.ltt.vo.GetListByIdsVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -24,6 +25,7 @@ public interface CdCardLockConver {
 
     CdCardLockVO conver(CdCardLockEntity cdCardLockEntities);
     CdCardLockDTO conver1(CdCardLockEntity cdCardLockEntities);
+    CdCardLockDTO conver2(GetListByIdsVO cdCardLockEntities);
 
     List<CdCardLockVO> conver(List<CdCardLockEntity> cdCardLockEntities);
 

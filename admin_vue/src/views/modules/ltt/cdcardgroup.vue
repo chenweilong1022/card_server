@@ -47,6 +47,7 @@
         width="150"
         label="操作">
         <template slot-scope="scope">
+          <el-button type="text" size="small" @click="configAddOrUpdateHandle(scope.row.id,scope.row.groupName)">配置</el-button>
           <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
           <el-button type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
         </template>
@@ -63,11 +64,13 @@
     </el-pagination>
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
+    <config-add-or-update  v-if="configAddOrUpdateVisible" ref="configAddOrUpdate" @refreshDataList="getDataList"></config-add-or-update>
   </div>
 </template>
 
 <script>
   import AddOrUpdate from './cdcardgroup-add-or-update'
+  import ConfigAddOrUpdate from '../sys/config-add-or-update.vue'
   export default {
     data () {
       return {
@@ -79,12 +82,14 @@
         pageSize: 10,
         totalPage: 0,
         dataListLoading: false,
+        configAddOrUpdateVisible: false,
         dataListSelections: [],
         addOrUpdateVisible: false
       }
     },
     components: {
-      AddOrUpdate
+      AddOrUpdate,
+      ConfigAddOrUpdate
     },
     activated () {
       this.getDataList()
@@ -132,6 +137,13 @@
         this.addOrUpdateVisible = true
         this.$nextTick(() => {
           this.$refs.addOrUpdate.init(id)
+        })
+      },
+      // 配置修改
+      configAddOrUpdateHandle (id,name) {
+        this.configAddOrUpdateVisible = true
+        this.$nextTick(() => {
+          this.$refs.configAddOrUpdate.init(id,name)
         })
       },
       // 删除

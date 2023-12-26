@@ -17,6 +17,7 @@
 package io.renren.modules.sys.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -83,8 +84,11 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigDao, SysConfigEnt
 			projectWorkEntity.setCodeAcquisitionType(config.getCodeAcquisitionType());
 			String jsonStr = JSONUtil.toJsonStr(projectWorkEntity);
 			config.setParamKey(ConfigConstant.PROJECT_WORK_KEY);
+			if (StrUtil.isNotEmpty(config.getKey())) {
+				config.setParamKey(config.getKey());
+			}
 			config.setParamValue(jsonStr);
-			caffeineCacheProjectWorkEntity.put(ConfigConstant.PROJECT_WORK_KEY,projectWorkEntity);
+			caffeineCacheProjectWorkEntity.put(config.getParamKey(),projectWorkEntity);
 
 			//项目
 			CdProjectVO cdProjectVO = cdProjectService.getById(config.getProjectId());
@@ -106,12 +110,8 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigDao, SysConfigEnt
 				}
 			}
 		}
+
 		baseMapper.insert(config);
-
-
-
-
-
 		return false;
 	}
 
@@ -128,9 +128,11 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigDao, SysConfigEnt
 			projectWorkEntity.setCodeAcquisitionType(config.getCodeAcquisitionType());
 			String jsonStr = JSONUtil.toJsonStr(projectWorkEntity);
 			config.setParamKey(ConfigConstant.PROJECT_WORK_KEY);
+			if (StrUtil.isNotEmpty(config.getKey())) {
+				config.setParamKey(config.getKey());
+			}
 			config.setParamValue(jsonStr);
-			caffeineCacheProjectWorkEntity.put(ConfigConstant.PROJECT_WORK_KEY,projectWorkEntity);
-
+			caffeineCacheProjectWorkEntity.put(config.getParamKey(),projectWorkEntity);
 			//项目
 			CdProjectVO cdProjectVO = cdProjectService.getById(config.getProjectId());
 			if (ObjectUtil.isNotNull(cdProjectVO)) {

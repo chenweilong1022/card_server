@@ -26,6 +26,7 @@ import io.renren.modules.ltt.service.CdProjectService;
 import io.renren.modules.ltt.service.CdUserService;
 import io.renren.modules.ltt.vo.CdCardLockVO;
 import io.renren.modules.ltt.vo.CdProjectVO;
+import io.renren.modules.ltt.vo.GetListByIdsVO;
 import io.renren.modules.sys.entity.ProjectWorkEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,8 +66,8 @@ public class BlackListTask {
 
     static ReentrantLock task10Lock = new ReentrantLock();
 
-    @Scheduled(fixedDelay = 5000)
-    @Transactional(rollbackFor = Exception.class)
+//    @Scheduled(fixedDelay = 5000)
+//    @Transactional(rollbackFor = Exception.class)
     public void withBlack() {
         boolean b = task10Lock.tryLock();
         if (!b) {
@@ -74,47 +75,56 @@ public class BlackListTask {
         }
 
         try {
-            ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(ConfigConstant.PROJECT_WORK_KEY);
 
-            if (ObjectUtil.isNull(projectWorkEntity)) {
-                return;
-            }
+            List<GetListByIdsVO> getListByIdsVOS = cdCardLockService.getListByIds(null);
+            Map<Integer, List<GetListByIdsVO>> integerListMap = getListByIdsVOS.stream().collect(Collectors.groupingBy(GetListByIdsVO::getGroupId));
 
-            CdUserEntity cdUserEntity = cdUserService.getById((Serializable) projectWorkEntity.getUserId());
-            // 挂机模式
-            if (CodeAcquisitionType.CodeAcquisitionType2.getKey().equals(projectWorkEntity.getCodeAcquisitionType())) {
-                List<CdCardLockEntity> list = cdCardLockService.list();
-                for (CdCardLockEntity cdCardLockEntity : list) {
+            for (Integer id : integerListMap.keySet()) {
+
+                List<GetListByIdsVO> list = integerListMap.get(id);
+                String cacheKey = String.format("%s_%s", ConfigConstant.PROJECT_WORK_KEY, id);
+                ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(cacheKey);
+                if (ObjectUtil.isNull(projectWorkEntity)) {
+                    return;
+                }
+
+                CdUserEntity cdUserEntity = cdUserService.getById((Serializable) projectWorkEntity.getUserId());
+                // 挂机模式
+                if (CodeAcquisitionType.CodeAcquisitionType2.getKey().equals(projectWorkEntity.getCodeAcquisitionType())) {
+
+                    for (GetListByIdsVO cdCardLockEntity : list) {
+                        if (ObjectUtil.isNull(cdCardLockEntity.getPhoneGetTime())) {
+                            CdCardLockDTO cdCardLockDTO = CdCardLockConver.MAPPER.conver2(cdCardLockEntity);
+                            //获取手机号码
+                            CdCardLockVO cdCardLockVO = cdCardLockService.getMobile2(cdCardLockDTO, cdUserEntity, cdCardLockDTO.getDeviceId());
+                            continue;
+                        }
+                        DateTime dateTime = DateUtil.offsetMinute(cdCardLockEntity.getPhoneGetTime(), 0);
+                        DateTime now = DateUtil.date();
+                        if (now.toJdkDate().getTime()> dateTime.toJdkDate().getTime()) {
+                            CdCardLockDTO cdCardLockDTO = CdCardLockConver.MAPPER.conver2(cdCardLockEntity);
+                            //获取手机号码
+                            CdCardLockVO cdCardLockVO = cdCardLockService.getMobile2(cdCardLockDTO, cdUserEntity, cdCardLockDTO.getDeviceId());
+                        }
+                    }
+                    return;
+                }
+                // 获取ids
+                List<Integer> ids = new ArrayList<>();
+                for (GetListByIdsVO cdCardLockEntity : list) {
                     if (ObjectUtil.isNull(cdCardLockEntity.getPhoneGetTime())) {
-                        CdCardLockDTO cdCardLockDTO = CdCardLockConver.MAPPER.conver1(cdCardLockEntity);
-                        //获取手机号码
-                        CdCardLockVO cdCardLockVO = cdCardLockService.getMobile2(cdCardLockDTO, cdUserEntity, cdCardLockDTO.getDeviceId());
                         continue;
                     }
-                    DateTime dateTime = DateUtil.offsetMinute(cdCardLockEntity.getPhoneGetTime(), 0);
+                    DateTime dateTime = DateUtil.offsetMinute(cdCardLockEntity.getPhoneGetTime(), 4);
                     DateTime now = DateUtil.date();
                     if (now.toJdkDate().getTime()> dateTime.toJdkDate().getTime()) {
-                        CdCardLockDTO cdCardLockDTO = CdCardLockConver.MAPPER.conver1(cdCardLockEntity);
-                        //获取手机号码
-                        CdCardLockVO cdCardLockVO = cdCardLockService.getMobile2(cdCardLockDTO, cdUserEntity, cdCardLockDTO.getDeviceId());
+                        ids.add(cdCardLockEntity.getId());
                     }
                 }
-                return;
+                //自动拉黑
+                cdDevicesService.withBlack(ArrayUtil.toArray(ids,Integer.class));
+
             }
-            List<Integer> ids = new ArrayList<>();
-            List<CdCardLockEntity> list = cdCardLockService.list();
-            for (CdCardLockEntity cdCardLockEntity : list) {
-                if (ObjectUtil.isNull(cdCardLockEntity.getPhoneGetTime())) {
-                    continue;
-                }
-                DateTime dateTime = DateUtil.offsetMinute(cdCardLockEntity.getPhoneGetTime(), 4);
-                DateTime now = DateUtil.date();
-                if (now.toJdkDate().getTime()> dateTime.toJdkDate().getTime()) {
-                    ids.add(cdCardLockEntity.getId());
-                }
-            }
-            //自动拉黑
-            cdDevicesService.withBlack(ArrayUtil.toArray(ids,Integer.class));
         }finally {
             task10Lock.unlock();
         }
@@ -126,49 +136,69 @@ public class BlackListTask {
         System.out.println(response);
     }
 
-    @Scheduled(fixedDelay = 5000)
-    @Transactional(rollbackFor = Exception.class)
-    public void sayHello() {
-        ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(ConfigConstant.PROJECT_WORK_KEY);
-        try {
-            String response = HttpUtil.get(projectWorkEntity.getCodeApiUrl() + "&act=GetWaitPhoneList");
-            log.info("response = {}",response);
-            ObjectMapper objectMapper = new ObjectMapper();
-            GetWaitPhoneList phoneDeleteAllResponse = objectMapper.readValue(response, GetWaitPhoneList.class);
+    static ReentrantLock task11Lock = new ReentrantLock();
 
-            List<GetWaitPhoneListDaum> data = phoneDeleteAllResponse.getData();
-            if (CollUtil.isEmpty(data)) {
-                return;
-            }
-            //获取所有的手机
-            Map<String, GetWaitPhoneListDaum> stringGetWaitPhoneListDaumMap = data.stream().collect(Collectors.toMap(x -> projectWorkEntity.getPhonePre() + x.getPhoneNum() + "=" + x.getItemId(), y -> y));
-            log.info("stringGetWaitPhoneListDaumMap = {}", JSONUtil.toJsonStr(stringGetWaitPhoneListDaumMap));
-            //获取所有的手机号
-            List<CdCardLockEntity> list = cdCardLockService.list(new QueryWrapper<CdCardLockEntity>().lambda()
-                    .in(CdCardLockEntity::getPhone,stringGetWaitPhoneListDaumMap.keySet().stream().map(x -> x.split("=")[0]).collect(Collectors.toList()))
-            );
-            for (CdCardLockEntity cdCardLockEntity : list) {
-                Integer projectId = cdCardLockEntity.getProjectId();
-                CdProjectVO cdProjectVO = cdProjectService.getById(projectId);
-                String key = cdCardLockEntity.getPhone() + "=" + cdProjectVO.getItemId();
-                log.info("key = {}", key);
-                GetWaitPhoneListDaum getWaitPhoneListDaum = stringGetWaitPhoneListDaumMap.get(key);
-                if (ObjectUtil.isNotNull(getWaitPhoneListDaum)) {
-                    log.info("getWaitPhoneListDaum = {}", JSONUtil.toJsonStr(getWaitPhoneListDaum));
-                }
-                if (ObjectUtil.isNotNull(getWaitPhoneListDaum) && ObjectUtil.isNull(cdCardLockEntity.getPhoneGetTime())) {
-                    String phoneGetTime = getWaitPhoneListDaum.getPhoneGetTime();
-                    DateTime parse = DateUtil.parse(phoneGetTime.replace("T", " "));
-                    cdCardLockEntity.setPhoneGetTime(parse);
-                    cdCardLockEntity.setCreateTime(DateUtil.date());
-                    boolean b = cdCardLockService.updateById(cdCardLockEntity);
-                    log.info("GetWaitPhoneList = {} flag = {}",response,b);
-                }
-            }
-        }catch (Exception e) {
-            e.printStackTrace();
-//            log.error("error = {}",e.);
+//    @Scheduled(fixedDelay = 5000)
+//    @Transactional(rollbackFor = Exception.class)
+    public void sayHello() {
+        boolean task11LockFlag = task11Lock.tryLock();
+        if (!task11LockFlag) {
+            return;
         }
+        try{
+            List<GetListByIdsVO> getListByIdsVOS = cdCardLockService.getListByIds(null);
+            Map<Integer, List<GetListByIdsVO>> integerListMap = getListByIdsVOS.stream().collect(Collectors.groupingBy(GetListByIdsVO::getGroupId));
+            for (Integer id : integerListMap.keySet()) {
+                try {
+                    String cacheKey = String.format("%s_%s", ConfigConstant.PROJECT_WORK_KEY, id);
+                    ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(cacheKey);
+                    if (ObjectUtil.isNull(projectWorkEntity)) {
+                        //如果不存在跳出这个循环
+                        continue;
+                    }
+                    String response = HttpUtil.get(projectWorkEntity.getCodeApiUrl() + "&act=GetWaitPhoneList");
+                    log.info("response = {}",response);
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    GetWaitPhoneList phoneDeleteAllResponse = objectMapper.readValue(response, GetWaitPhoneList.class);
+
+                    List<GetWaitPhoneListDaum> data = phoneDeleteAllResponse.getData();
+                    if (CollUtil.isEmpty(data)) {
+                        return;
+                    }
+                    //获取所有的手机
+                    Map<String, GetWaitPhoneListDaum> stringGetWaitPhoneListDaumMap = data.stream().collect(Collectors.toMap(x -> projectWorkEntity.getPhonePre() + x.getPhoneNum() + "=" + x.getItemId(), y -> y));
+                    log.info("stringGetWaitPhoneListDaumMap = {}", JSONUtil.toJsonStr(stringGetWaitPhoneListDaumMap));
+
+                    //获取所有的手机号
+                    List<CdCardLockEntity> list = cdCardLockService.list(new QueryWrapper<CdCardLockEntity>().lambda()
+                            .in(CdCardLockEntity::getPhone,stringGetWaitPhoneListDaumMap.keySet().stream().map(x -> x.split("=")[0]).collect(Collectors.toList()))
+                    );
+                    for (CdCardLockEntity cdCardLockEntity : list) {
+                        Integer projectId = cdCardLockEntity.getProjectId();
+                        CdProjectVO cdProjectVO = cdProjectService.getById(projectId);
+                        String key = cdCardLockEntity.getPhone() + "=" + cdProjectVO.getItemId();
+                        log.info("key = {}", key);
+                        GetWaitPhoneListDaum getWaitPhoneListDaum = stringGetWaitPhoneListDaumMap.get(key);
+                        if (ObjectUtil.isNotNull(getWaitPhoneListDaum)) {
+                            log.info("getWaitPhoneListDaum = {}", JSONUtil.toJsonStr(getWaitPhoneListDaum));
+                        }
+                        if (ObjectUtil.isNotNull(getWaitPhoneListDaum) && ObjectUtil.isNull(cdCardLockEntity.getPhoneGetTime())) {
+                            String phoneGetTime = getWaitPhoneListDaum.getPhoneGetTime();
+                            DateTime parse = DateUtil.parse(phoneGetTime.replace("T", " "));
+                            cdCardLockEntity.setPhoneGetTime(parse);
+                            cdCardLockEntity.setCreateTime(DateUtil.date());
+                            boolean b = cdCardLockService.updateById(cdCardLockEntity);
+                            log.info("GetWaitPhoneList = {} flag = {}",response,b);
+                        }
+                    }
+                }catch (Exception e) {
+                    log.error("error = {}",e.getLocalizedMessage());
+                }
+            }
+        }finally {
+            task11Lock.unlock();
+        }
+
     }
 
 }

@@ -18,6 +18,7 @@ package io.renren.modules.sys.controller;
 
 
 import cn.hutool.core.util.ObjectUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.benmanes.caffeine.cache.Cache;
 import io.renren.common.annotation.SysLog;
 import io.renren.common.utils.ConfigConstant;
@@ -69,15 +70,34 @@ public class SysConfigController extends AbstractController {
 	@GetMapping("/info/{id}")
 	@RequiresPermissions("sys:config:info")
 	public R info(@PathVariable("id") Long id){
-		SysConfigEntity config = sysConfigService.getById(id);
-		ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(ConfigConstant.PROJECT_WORK_KEY);
-		if (ObjectUtil.isNotNull(projectWorkEntity)) {
+		//查询config
+		String cacheKey = String.format("%s_%s", ConfigConstant.PROJECT_WORK_KEY, id);
+		SysConfigEntity config = sysConfigService.getOne(new QueryWrapper<SysConfigEntity>().lambda()
+				.eq(SysConfigEntity::getParamKey,cacheKey)
+		);
+		//项目
+		ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(cacheKey);
+		if (ObjectUtil.isNotNull(config)) {
+			config.setKey(cacheKey);
 			config.setProjectId(projectWorkEntity.getProjectId());;
 			config.setPhonePre(projectWorkEntity.getPhonePre());
 			config.setUserId(projectWorkEntity.getUserId());
 			config.setCodeApiUrl(projectWorkEntity.getCodeApiUrl());
 			config.setPlatform(projectWorkEntity.getPlatform());
 			config.setCodeAcquisitionType(projectWorkEntity.getCodeAcquisitionType());
+		}else {
+			ProjectWorkEntity p2 = caffeineCacheProjectWorkEntity.getIfPresent(ConfigConstant.PROJECT_WORK_KEY);
+			SysConfigEntity configNew = new SysConfigEntity();
+			configNew.setUserId(p2.getUserId());
+			configNew.setProjectId(p2.getProjectId());
+			configNew.setPlatform(p2.getPlatform());
+			configNew.setPhonePre(p2.getPhonePre());
+			configNew.setCodeApiUrl(p2.getCodeApiUrl());
+			configNew.setCodeAcquisitionType(p2.getCodeAcquisitionType());
+			configNew.setType(2);
+			configNew.setKey(cacheKey);
+			sysConfigService.save(configNew);
+			config = configNew;
 		}
 		return R.ok().put("config", config);
 	}
@@ -103,7 +123,9 @@ public class SysConfigController extends AbstractController {
 	@RequiresPermissions("sys:config:update")
 	public R update(@RequestBody SysConfigEntity config){
 		ValidatorUtils.validateEntity(config);
-
+		//查询config
+		String cacheKey = String.format("%s_%s", ConfigConstant.PROJECT_WORK_KEY, config.getId());
+		config.setKey(cacheKey);
 		sysConfigService.update(config);
 
 		return R.ok();

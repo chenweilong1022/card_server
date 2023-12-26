@@ -16,6 +16,7 @@ import io.renren.modules.ltt.entity.*;
 import io.renren.modules.ltt.enums.*;
 import io.renren.modules.ltt.firefox.PhoneList;
 import io.renren.modules.ltt.service.*;
+import io.renren.modules.ltt.vo.GetListByIdsVO;
 import io.renren.modules.ltt.vo.GroupByDeviceIdVO;
 import io.renren.modules.netty.codec.Invocation;
 import io.renren.modules.netty.message.changecard.ChangeCardResponse;
@@ -266,20 +267,30 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean withBlack(Integer[] ids) {
+
         if (ArrayUtil.isEmpty(ids)) {
             return false;
         }
-        ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(ConfigConstant.PROJECT_WORK_KEY);
-        CdUserEntity userEntity = cdUserService.getById((Serializable) projectWorkEntity.getUserId());
-        List<CdCardLockEntity> changeLocks = cdCardLockService.list(new QueryWrapper<CdCardLockEntity>().lambda()
-                .in(CdCardLockEntity::getId,ids)
-        );
-        for (CdCardLockEntity cdCardLockEntity : changeLocks) {
-            CdCardLockDTO cdCardLock = new CdCardLockDTO();
-            cdCardLock.setCode("拉黑");
-            cdCardLock.setDeviceId(cdCardLockEntity.getDeviceId());
-            cdCardLock.setProjectId(cdCardLockEntity.getProjectId());
-            boolean b = cdCardLockService.uploadSms(cdCardLock, userEntity);
+
+        List<GetListByIdsVO> getListByIdsVOS = cdCardLockService.getListByIds(Arrays.asList(ids));
+
+        Map<Integer, List<GetListByIdsVO>> integerListMap = getListByIdsVOS.stream().collect(Collectors.groupingBy(GetListByIdsVO::getGroupId));
+
+        for (Integer id : integerListMap.keySet()) {
+            List<GetListByIdsVO> changeLocks = integerListMap.get(id);
+            String cacheKey = String.format("%s_%s", ConfigConstant.PROJECT_WORK_KEY, id);
+            ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(cacheKey);
+            if (ObjectUtil.isNull(projectWorkEntity)) {
+                return false;
+            }
+            CdUserEntity userEntity = cdUserService.getById((Serializable) projectWorkEntity.getUserId());
+            for (GetListByIdsVO cdCardLockEntity : changeLocks) {
+                CdCardLockDTO cdCardLock = new CdCardLockDTO();
+                cdCardLock.setCode("拉黑");
+                cdCardLock.setDeviceId(cdCardLockEntity.getDeviceId());
+                cdCardLock.setProjectId(cdCardLockEntity.getProjectId());
+                boolean b = cdCardLockService.uploadSms(cdCardLock, userEntity);
+            }
         }
         return false;
     }
@@ -287,25 +298,30 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void phoneDeleteAll(Integer[] ids) {
-        ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(ConfigConstant.PROJECT_WORK_KEY);
-        Integer userId = projectWorkEntity.getUserId();
         List<PhoneList> phoneLists = new ArrayList<>();
-        List<CdCardLockEntity> list = cdCardLockService.list(new QueryWrapper<CdCardLockEntity>().lambda()
-                .in(CdCardLockEntity::getId,ids)
-        );
-        CdUserEntity userEntity = cdUserService.getById((Serializable) userId);
-        for (CdCardLockEntity cdCardLockEntity : list) {
-            if (ObjectUtil.isNotNull(cdCardLockEntity) && StrUtil.isNotEmpty(cdCardLockEntity.getIccid())) {
-                PhoneList phoneList = new PhoneList("tha",cdCardLockEntity.getPhone().replace(projectWorkEntity.getPhonePre(),""));
-                phoneLists.add(phoneList);
-                CdCardLockDTO cdCardLockDTO = new CdCardLockDTO();
-                cdCardLockDTO.setProjectId(cdCardLockEntity.getProjectId());
-                cdCardLockDTO.setIccid(cdCardLockEntity.getIccid());
-                boolean b = cdCardLockService.releaseMobile(cdCardLockDTO, userEntity);
+        List<GetListByIdsVO> getListByIdsVOS = cdCardLockService.getListByIds(Arrays.asList(ids));
+        Map<Integer, List<GetListByIdsVO>> integerListMap = getListByIdsVOS.stream().collect(Collectors.groupingBy(GetListByIdsVO::getGroupId));
+
+        for (Integer id : integerListMap.keySet()) {
+            String cacheKey = String.format("%s_%s", ConfigConstant.PROJECT_WORK_KEY, id);
+            ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(cacheKey);
+            Integer userId = projectWorkEntity.getUserId();
+            CdUserEntity userEntity = cdUserService.getById((Serializable) userId);
+            List<GetListByIdsVO> list = integerListMap.get(id);
+
+            for (GetListByIdsVO cdCardLockEntity : list) {
+                if (ObjectUtil.isNotNull(cdCardLockEntity) && StrUtil.isNotEmpty(cdCardLockEntity.getIccid())) {
+                    PhoneList phoneList = new PhoneList("tha",cdCardLockEntity.getPhone().replace(projectWorkEntity.getPhonePre(),""));
+                    phoneLists.add(phoneList);
+                    CdCardLockDTO cdCardLockDTO = new CdCardLockDTO();
+                    cdCardLockDTO.setProjectId(cdCardLockEntity.getProjectId());
+                    cdCardLockDTO.setIccid(cdCardLockEntity.getIccid());
+                    boolean b = cdCardLockService.releaseMobile(cdCardLockDTO, userEntity);
+                }
             }
+            //火狐狸把当前项目的号码释放掉
+            cdCardLockService.extracted(phoneLists,"PhoneDeleteBatch",projectWorkEntity.getCodeApiUrl());
         }
-        //火狐狸把当前项目的号码释放掉
-        cdCardLockService.extracted(phoneLists,"PhoneDeleteBatch");
     }
 
     @Override

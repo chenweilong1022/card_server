@@ -8,6 +8,7 @@ import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.benmanes.caffeine.cache.Cache;
+import com.google.common.collect.Lists;
 import io.renren.common.utils.ConfigConstant;
 import io.renren.common.validator.Assert;
 import io.renren.datasources.annotation.Game;
@@ -17,6 +18,7 @@ import io.renren.modules.ltt.enums.*;
 import io.renren.modules.ltt.firefox.*;
 import io.renren.modules.ltt.service.*;
 import io.renren.modules.ltt.vo.CdProjectVO;
+import io.renren.modules.ltt.vo.GetListByIdsVO;
 import io.renren.modules.netty.codec.Invocation;
 import io.renren.modules.netty.message.changecard.ChangeCardResponse;
 import io.renren.modules.netty.server.NettyChannelManager;
@@ -44,9 +46,7 @@ import javax.annotation.Resource;
 import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -374,17 +374,24 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean uploadSms(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity) {
-        ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(ConfigConstant.PROJECT_WORK_KEY);
-        if (CodeAcquisitionType.CodeAcquisitionType2.getKey().equals(projectWorkEntity.getCodeAcquisitionType())) {
-            return uploadSms2(cdCardLock,cdUserEntity);
-        }
-        Integer userId = projectWorkEntity.getUserId();
-        Integer projectId = projectWorkEntity.getProjectId();
         //获取当前的设备
         CdCardLockEntity cdCardLockEntity = this.getOne(new QueryWrapper<CdCardLockEntity>().lambda()
                 .eq(CdCardLockEntity::getDeviceId, cdCardLock.getDeviceId())
         );
+        CdDevicesEntity cdDevicesEntity = cdDevicesService.getById((Serializable) cdCardLockEntity.getId());
         Assert.isNull(cdCardLockEntity,"NoAssociatedDevices");
+        Assert.isNull(cdDevicesEntity,"NoAssociatedDevices");
+
+        String cacheKey = String.format("%s_%s", ConfigConstant.PROJECT_WORK_KEY, cdDevicesEntity.getGroupId());
+
+        ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(cacheKey);
+        //如果存在配置 并且是挂机接码状态
+        if (ObjectUtil.isNotNull(projectWorkEntity) && CodeAcquisitionType.CodeAcquisitionType2.getKey().equals(projectWorkEntity.getCodeAcquisitionType())) {
+            return uploadSms2(cdCardLock,cdUserEntity,projectWorkEntity.getCodeApiUrl());
+        }
+        Integer userId = projectWorkEntity.getUserId();
+        Integer projectId = projectWorkEntity.getProjectId();
+
         //获取验证码的key
         String key = String.format("code_%s_%s", cdCardLockEntity.getIccid(), cdCardLockEntity.getProjectId());
 
@@ -417,7 +424,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
             String deviceId = cdCardLockEntity.getDeviceId();
             if (userId.equals(cdCardLockEntity.getUserId()) && projectId.equals(cdCardLockEntity.getProjectId())) {
                 if (cdCardLock.getCode().contains(cdProjectVO.getName())){
-                    uploadSms(cdCardLock, cdCardLockEntity);
+                    uploadSms(cdCardLock, cdCardLockEntity,projectWorkEntity.getCodeApiUrl());
                 }
                 CdCardLockDTO cdCardLockDTO = new CdCardLockDTO();
                 cdCardLockDTO.setProjectId(projectId);
@@ -430,7 +437,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
                     List<PhoneList> phoneLists = new ArrayList<>();
                     PhoneList phoneList = new PhoneList("tha",mobile.getPhone().replace(phonePre,""));
                     phoneLists.add(phoneList);
-                    extracted(phoneLists,"");
+                    extracted(phoneLists,"",projectWorkEntity.getCodeApiUrl());
                 }
             }
         }
@@ -442,7 +449,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
                 List<PhoneList> phoneLists = new ArrayList<>();
                 PhoneList phoneList = new PhoneList("tha",cdProjectSmsRecordEntity.getPhone().replace(phonePre,""));
                 phoneLists.add(phoneList);
-                extracted(phoneLists,"PhoneDeleteBatch");
+                extracted(phoneLists,"PhoneDeleteBatch",projectWorkEntity.getCodeApiUrl());
             }
         }
 
@@ -450,7 +457,12 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
     }
 
     @Override
-    public boolean uploadSms2(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity) {
+    public List<GetListByIdsVO> getListByIds(List<Integer> ids) {
+        return baseMapper.getListByIds(ids);
+    }
+
+    @Override
+    public boolean uploadSms2(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity,String codeApiUrl) {
 
         //获取当前的设备
         CdCardLockEntity cdCardLockEntity = this.getOne(new QueryWrapper<CdCardLockEntity>().lambda()
@@ -470,7 +482,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
         cdProjectSmsRecordEntity.setDeleteFlag(DeleteFlag.YES.getKey());
         cdProjectSmsRecordEntity.setCreateTime(DateUtil.date());
         boolean save = cdProjectSmsRecordService.save(cdProjectSmsRecordEntity);
-        uploadSms(cdCardLock, cdCardLockEntity);
+        uploadSms(cdCardLock, cdCardLockEntity,codeApiUrl);
         return save;
     }
 
@@ -493,24 +505,16 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
     @EventListener
     @Order(value = 9999)
     public void handlerApplicationReadyEvent(ApplicationReadyEvent event) {
-        SysConfigEntity one = sysConfigService.getOne(new QueryWrapper<SysConfigEntity>().lambda()
-                .eq(SysConfigEntity::getParamKey,ConfigConstant.PROJECT_WORK_KEY)
-        );
-        if (ObjectUtil.isNull(one)) {
-            SysConfigEntity config = new SysConfigEntity();
-            config.setType(2);
-            config.setProjectId(198);
-            config.setPhonePre("+855");
-            config.setUserId(2);
-            config.setCodeApiUrl("https://www.firefox.fun/ksapi.ashx?key=76082377BDE44F99");
-            config.setPlatform(1);
-            config.setCodeAcquisitionType(CodeAcquisitionType.CodeAcquisitionType1.getKey());
-            sysConfigService.save(config);
-        }else {
-            ProjectWorkEntity bean = JSONUtil.toBean(one.getParamValue(), ProjectWorkEntity.class);
+//        SysConfigEntity one = sysConfigService.getOne(new QueryWrapper<SysConfigEntity>().lambda()
+//                .eq(SysConfigEntity::getParamKey,ConfigConstant.PROJECT_WORK_KEY)
+//        );
+        List<SysConfigEntity> list = sysConfigService.list();
+        for (SysConfigEntity sysConfigEntity : list) {
+            ProjectWorkEntity bean = JSONUtil.toBean(sysConfigEntity.getParamValue(), ProjectWorkEntity.class);
             if (ObjectUtil.isNotNull(bean) && ObjectUtil.isNotNull(bean.getUserId())) {
                 SysConfigEntity config = new SysConfigEntity();
-                config.setId(one.getId());
+                config.setKey(sysConfigEntity.getParamKey());
+                config.setId(sysConfigEntity.getId());
                 config.setType(2);
                 config.setProjectId(bean.getProjectId());
                 config.setPhonePre(bean.getPhonePre());
@@ -527,44 +531,63 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
                 sysConfigService.update(config);
             }
         }
+
+
+//        if (ObjectUtil.isNull(one)) {
+//            SysConfigEntity config = new SysConfigEntity();
+//            config.setType(2);
+//            config.setProjectId(198);
+//            config.setPhonePre("+855");
+//            config.setUserId(2);
+//            config.setCodeApiUrl("https://www.firefox.fun/ksapi.ashx?key=76082377BDE44F99");
+//            config.setPlatform(1);
+//            config.setCodeAcquisitionType(CodeAcquisitionType.CodeAcquisitionType1.getKey());
+//            sysConfigService.save(config);
+//        }else {
+//        }
     }
 
 
     @Transactional(rollbackFor = Exception.class)
     public void init3(Integer[] ids){
+        List<GetListByIdsVO> getListByIdsVOS = this.getListByIds(Arrays.asList(ids));
 
-        ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(ConfigConstant.PROJECT_WORK_KEY);
-        Integer userId = projectWorkEntity.getUserId();
-        Integer projectId = projectWorkEntity.getProjectId();
-        //用户
-        CdUserEntity userEntity = cdUserService.getById((Serializable) userId);
-        //判断火狐狸上有几个用户
-        List<CdCardLockEntity> list = this.list(new QueryWrapper<CdCardLockEntity>().lambda()
-                .in(CdCardLockEntity::getId,ids)
-        );
+        Map<Integer, List<GetListByIdsVO>> integerListMap = getListByIdsVOS.stream().collect(Collectors.groupingBy(GetListByIdsVO::getGroupId));
 
-        if (!list.isEmpty()) {
-            List<PhoneList> phoneLists = new ArrayList<PhoneList>();
-            //获取所有的手机
-            for (CdCardLockEntity cdCardLockEntity : list) {
-                if (ObjectUtil.isNull(userEntity)) {
-                    continue;
+        for (Integer id : integerListMap.keySet()) {
+            String cacheKey = String.format("%s_%s", ConfigConstant.PROJECT_WORK_KEY, id);
+            ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(cacheKey);
+            Integer userId = projectWorkEntity.getUserId();
+            Integer projectId = projectWorkEntity.getProjectId();
+            CdUserEntity userEntity = cdUserService.getById((Serializable) userId);
+            List<GetListByIdsVO> list = integerListMap.get(id);
+            if (!list.isEmpty()) {
+                List<PhoneList> phoneLists = new ArrayList<PhoneList>();
+                //获取所有的手机
+                for (GetListByIdsVO cdCardLockEntity : list) {
+                    if (ObjectUtil.isNull(userEntity)) {
+                        continue;
+                    }
+                    CdCardLockDTO cdCardLockDTO = new CdCardLockDTO();
+                    cdCardLockDTO.setProjectId(projectId);
+                    CdCardLockVO mobile = getMobile(cdCardLockDTO, userEntity, cdCardLockEntity.getDeviceId());
+                    if (ObjectUtil.isNotNull(mobile)) {
+                        PhoneList phoneList = new PhoneList("tha",mobile.getPhone().replace(projectWorkEntity.getPhonePre(),""));
+                        phoneLists.add(phoneList);
+                    }
                 }
-                CdCardLockDTO cdCardLockDTO = new CdCardLockDTO();
-                cdCardLockDTO.setProjectId(projectId);
-                CdCardLockVO mobile = getMobile(cdCardLockDTO, userEntity, cdCardLockEntity.getDeviceId());
-                if (ObjectUtil.isNotNull(mobile)) {
-                    PhoneList phoneList = new PhoneList("tha",mobile.getPhone().replace(projectWorkEntity.getPhonePre(),""));
-                    phoneLists.add(phoneList);
+
+                if (CollUtil.isNotEmpty(phoneLists)) {
+                    List<List<PhoneList>> partition = Lists.partition(phoneLists, 49);
+                    for (List<PhoneList> lists : partition) {
+                        extracted(lists,"",projectWorkEntity.getCodeApiUrl());
+                    }
                 }
-            }
-            if (CollUtil.isNotEmpty(phoneLists)) {
-                extracted(phoneLists,"");
             }
         }
     }
 
-    public void extracted(List<PhoneList> phoneLists,String act){
+    public void extracted(List<PhoneList> phoneLists,String act,String codeApiUrl){
         try{
             if (StrUtil.isEmpty(act)) {
                 act = "PhoneAddBatch";
@@ -572,7 +595,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
             PhoneAddBatch phoneAddBatch = new PhoneAddBatch(act, phoneLists);
             ObjectMapper objectMapper = new ObjectMapper();
             String json = objectMapper.writeValueAsString(phoneAddBatch);
-            String response = firefoxPost(json);
+            String response = firefoxPost(codeApiUrl,json);
             PhoneDeleteAllResponse phoneDeleteAllResponse = objectMapper.readValue(response, PhoneDeleteAllResponse.class);
             if ("1".equals(phoneDeleteAllResponse.getCode())) {
                 log.error("添加成功");
@@ -603,12 +626,12 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
         this.releaseMobile(cdCardLock,cdUserEntity);
     }
 
-    private void uploadSms(CdCardLockDTO cdCardLock, CdCardLockEntity cdCardLockEntity){
+    private void uploadSms(CdCardLockDTO cdCardLock, CdCardLockEntity cdCardLockEntity,String codeApiUrl){
         try {
             UploadSms phoneAddBatch = new UploadSms("UploadSms", "tha", cdCardLockEntity.getPhone().replace(phonePre,""), cdCardLock.getCode());
             ObjectMapper objectMapper = new ObjectMapper();
             String json = objectMapper.writeValueAsString(phoneAddBatch);
-            String response = firefoxPost(json);
+            String response = firefoxPost(codeApiUrl,json);
             PhoneDeleteAllResponse phoneDeleteAllResponse = objectMapper.readValue(response, PhoneDeleteAllResponse.class);
             if ("1".equals(phoneDeleteAllResponse.getCode())) {
                 log.error("添加成功");
@@ -619,9 +642,8 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
     }
 
 
-    private String firefoxPost(String json) {
-        ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(ConfigConstant.PROJECT_WORK_KEY);
-        return HttpUtil.post(projectWorkEntity.getCodeApiUrl(), json);
+    private String firefoxPost(String codeApiUrl,String json) {
+        return HttpUtil.post(codeApiUrl, json);
     }
 
 

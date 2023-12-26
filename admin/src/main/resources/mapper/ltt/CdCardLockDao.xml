@@ -14,5 +14,49 @@
         <result property="createTime" column="create_time"/>
     </resultMap>
 
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.ltt.vo.GetListByIdsVO" id="getListByIdsMap">
+        <result property="id" column="id"/>
+        <result property="code" column="code"/>
+        <result property="userId" column="user_id"/>
+        <result property="projectId" column="project_id"/>
+        <result property="deviceId" column="device_id"/>
+        <result property="lock" column="lock"/>
+        <result property="phone" column="phone"/>
+        <result property="iccid" column="iccid"/>
+        <result property="deleteFlag" column="delete_flag"/>
+        <result property="createTime" column="create_time"/>
+        <result property="phoneGetTime" column="phone_get_time"/>
+        <result property="groupId" column="group_id"/>
+    </resultMap>
+
+    <!--  获取list根据id  -->
+    <select id="getListByIds" resultMap="getListByIdsMap">
+        SELECT
+            l.id,
+            l.code,
+            l.user_id,
+            l.project_id,
+            l.device_id,
+            l.lock,
+            l.phone,
+            l.iccid,
+            l.delete_flag,
+            l.create_time,
+            l.phone_get_time,
+            d.group_id
+        FROM
+            cd_card_lock l
+                LEFT JOIN cd_devices d ON d.id = l.id
+        <where>
+            <if test="ids != null and ids.size() > 0">
+                l.id in
+                <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
 
 </mapper>

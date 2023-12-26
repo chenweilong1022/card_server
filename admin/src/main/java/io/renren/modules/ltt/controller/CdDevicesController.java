@@ -136,17 +136,13 @@ public class CdDevicesController {
         return R.data(true);
     }
 
-
-    @Resource(name = "caffeineCacheProjectWorkEntity")
-    private Cache<String, ProjectWorkEntity> caffeineCacheProjectWorkEntity;
-
     /**
      * 手机号删除
      */
     @RequestMapping("/phoneDeleteAll2")
     @RequiresPermissions("ltt:cddevices:list")
     public R phoneDeleteAll2(@RequestBody Integer[] ids){
-        extracted();
+//        extracted();
         return R.data(true);
     }
 
@@ -156,24 +152,25 @@ public class CdDevicesController {
     @RequestMapping("/getCode")
     @RequiresPermissions("ltt:cddevices:list")
     public R getCode(@RequestBody Integer[] ids){
-        extracted();
+        //分组释放号码
         cdDevicesService.phoneDeleteAll(ids);
+        //初始化号码
         cdDevicesService.initCard3(ids);
         return R.data(true);
     }
 
-    private void extracted() {
-        ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(ConfigConstant.PROJECT_WORK_KEY);
-        Root phoneAddBatch = new Root("PhoneDeleteAll");
-        ObjectMapper objectMapper = new ObjectMapper();
-        String json = null;
-        try {
-            json = objectMapper.writeValueAsString(phoneAddBatch);
-        } catch (JsonProcessingException e) {
-
-        }
-        String response = HttpUtil.post(projectWorkEntity.getCodeApiUrl(), json);
-    }
+//    private void extracted() {
+//        ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(ConfigConstant.PROJECT_WORK_KEY);
+//        Root phoneAddBatch = new Root("PhoneDeleteAll");
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        String json = null;
+//        try {
+//            json = objectMapper.writeValueAsString(phoneAddBatch);
+//        } catch (JsonProcessingException e) {
+//
+//        }
+//        String response = HttpUtil.post(projectWorkEntity.getCodeApiUrl(), json);
+//    }
 
 //    /**
 //     * 初始化

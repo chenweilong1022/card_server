@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    :title="!dataForm.id ? '新增' : '修改'"
+    :title="!dataForm.id ? '新增' : `修改-${groupName}`"
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
@@ -117,6 +117,7 @@
             label: '项目配置'
           }
         ],
+        groupName: '',
         dataForm: {
           id: 0,
           paramKey: '',
@@ -147,8 +148,9 @@
           }
         }
       },
-      init (id) {
+      init (id,groupName) {
         this.dataForm.id = id || 0
+        this.groupName =groupName
         this.visible = true
         this.projectList()
         this.$nextTick(() => {
