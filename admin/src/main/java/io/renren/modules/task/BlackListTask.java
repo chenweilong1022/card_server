@@ -142,10 +142,9 @@ public class BlackListTask {
             }
             //获取所有的手机
             Map<String, GetWaitPhoneListDaum> stringGetWaitPhoneListDaumMap = data.stream().collect(Collectors.toMap(x -> projectWorkEntity.getPhonePre() + x.getPhoneNum() + "=" + x.getItemId(), y -> y));
-            List<String> collect = stringGetWaitPhoneListDaumMap.keySet().stream().map(x -> x.split("=")[0].replace("+","")).collect(Collectors.toList());
             //获取所有的手机号
             List<CdCardLockEntity> list = cdCardLockService.list(new QueryWrapper<CdCardLockEntity>().lambda()
-                    .in(CdCardLockEntity::getPhone,collect)
+                    .in(CdCardLockEntity::getPhone,stringGetWaitPhoneListDaumMap.keySet().stream().map(x -> x.split("=")[0]).collect(Collectors.toList()))
             );
             for (CdCardLockEntity cdCardLockEntity : list) {
                 Integer projectId = cdCardLockEntity.getProjectId();
