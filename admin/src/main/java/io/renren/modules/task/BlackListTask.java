@@ -66,8 +66,8 @@ public class BlackListTask {
 
     static ReentrantLock task10Lock = new ReentrantLock();
 
-//    @Scheduled(fixedDelay = 5000)
-//    @Transactional(rollbackFor = Exception.class)
+    @Scheduled(fixedDelay = 5000)
+    @Transactional(rollbackFor = Exception.class)
     public void withBlack() {
         boolean b = task10Lock.tryLock();
         if (!b) {
@@ -138,8 +138,8 @@ public class BlackListTask {
 
     static ReentrantLock task11Lock = new ReentrantLock();
 
-//    @Scheduled(fixedDelay = 5000)
-//    @Transactional(rollbackFor = Exception.class)
+    @Scheduled(fixedDelay = 5000)
+    @Transactional(rollbackFor = Exception.class)
     public void sayHello() {
         boolean task11LockFlag = task11Lock.tryLock();
         if (!task11LockFlag) {
