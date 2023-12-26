@@ -85,7 +85,7 @@ public class BlackListTask {
                 String cacheKey = String.format("%s_%s", ConfigConstant.PROJECT_WORK_KEY, id);
                 ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(cacheKey);
                 if (ObjectUtil.isNull(projectWorkEntity)) {
-                    return;
+                    continue;
                 }
 
                 CdUserEntity cdUserEntity = cdUserService.getById((Serializable) projectWorkEntity.getUserId());

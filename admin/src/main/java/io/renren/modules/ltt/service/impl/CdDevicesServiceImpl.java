@@ -281,7 +281,7 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
             String cacheKey = String.format("%s_%s", ConfigConstant.PROJECT_WORK_KEY, id);
             ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(cacheKey);
             if (ObjectUtil.isNull(projectWorkEntity)) {
-                return false;
+                continue;
             }
             CdUserEntity userEntity = cdUserService.getById((Serializable) projectWorkEntity.getUserId());
             for (GetListByIdsVO cdCardLockEntity : changeLocks) {
@@ -305,6 +305,9 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
         for (Integer id : integerListMap.keySet()) {
             String cacheKey = String.format("%s_%s", ConfigConstant.PROJECT_WORK_KEY, id);
             ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(cacheKey);
+            if (ObjectUtil.isNull(projectWorkEntity)) {
+                continue;
+            }
             Integer userId = projectWorkEntity.getUserId();
             CdUserEntity userEntity = cdUserService.getById((Serializable) userId);
             List<GetListByIdsVO> list = integerListMap.get(id);
