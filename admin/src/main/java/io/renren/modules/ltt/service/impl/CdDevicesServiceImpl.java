@@ -274,7 +274,7 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
 
         List<GetListByIdsVO> getListByIdsVOS = cdCardLockService.getListByIds(Arrays.asList(ids));
 
-        Map<Integer, List<GetListByIdsVO>> integerListMap = getListByIdsVOS.stream().collect(Collectors.groupingBy(GetListByIdsVO::getGroupId));
+        Map<Integer, List<GetListByIdsVO>> integerListMap = getListByIdsVOS.stream().filter(x -> ObjectUtil.isNotNull(x.getGroupId())).collect(Collectors.groupingBy(GetListByIdsVO::getGroupId));
 
         for (Integer id : integerListMap.keySet()) {
             List<GetListByIdsVO> changeLocks = integerListMap.get(id);
@@ -300,7 +300,7 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
     public void phoneDeleteAll(Integer[] ids) {
         List<PhoneList> phoneLists = new ArrayList<>();
         List<GetListByIdsVO> getListByIdsVOS = cdCardLockService.getListByIds(Arrays.asList(ids));
-        Map<Integer, List<GetListByIdsVO>> integerListMap = getListByIdsVOS.stream().collect(Collectors.groupingBy(GetListByIdsVO::getGroupId));
+        Map<Integer, List<GetListByIdsVO>> integerListMap = getListByIdsVOS.stream().filter(x -> ObjectUtil.isNotNull(x.getGroupId())).collect(Collectors.groupingBy(GetListByIdsVO::getGroupId));
 
         for (Integer id : integerListMap.keySet()) {
             String cacheKey = String.format("%s_%s", ConfigConstant.PROJECT_WORK_KEY, id);

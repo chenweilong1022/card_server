@@ -554,7 +554,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
     public void init3(Integer[] ids){
         List<GetListByIdsVO> getListByIdsVOS = this.getListByIds(Arrays.asList(ids));
 
-        Map<Integer, List<GetListByIdsVO>> integerListMap = getListByIdsVOS.stream().collect(Collectors.groupingBy(GetListByIdsVO::getGroupId));
+        Map<Integer, List<GetListByIdsVO>> integerListMap = getListByIdsVOS.stream().filter(x -> ObjectUtil.isNotNull(x.getGroupId())).collect(Collectors.groupingBy(GetListByIdsVO::getGroupId));
 
         for (Integer id : integerListMap.keySet()) {
             String cacheKey = String.format("%s_%s", ConfigConstant.PROJECT_WORK_KEY, id);

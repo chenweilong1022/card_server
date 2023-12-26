@@ -77,7 +77,7 @@ public class BlackListTask {
         try {
 
             List<GetListByIdsVO> getListByIdsVOS = cdCardLockService.getListByIds(null);
-            Map<Integer, List<GetListByIdsVO>> integerListMap = getListByIdsVOS.stream().collect(Collectors.groupingBy(GetListByIdsVO::getGroupId));
+            Map<Integer, List<GetListByIdsVO>> integerListMap = getListByIdsVOS.stream().filter(x -> ObjectUtil.isNotNull(x.getGroupId())).collect(Collectors.groupingBy(GetListByIdsVO::getGroupId));
 
             for (Integer id : integerListMap.keySet()) {
 
@@ -147,7 +147,7 @@ public class BlackListTask {
         }
         try{
             List<GetListByIdsVO> getListByIdsVOS = cdCardLockService.getListByIds(null);
-            Map<Integer, List<GetListByIdsVO>> integerListMap = getListByIdsVOS.stream().collect(Collectors.groupingBy(GetListByIdsVO::getGroupId));
+            Map<Integer, List<GetListByIdsVO>> integerListMap = getListByIdsVOS.stream().filter(x -> ObjectUtil.isNotNull(x.getGroupId())).collect(Collectors.groupingBy(GetListByIdsVO::getGroupId));
             for (Integer id : integerListMap.keySet()) {
                 try {
                     String cacheKey = String.format("%s_%s", ConfigConstant.PROJECT_WORK_KEY, id);
