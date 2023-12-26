@@ -296,7 +296,7 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
         CdUserEntity userEntity = cdUserService.getById((Serializable) userId);
         for (CdCardLockEntity cdCardLockEntity : list) {
             if (ObjectUtil.isNotNull(cdCardLockEntity) && StrUtil.isNotEmpty(cdCardLockEntity.getIccid())) {
-                PhoneList phoneList = new PhoneList("khm",cdCardLockEntity.getPhone().replace(projectWorkEntity.getPhonePre(),""));
+                PhoneList phoneList = new PhoneList("tha",cdCardLockEntity.getPhone().replace(projectWorkEntity.getPhonePre(),""));
                 phoneLists.add(phoneList);
                 CdCardLockDTO cdCardLockDTO = new CdCardLockDTO();
                 cdCardLockDTO.setProjectId(cdCardLockEntity.getProjectId());
