@@ -166,7 +166,8 @@ public class BlackListTask {
                 }
             }
         }catch (Exception e) {
-            log.error("error = {}",e.getMessage());
+            e.printStackTrace();
+//            log.error("error = {}",e.);
         }
     }
 
