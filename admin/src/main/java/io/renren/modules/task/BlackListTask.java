@@ -91,7 +91,7 @@ public class BlackListTask {
                 log.info("updateAppVO isempty");
                 return;
             }
-
+            log.info("updateAppVO = {}",JSONUtil.toJsonStr(updateAppVO));
             UpdateAppVO peek = updateAppVO.peek();
             Integer id = peek.getId();
             Integer count = peek.getCount();
