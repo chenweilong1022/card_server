@@ -98,7 +98,7 @@ public class BlackListTask {
             String currentVersion = peek.getCurrentVersion();
             CdDevicesEntity devicesEntity = cdDevicesService.getById((Serializable) id);
 
-            if (ObjectUtil.isNotNull(devicesEntity)) {
+            if (ObjectUtil.isNull(devicesEntity)) {
                 return;
             }
 
