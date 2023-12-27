@@ -504,35 +504,57 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
         return taskDto;
     }
 
+
+
+    @Autowired
+    private CdCardGroupService cdCardGroupService;
+
     @EventListener
     @Order(value = 9999)
     public void handlerApplicationReadyEvent(ApplicationReadyEvent event) {
+
+        List<CdCardGroupEntity> list = cdCardGroupService.list();
+        for (CdCardGroupEntity cdCardGroupEntity : list) {
+            Integer id = cdCardGroupEntity.getId();
+
+            String cacheKey = String.format("%s_%s", ConfigConstant.PROJECT_WORK_KEY, id);
+            SysConfigEntity sysConfigEntity = sysConfigService.getOne(new QueryWrapper<SysConfigEntity>().lambda()
+                    .eq(SysConfigEntity::getParamKey, cacheKey)
+            );
+//            //项目
+//            ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(cacheKey);
+            if (ObjectUtil.isNotNull(sysConfigEntity)) {
+                sysConfigEntity.setKey(cacheKey);
+                ProjectWorkEntity bean = JSONUtil.toBean(sysConfigEntity.getParamValue(), ProjectWorkEntity.class);
+                if (ObjectUtil.isNotNull(bean) && ObjectUtil.isNotNull(bean.getUserId())) {
+                    SysConfigEntity config = new SysConfigEntity();
+                    config.setKey(sysConfigEntity.getParamKey());
+                    config.setId(sysConfigEntity.getId());
+                    config.setType(2);
+                    config.setProjectId(bean.getProjectId());
+                    config.setPhonePre(bean.getPhonePre());
+                    config.setUserId(bean.getUserId());
+                    config.setCodeApiUrl(bean.getCodeApiUrl());
+                    config.setPlatform(bean.getPlatform());
+                    config.setCodeAcquisitionType(bean.getCodeAcquisitionType());
+                    if (ObjectUtil.isNull(bean.getPlatform())) {
+                        config.setPlatform(1);
+                    }
+                    if (StrUtil.isEmpty(bean.getCodeApiUrl())) {
+                        config.setCodeApiUrl("https://www.firefox.fun/ksapi.ashx?key=76082377BDE44F99");
+                    }
+                    sysConfigService.update(config);
+                }
+            }
+
 //        SysConfigEntity one = sysConfigService.getOne(new QueryWrapper<SysConfigEntity>().lambda()
 //                .eq(SysConfigEntity::getParamKey,ConfigConstant.PROJECT_WORK_KEY)
 //        );
-        List<SysConfigEntity> list = sysConfigService.list();
-        for (SysConfigEntity sysConfigEntity : list) {
-            ProjectWorkEntity bean = JSONUtil.toBean(sysConfigEntity.getParamValue(), ProjectWorkEntity.class);
-            if (ObjectUtil.isNotNull(bean) && ObjectUtil.isNotNull(bean.getUserId())) {
-                SysConfigEntity config = new SysConfigEntity();
-                config.setKey(sysConfigEntity.getParamKey());
-                config.setId(sysConfigEntity.getId());
-                config.setType(2);
-                config.setProjectId(bean.getProjectId());
-                config.setPhonePre(bean.getPhonePre());
-                config.setUserId(bean.getUserId());
-                config.setCodeApiUrl(bean.getCodeApiUrl());
-                config.setPlatform(bean.getPlatform());
-                config.setCodeAcquisitionType(bean.getCodeAcquisitionType());
-                if (ObjectUtil.isNull(bean.getPlatform())) {
-                    config.setPlatform(1);
-                }
-                if (StrUtil.isEmpty(bean.getCodeApiUrl())) {
-                    config.setCodeApiUrl("https://www.firefox.fun/ksapi.ashx?key=76082377BDE44F99");
-                }
-                sysConfigService.update(config);
-            }
-        }
+//        List<SysConfigEntity> list = sysConfigService.list();
+//        for (SysConfigEntity sysConfigEntity : list) {
+
+//            }
+//        }
 
 
 //        if (ObjectUtil.isNull(one)) {
@@ -547,6 +569,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
 //            sysConfigService.save(config);
 //        }else {
 //        }
+        }
     }
 
 
