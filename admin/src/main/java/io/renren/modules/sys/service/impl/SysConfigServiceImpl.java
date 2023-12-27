@@ -102,7 +102,7 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigDao, SysConfigEnt
 					itemId = collect.get(cdProjectVO.getName());
 				}
 				if (ObjectUtil.isNotNull(itemId)) {
-					cdProjectService.update(new CdProjectEntity().setItemId(-1),new QueryWrapper<CdProjectEntity>());
+//					cdProjectService.update(new CdProjectEntity().setItemId(-1),new QueryWrapper<CdProjectEntity>());
 					CdProjectEntity cdProjectEntity = new CdProjectEntity();
 					cdProjectEntity.setId(cdProjectVO.getId());
 					cdProjectEntity.setItemId(itemId);

@@ -88,6 +88,7 @@ public class BlackListTask {
             //是否有需要更新的项目
             Queue<UpdateAppVO> updateAppVO = stringListCacheUpdateAppVO.getIfPresent("stringListCacheUpdateAppVO");
             if (CollUtil.isEmpty(updateAppVO)) {
+                log.info("updateAppVO isempty");
                 return;
             }
 
