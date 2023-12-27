@@ -126,6 +126,10 @@ public class SysConfigController extends AbstractController {
 		//查询config
 		String cacheKey = String.format("%s_%s", ConfigConstant.PROJECT_WORK_KEY, config.getId());
 		config.setKey(cacheKey);
+		SysConfigEntity config2 = sysConfigService.getOne(new QueryWrapper<SysConfigEntity>().lambda()
+				.eq(SysConfigEntity::getParamKey,cacheKey)
+		);
+		config.setId(config2.getId());
 		sysConfigService.update(config);
 
 		return R.ok();
