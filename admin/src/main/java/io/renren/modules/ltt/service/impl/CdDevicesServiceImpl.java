@@ -237,7 +237,6 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
             list = cdDevicesService.list();
         }
         Queue<UpdateAppVO> updateAppVOS = new LinkedList<UpdateAppVO>();
-        log
         for (CdDevicesEntity cdDevicesEntity : list) {
             UpdateAppVO updateAppVO = new UpdateAppVO();
             updateAppVO.setHttpUrl(updateAppDTO.getHttpUrl());
