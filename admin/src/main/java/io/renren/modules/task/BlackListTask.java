@@ -226,7 +226,7 @@ public class BlackListTask {
 
                     List<GetWaitPhoneListDaum> data = phoneDeleteAllResponse.getData();
                     if (CollUtil.isEmpty(data)) {
-                        return;
+                        continue;
                     }
                     //获取所有的手机
                     Map<String, GetWaitPhoneListDaum> stringGetWaitPhoneListDaumMap = data.stream().collect(Collectors.toMap(x -> projectWorkEntity.getPhonePre() + x.getPhoneNum() + "=" + x.getItemId(), y -> y));
