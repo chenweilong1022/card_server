@@ -46,14 +46,33 @@
       </el-form-item>
 
       <el-form-item>
+        <el-select v-model="getTimeType" placeholder="取码时间筛选" clearable>
+          <el-option
+            v-for="item in getTimeOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
+
+      <el-form-item>
+        <el-select v-model="sortIndex" placeholder="码排序" clearable>
+          <el-option
+            v-for="item in sortIndexOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
+
+      <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
         <el-button type="primary" @click="cddevicesUpdateAppCardHandle()" :disabled="dataListSelections.length <= 0">app更新</el-button>
         <el-button type="primary" @click="initHandle()" :disabled="dataListSelections.length <= 0">批量初始化</el-button>
         <el-button type="primary" @click="withBlack()" :disabled="dataListSelections.length <= 0">号码拉黑</el-button>
         <el-button type="primary" @click="getCode()" :disabled="dataListSelections.length <= 0">项目切换</el-button>
-<!--        <el-button type="primary" @click="initHandle3()" :disabled="dataListSelections.length <= 0">火狐狸初始化</el-button>-->
-<!--        <el-button type="primary" @click="phoneDeleteAllHandle3()" :disabled="dataListSelections.length <= 0">火狐狸清空手机号</el-button>-->
-<!--        <el-button type="primary" @click="phoneDeleteAllHandle32()" :disabled="dataListSelections.length <= 0">火狐狸清空全部手机号</el-button>-->
         <el-button type="primary" @click="rebootHandler()" :disabled="dataListSelections.length <= 0">批量重启</el-button>
         <el-button type="primary" @click="updateBatchHandler(null,1)" :disabled="dataListSelections.length <= 0">批量闲置</el-button>
         <el-button type="primary" @click="updateBatchHandler(null,3)" :disabled="dataListSelections.length <= 0">批量工作</el-button>
@@ -90,6 +109,14 @@
         align="center"
         label="版本号">
       </el-table-column>
+
+      <el-table-column
+        prop="phoneGetTime"
+        header-align="center"
+        align="center"
+        label="取码时间">
+      </el-table-column>
+
       <el-table-column
         prop="workFq"
         header-align="center"
@@ -158,12 +185,6 @@
       </el-table-column>
 
       <el-table-column
-        prop="phoneGetTime"
-        header-align="center"
-        align="center"
-        label="取码时间">
-      </el-table-column>
-      <el-table-column
         fixed="right"
         header-align="center"
         align="center"
@@ -209,6 +230,8 @@ export default {
   data () {
     return {
       online: 0,
+      getTimeType: null,
+      sortIndex: null,
       workType: null,
       groupId: null,
       dataForm: {
@@ -242,6 +265,22 @@ export default {
         {
           value: 3,
           label: '接码'
+        }
+      ],
+      getTimeOptions: [
+        {
+          value: 1,
+          label: '有取码时间'
+        },
+        {
+          value: 2,
+          label: '无取码时间'
+        }
+      ],
+      sortIndexOptions: [
+        {
+          value: 1,
+          label: '当前板排序'
         }
       ],
       dataList: [],
@@ -560,9 +599,20 @@ export default {
       }).then(({data}) => {
         if (data && data.code === 0) {
           this.dataList = data.page.list
-          // if (this.dataForm.fq) {
-          //   this.dataList = this.dataList.filter(item => item.heartbeatRequest && item.heartbeatRequest.fq < this.dataForm.fq)
-          // }
+          if (1 === this.getTimeType) {
+            this.dataList = this.dataList.filter(x => x.phoneGetTime);
+          }else if (2 === this.getTimeType) {
+            this.dataList = this.dataList.filter(x => !x.phoneGetTime);
+          }
+
+          if (1 === this.sortIndex) {
+            this.dataList = this.dataList.sort(function (a, b) {
+              var an = a.heartbeatRequest == null ? 1 :a.heartbeatRequest.workFq;
+              var bn = b.heartbeatRequest == null ? 1 :b.heartbeatRequest.workFq;
+              return an - bn;
+            });
+          }
+          
           this.totalPage = data.page.totalCount
         } else {
           this.dataList = []
