@@ -14,6 +14,7 @@ import io.renren.common.utils.ConfigConstant;
 import io.renren.modules.ltt.conver.CdCardLockConver;
 import io.renren.modules.ltt.dto.CdCardLockDTO;
 import io.renren.modules.ltt.entity.CdCardLockEntity;
+import io.renren.modules.ltt.entity.CdDevicesEntity;
 import io.renren.modules.ltt.entity.CdProjectEntity;
 import io.renren.modules.ltt.entity.CdUserEntity;
 import io.renren.modules.ltt.enums.CodeAcquisitionType;
@@ -27,6 +28,10 @@ import io.renren.modules.ltt.service.CdUserService;
 import io.renren.modules.ltt.vo.CdCardLockVO;
 import io.renren.modules.ltt.vo.CdProjectVO;
 import io.renren.modules.ltt.vo.GetListByIdsVO;
+import io.renren.modules.ltt.vo.UpdateAppVO;
+import io.renren.modules.netty.codec.Invocation;
+import io.renren.modules.netty.message.updateapp.UpdateappResponse;
+import io.renren.modules.netty.server.NettyChannelManager;
 import io.renren.modules.sys.entity.ProjectWorkEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +70,63 @@ public class BlackListTask {
     private CdDevicesService cdDevicesService;
 
     static ReentrantLock task10Lock = new ReentrantLock();
+    static ReentrantLock taskLockupdateApp = new ReentrantLock();
+
+
+    @Resource(name = "stringListCacheUpdateAppVO")
+    private Cache<String, Queue<UpdateAppVO>> stringListCacheUpdateAppVO;
+    @Autowired
+    private NettyChannelManager nettyChannelManager;
+    @Scheduled(fixedDelay = 5000)
+    @Transactional(rollbackFor = Exception.class)
+    public void updateApp() {
+        boolean b = taskLockupdateApp.tryLock();
+        if (!b) {
+            return;
+        }
+        try {
+            //是否有需要更新的项目
+            Queue<UpdateAppVO> updateAppVO = stringListCacheUpdateAppVO.getIfPresent("stringListCacheUpdateAppVO");
+            if (CollUtil.isEmpty(updateAppVO)) {
+                return;
+            }
+
+            UpdateAppVO peek = updateAppVO.peek();
+            Integer id = peek.getId();
+            Integer count = peek.getCount();
+            String currentVersion = peek.getCurrentVersion();
+            CdDevicesEntity devicesEntity = cdDevicesService.getById((Serializable) id);
+
+            if (ObjectUtil.isNotNull(devicesEntity)) {
+                return;
+            }
+
+            if (!currentVersion.equals(devicesEntity.getPackageVersion())) {
+                updateAppVO.poll();
+                stringListCacheUpdateAppVO.put("stringListCacheUpdateAppVO",updateAppVO);
+                return;
+            }
+
+            //更新app
+            if (0 == count || (count % 5 == 0)) {
+                UpdateappResponse taskDto = new UpdateappResponse();
+                taskDto.setDeviceId(peek.getDeviceId());
+                taskDto.setHttpUrl(peek.getHttpUrl());
+                nettyChannelManager.send(peek.getDeviceId(),new Invocation(UpdateappResponse.TYPE, taskDto));
+            }
+            if (count > 15) {
+                updateAppVO.poll();
+                stringListCacheUpdateAppVO.put("stringListCacheUpdateAppVO",updateAppVO);
+                return;
+            }
+            count++;
+            peek.setCount(count);
+            stringListCacheUpdateAppVO.put("stringListCacheUpdateAppVO",updateAppVO);
+        }finally {
+            taskLockupdateApp.unlock();
+        }
+    }
+
 
     @Scheduled(fixedDelay = 5000)
     @Transactional(rollbackFor = Exception.class)

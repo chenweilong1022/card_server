@@ -18,6 +18,7 @@ import io.renren.modules.ltt.firefox.PhoneList;
 import io.renren.modules.ltt.service.*;
 import io.renren.modules.ltt.vo.GetListByIdsVO;
 import io.renren.modules.ltt.vo.GroupByDeviceIdVO;
+import io.renren.modules.ltt.vo.UpdateAppVO;
 import io.renren.modules.netty.codec.Invocation;
 import io.renren.modules.netty.message.changecard.ChangeCardResponse;
 import io.renren.modules.netty.message.heartbeat.HeartbeatRequest;
@@ -45,6 +46,7 @@ import javax.annotation.Resource;
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.*;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Collectors;
 
 
@@ -222,6 +224,10 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
         return true;
     }
 
+
+    @Resource(name = "stringListCacheUpdateAppVO")
+    private Cache<String, Queue<UpdateAppVO>> stringListCacheUpdateAppVO;
+
     @Override
     public boolean updateApp(CdDevicesUpdateAppDTO updateAppDTO) {
         List<CdDevicesEntity> list = null;
@@ -230,14 +236,24 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
         }else if (2 == updateAppDTO.getUpdateType()) {
             list = cdDevicesService.list();
         }
-
+        Queue<UpdateAppVO> updateAppVOS = new LinkedList<UpdateAppVO>();
         for (CdDevicesEntity cdDevicesEntity : list) {
-            //通知客戶端修改卡
-            UpdateappResponse taskDto = new UpdateappResponse();
-            taskDto.setDeviceId(cdDevicesEntity.getIccid());
-            taskDto.setHttpUrl(updateAppDTO.getHttpUrl());
-            nettyChannelManager.send(cdDevicesEntity.getIccid(),new Invocation(UpdateappResponse.TYPE, taskDto));
+            UpdateAppVO updateAppVO = new UpdateAppVO();
+            updateAppVO.setHttpUrl(updateAppDTO.getHttpUrl());
+            updateAppVO.setDeviceId(cdDevicesEntity.getIccid());
+            updateAppVO.setCurrentVersion(cdDevicesEntity.getPackageVersion());
+            updateAppVO.setId(cdDevicesEntity.getId());
+            updateAppVO.setCount(0);
+            updateAppVOS.offer(updateAppVO);
         }
+        stringListCacheUpdateAppVO.put("stringListCacheUpdateAppVO",updateAppVOS);
+//        for (CdDevicesEntity cdDevicesEntity : list) {
+//            //通知客戶端修改卡
+//            UpdateappResponse taskDto = new UpdateappResponse();
+//            taskDto.setDeviceId(cdDevicesEntity.getIccid());
+//            taskDto.setHttpUrl(updateAppDTO.getHttpUrl());
+//            nettyChannelManager.send(cdDevicesEntity.getIccid(),new Invocation(UpdateappResponse.TYPE, taskDto));
+//        }
         return true;
     }
 
