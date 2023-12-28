@@ -81,8 +81,9 @@ public class BlackListTask {
     private Cache<String, Queue<UpdateAppVO>> stringListCacheUpdateAppVO;
     @Autowired
     private NettyChannelManager nettyChannelManager;
-//    @Scheduled(fixedDelay = 5000)
-//    @Transactional(rollbackFor = Exception.class)
+
+    @Scheduled(fixedDelay = 5000)
+    @Transactional(rollbackFor = Exception.class)
     public void updateApp() {
         boolean b = taskLockupdateApp.tryLock();
         if (!b) {
@@ -133,8 +134,8 @@ public class BlackListTask {
     }
 
 
-//    @Scheduled(fixedDelay = 5000)
-//    @Transactional(rollbackFor = Exception.class)
+    @Scheduled(fixedDelay = 5000)
+    @Transactional(rollbackFor = Exception.class)
     public void withBlack() {
         boolean b = task10Lock.tryLock();
         if (!b) {
@@ -203,6 +204,8 @@ public class BlackListTask {
                         }
                     }
                     continue;
+                }else if(CodeAcquisitionType.CodeAcquisitionType3.getKey().equals(projectWorkEntity.getCodeAcquisitionType())) {
+                    continue;
                 }
                 // 获取ids
                 List<Integer> ids = new ArrayList<>();
@@ -246,8 +249,8 @@ public class BlackListTask {
 
     static ReentrantLock task11Lock = new ReentrantLock();
 
-//    @Scheduled(fixedDelay = 5000)
-//    @Transactional(rollbackFor = Exception.class)
+    @Scheduled(fixedDelay = 5000)
+    @Transactional(rollbackFor = Exception.class)
     public void sayHello() {
         boolean task11LockFlag = task11Lock.tryLock();
         if (!task11LockFlag) {

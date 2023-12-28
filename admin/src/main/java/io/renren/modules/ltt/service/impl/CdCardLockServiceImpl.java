@@ -420,6 +420,10 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
             this.updateById(cdCardLockEntity);
         }
 
+        if (ObjectUtil.isNotNull(projectWorkEntity) && CodeAcquisitionType.CodeAcquisitionType3.getKey().equals(projectWorkEntity.getCodeAcquisitionType())) {
+            return save;
+        }
+
         //上传短信
         if (ObjectUtil.isNotNull(cdProjectVO) && cdCardLock.getCode().contains(cdProjectVO.getName()) || cdCardLock.getCode().contains("拉黑")) {
             String deviceId = cdCardLockEntity.getDeviceId();

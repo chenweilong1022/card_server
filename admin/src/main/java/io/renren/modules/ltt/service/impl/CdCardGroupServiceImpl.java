@@ -96,6 +96,8 @@ public class CdCardGroupServiceImpl extends ServiceImpl<CdCardGroupDao, CdCardGr
             }
             if(CodeAcquisitionType.CodeAcquisitionType2.getKey().equals(projectWorkEntity.getCodeAcquisitionType())) {
                 continue;
+            }else if(CodeAcquisitionType.CodeAcquisitionType1.getKey().equals(projectWorkEntity.getCodeAcquisitionType())) {
+                continue;
             }
             CdCardLockDTO cdCardLock = new CdCardLockDTO();
             cdCardLock.setProjectId(cdCardLockDTO.getProjectId());

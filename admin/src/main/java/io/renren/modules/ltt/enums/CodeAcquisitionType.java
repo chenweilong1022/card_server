@@ -9,6 +9,7 @@ public enum CodeAcquisitionType implements BaseEnum {
 
     CodeAcquisitionType1(1,"指定项目"),
     CodeAcquisitionType2(2,"挂机模式"),
+    CodeAcquisitionType3(3,"自己注册"),
     ;
 
     CodeAcquisitionType(int key, String value) {
