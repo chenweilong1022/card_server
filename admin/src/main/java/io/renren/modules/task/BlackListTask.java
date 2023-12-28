@@ -170,7 +170,7 @@ public class BlackListTask {
                             CdCardLockVO cdCardLockVO = cdCardLockService.getMobile2(cdCardLockDTO, cdUserEntity, cdCardLockDTO.getDeviceId());
                         }
                     }
-                    return;
+                    continue;
                 }
                 // 获取ids
                 List<Integer> ids = new ArrayList<>();
