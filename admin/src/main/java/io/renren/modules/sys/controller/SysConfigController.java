@@ -25,6 +25,8 @@ import io.renren.common.utils.ConfigConstant;
 import io.renren.common.utils.PageUtils;
 import io.renren.common.utils.R;
 import io.renren.common.validator.ValidatorUtils;
+import io.renren.modules.ltt.entity.CdCardGroupEntity;
+import io.renren.modules.ltt.service.CdCardGroupService;
 import io.renren.modules.sys.entity.ProjectWorkEntity;
 import io.renren.modules.sys.entity.SysConfigEntity;
 import io.renren.modules.sys.service.SysConfigService;
@@ -63,6 +65,8 @@ public class SysConfigController extends AbstractController {
 
 	@Resource(name = "caffeineCacheProjectWorkEntity")
 	private Cache<String, ProjectWorkEntity> caffeineCacheProjectWorkEntity;
+	@Autowired
+	private CdCardGroupService cdCardGroupService;
 
 	/**
 	 * 配置信息
@@ -86,7 +90,13 @@ public class SysConfigController extends AbstractController {
 			config.setPlatform(projectWorkEntity.getPlatform());
 			config.setCodeAcquisitionType(projectWorkEntity.getCodeAcquisitionType());
 		}else {
-			ProjectWorkEntity p2 = caffeineCacheProjectWorkEntity.getIfPresent(ConfigConstant.PROJECT_WORK_KEY);
+			//
+			CdCardGroupEntity cdCardGroupEntity = cdCardGroupService.getOne(new QueryWrapper<CdCardGroupEntity>().lambda()
+					.eq(CdCardGroupEntity::getGroupName,"未分组")
+			);
+
+			String cacheKeyDefault = String.format("%s_%s", ConfigConstant.PROJECT_WORK_KEY, cdCardGroupEntity.getId());
+			ProjectWorkEntity p2 = caffeineCacheProjectWorkEntity.getIfPresent(cacheKeyDefault);
 			SysConfigEntity configNew = new SysConfigEntity();
 			configNew.setUserId(p2.getUserId());
 			configNew.setProjectId(p2.getProjectId());
