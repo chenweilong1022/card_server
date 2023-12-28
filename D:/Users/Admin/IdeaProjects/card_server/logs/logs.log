@@ -5102,3 +5102,12 @@
 2023-12-28 21:40:02.590 DEBUG 33261 --- [http-nio-8880-exec-3] m.m.a.RequestResponseBodyMethodProcessor : Written [{msg=success, code=0, data=true}] as "application/json" using [org.springframework.http.converter.json.MappingJackson2HttpMessageConverter@31006a75]
 2023-12-28 21:40:02.590 DEBUG 33261 --- [http-nio-8880-exec-3] o.s.web.servlet.DispatcherServlet        : Null ModelAndView returned to DispatcherServlet with name 'dispatcherServlet': assuming HandlerAdapter completed request handling
 2023-12-28 21:40:02.590 DEBUG 33261 --- [http-nio-8880-exec-3] o.s.web.servlet.DispatcherServlet        : Successfully completed request
+2023-12-28 22:10:02.621  INFO 33261 --- [Thread-23] ConfigServletWebServerApplicationContext : Closing org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@2ea41516: startup date [Thu Dec 28 21:22:12 ICT 2023]; root of context hierarchy
+2023-12-28 22:10:02.655  INFO 33261 --- [Thread-23] o.s.c.support.DefaultLifecycleProcessor  : Stopping beans in phase 2147483647
+2023-12-28 22:10:02.666  INFO 33261 --- [Thread-23] o.s.j.e.a.AnnotationMBeanExporter        : Unregistering JMX-exposed beans on shutdown
+2023-12-28 22:10:02.669  INFO 33261 --- [Thread-23] o.s.j.e.a.AnnotationMBeanExporter        : Unregistering JMX-exposed beans
+2023-12-28 22:10:02.743  INFO 33261 --- [Thread-23] a.s.s.m.AbstractValidatingSessionManager : Disabled session validation scheduler.
+2023-12-28 22:10:02.747  INFO 33261 --- [Thread-23] c.b.d.d.DynamicRoutingDataSource         : dynamic-datasource start closing ....
+2023-12-28 22:10:02.754  INFO 33261 --- [Thread-23] com.alibaba.druid.pool.DruidDataSource   : {dataSource-2} closed
+2023-12-28 22:10:02.755  INFO 33261 --- [Thread-23] com.alibaba.druid.pool.DruidDataSource   : {dataSource-1} closed
+2023-12-28 22:10:02.755  INFO 33261 --- [Thread-23] c.b.d.d.DynamicRoutingDataSource         : dynamic-datasource all closed success,bye
