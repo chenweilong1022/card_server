@@ -288,7 +288,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
             update.setIccid(cdCardEntity.getIccid());
             update.setDeleteFlag(DeleteFlag.NO.getKey());
             update.setCreateTime(DateUtil.date());
-            update.setPhoneGetTime(DateUtil.offsetMinute(DateUtil.date(),1));
+            update.setPhoneGetTime(DateUtil.offsetMinute(DateUtil.date(),20));
             this.updateById(update);
             //通知客戶端修改卡
             ChangeCardResponse taskDto = new ChangeCardResponse();
