@@ -158,6 +158,7 @@ public class BlackListTask {
                 // 挂机模式
                 if (CodeAcquisitionType.CodeAcquisitionType2.getKey().equals(projectWorkEntity.getCodeAcquisitionType())) {
                     List<PhoneList> phoneLists = new ArrayList<PhoneList>();
+                    List<PhoneList> phoneDelLists = new ArrayList<PhoneList>();
                     for (GetListByIdsVO cdCardLockEntity : list) {
                         if (ObjectUtil.isNull(cdCardLockEntity.getPhoneGetTime())) {
                             CdCardLockDTO cdCardLockDTO = CdCardLockConver.MAPPER.conver2(cdCardLockEntity);
@@ -172,7 +173,12 @@ public class BlackListTask {
                         }
                         DateTime dateTime = DateUtil.offsetMinute(cdCardLockEntity.getPhoneGetTime(), 0);
                         DateTime now = DateUtil.date();
+                        //如果超时了去删除之前的卡
                         if (now.toJdkDate().getTime()> dateTime.toJdkDate().getTime()) {
+                            String replaceDel = cdCardLockEntity.getPhone().replaceFirst(projectWorkEntity.getPhonePre(), "");
+                            PhoneList phoneDelList = new PhoneList("tha",replaceDel);
+                            phoneDelLists.add(phoneDelList);
+
                             CdCardLockDTO cdCardLockDTO = CdCardLockConver.MAPPER.conver2(cdCardLockEntity);
                             //获取手机号码
                             CdCardLockVO mobile = cdCardLockService.getMobile2(cdCardLockDTO, cdUserEntity, cdCardLockDTO.getDeviceId());
@@ -184,9 +190,13 @@ public class BlackListTask {
                         }
                     }
 
+                    if (CollUtil.isNotEmpty(phoneDelLists)) {
+                        List<List<PhoneList>> partition = Lists.partition(phoneDelLists, 99);
+                        for (List<PhoneList> lists : partition) {
+                            cdCardLockService.extracted(lists,"PhoneDeleteBatch",projectWorkEntity.getCodeApiUrl());
+                        }
+                    }
                     if (CollUtil.isNotEmpty(phoneLists)) {
-                        //删除
-                        extracted(projectWorkEntity);
                         List<List<PhoneList>> partition = Lists.partition(phoneLists, 49);
                         for (List<PhoneList> lists : partition) {
                             cdCardLockService.extracted(lists,"",projectWorkEntity.getCodeApiUrl());
