@@ -93,6 +93,10 @@
           {
             value: 2,
             label: '挂机模式'
+          },
+          {
+            value: 3,
+            label: '自己注册'
           }
         ],
         platformOptions: [
