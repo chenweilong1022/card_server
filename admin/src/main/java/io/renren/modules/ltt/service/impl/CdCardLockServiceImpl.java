@@ -437,7 +437,8 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
                 if (ObjectUtil.isNotNull(mobile)) {
                     //获取新的
                     List<PhoneList> phoneLists = new ArrayList<>();
-                    PhoneList phoneList = new PhoneList("tha",mobile.getPhone().replace(phonePre,""));
+                    String replace = mobile.getPhone().replaceFirst(phonePre, "");
+                    PhoneList phoneList = new PhoneList("tha",replace);
                     phoneLists.add(phoneList);
                     extracted(phoneLists,"",projectWorkEntity.getCodeApiUrl());
                 }
@@ -449,7 +450,8 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
             if (userId.equals(cdCardLockEntity.getUserId()) && projectId.equals(cdCardLockEntity.getProjectId())) {
                 //获取新的
                 List<PhoneList> phoneLists = new ArrayList<>();
-                PhoneList phoneList = new PhoneList("tha",cdProjectSmsRecordEntity.getPhone().replace(phonePre,""));
+                String replace = cdProjectSmsRecordEntity.getPhone().replaceFirst(phonePre, "");
+                PhoneList phoneList = new PhoneList("tha",replace);
                 phoneLists.add(phoneList);
                 extracted(phoneLists,"PhoneDeleteBatch",projectWorkEntity.getCodeApiUrl());
             }
@@ -600,7 +602,8 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
                     cdCardLockDTO.setProjectId(projectId);
                     CdCardLockVO mobile = getMobile(cdCardLockDTO, userEntity, cdCardLockEntity.getDeviceId());
                     if (ObjectUtil.isNotNull(mobile)) {
-                        PhoneList phoneList = new PhoneList("tha",mobile.getPhone().replace(projectWorkEntity.getPhonePre(),""));
+                        String replace = mobile.getPhone().replaceFirst(projectWorkEntity.getPhonePre(), "");
+                        PhoneList phoneList = new PhoneList("tha",replace);
                         phoneLists.add(phoneList);
                     }
                 }
@@ -656,7 +659,8 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
 
     private void uploadSms(CdCardLockDTO cdCardLock, CdCardLockEntity cdCardLockEntity,String codeApiUrl){
         try {
-            UploadSms phoneAddBatch = new UploadSms("UploadSms", "tha", cdCardLockEntity.getPhone().replace(phonePre,""), cdCardLock.getCode());
+            String replace = cdCardLockEntity.getPhone().replaceFirst(phonePre, "");
+            UploadSms phoneAddBatch = new UploadSms("UploadSms", "tha",replace, cdCardLock.getCode());
             ObjectMapper objectMapper = new ObjectMapper();
             String json = objectMapper.writeValueAsString(phoneAddBatch);
             String response = firefoxPost(codeApiUrl,json);

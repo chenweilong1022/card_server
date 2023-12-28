@@ -330,7 +330,8 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
 
             for (GetListByIdsVO cdCardLockEntity : list) {
                 if (ObjectUtil.isNotNull(cdCardLockEntity) && StrUtil.isNotEmpty(cdCardLockEntity.getIccid())) {
-                    PhoneList phoneList = new PhoneList("tha",cdCardLockEntity.getPhone().replace(projectWorkEntity.getPhonePre(),""));
+                    String replace = cdCardLockEntity.getPhone().replaceFirst(projectWorkEntity.getPhonePre(), "");
+                    PhoneList phoneList = new PhoneList("tha",replace);
                     phoneLists.add(phoneList);
                     CdCardLockDTO cdCardLockDTO = new CdCardLockDTO();
                     cdCardLockDTO.setProjectId(cdCardLockEntity.getProjectId());

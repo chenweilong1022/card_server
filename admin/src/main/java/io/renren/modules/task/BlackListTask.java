@@ -164,7 +164,8 @@ public class BlackListTask {
                             //获取手机号码
                             CdCardLockVO mobile = cdCardLockService.getMobile2(cdCardLockDTO, cdUserEntity, cdCardLockDTO.getDeviceId());
                             if (ObjectUtil.isNotNull(mobile)) {
-                                PhoneList phoneList = new PhoneList("tha",mobile.getPhone().replace(projectWorkEntity.getPhonePre(),""));
+                                String replace = mobile.getPhone().replaceFirst(projectWorkEntity.getPhonePre(), "");
+                                PhoneList phoneList = new PhoneList("tha",replace);
                                 phoneLists.add(phoneList);
                             }
                             continue;
@@ -176,7 +177,8 @@ public class BlackListTask {
                             //获取手机号码
                             CdCardLockVO mobile = cdCardLockService.getMobile2(cdCardLockDTO, cdUserEntity, cdCardLockDTO.getDeviceId());
                             if (ObjectUtil.isNotNull(mobile)) {
-                                PhoneList phoneList = new PhoneList("tha",mobile.getPhone().replace(projectWorkEntity.getPhonePre(),""));
+                                String replace = mobile.getPhone().replaceFirst(projectWorkEntity.getPhonePre(), "");
+                                PhoneList phoneList = new PhoneList("tha",replace);
                                 phoneLists.add(phoneList);
                             }
                         }
