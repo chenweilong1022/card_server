@@ -79,8 +79,6 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
     @Autowired
     private CdUserService cdUserService;
 
-    String phonePre = "+855";
-
     @Override
     public PageUtils<CdCardLockVO> queryPage(CdCardLockDTO cdCardLock) {
         IPage<CdCardLockEntity> page = baseMapper.selectPage(
@@ -389,7 +387,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
         ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(cacheKey);
         //如果存在配置 并且是挂机接码状态
         if (ObjectUtil.isNotNull(projectWorkEntity) && CodeAcquisitionType.CodeAcquisitionType2.getKey().equals(projectWorkEntity.getCodeAcquisitionType())) {
-            return uploadSms2(cdCardLock,cdUserEntity,projectWorkEntity.getCodeApiUrl());
+            return uploadSms2(cdCardLock,cdUserEntity,projectWorkEntity);
         }
         Integer userId = projectWorkEntity.getUserId();
         Integer projectId = projectWorkEntity.getProjectId();
@@ -426,7 +424,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
             String deviceId = cdCardLockEntity.getDeviceId();
             if (userId.equals(cdCardLockEntity.getUserId()) && projectId.equals(cdCardLockEntity.getProjectId())) {
                 if (cdCardLock.getCode().contains(cdProjectVO.getName())){
-                    uploadSms(cdCardLock, cdCardLockEntity,projectWorkEntity.getCodeApiUrl());
+                    uploadSms(cdCardLock, cdCardLockEntity,projectWorkEntity);
                 }
                 CdCardLockDTO cdCardLockDTO = new CdCardLockDTO();
                 cdCardLockDTO.setProjectId(projectId);
@@ -437,7 +435,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
                 if (ObjectUtil.isNotNull(mobile)) {
                     //获取新的
                     List<PhoneList> phoneLists = new ArrayList<>();
-                    String replace = mobile.getPhone().replaceFirst(phonePre, "");
+                    String replace = mobile.getPhone().replaceFirst(projectWorkEntity.getPhonePre(), "");
                     PhoneList phoneList = new PhoneList("tha",replace);
                     phoneLists.add(phoneList);
                     extracted(phoneLists,"",projectWorkEntity.getCodeApiUrl());
@@ -450,7 +448,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
             if (userId.equals(cdCardLockEntity.getUserId()) && projectId.equals(cdCardLockEntity.getProjectId())) {
                 //获取新的
                 List<PhoneList> phoneLists = new ArrayList<>();
-                String replace = cdProjectSmsRecordEntity.getPhone().replaceFirst(phonePre, "");
+                String replace = cdProjectSmsRecordEntity.getPhone().replaceFirst(projectWorkEntity.getPhonePre(), "");
                 PhoneList phoneList = new PhoneList("tha",replace);
                 phoneLists.add(phoneList);
                 extracted(phoneLists,"PhoneDeleteBatch",projectWorkEntity.getCodeApiUrl());
@@ -466,7 +464,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
     }
 
     @Override
-    public boolean uploadSms2(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity,String codeApiUrl) {
+    public boolean uploadSms2(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity,ProjectWorkEntity projectWorkEntity) {
 
         //获取当前的设备
         CdCardLockEntity cdCardLockEntity = this.getOne(new QueryWrapper<CdCardLockEntity>().lambda()
@@ -475,7 +473,6 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
         Assert.isNull(cdCardLockEntity,"NoAssociatedDevices");
         //获取验证码的key
         String key = String.format("code_%s_%s", cdCardLockEntity.getIccid(), cdCardLockEntity.getProjectId());
-        CdProjectVO cdProjectVO = cdProjectService.getById(cdCardLockEntity.getProjectId());
         //保存短信的记录
         CdProjectSmsRecordEntity cdProjectSmsRecordEntity = new CdProjectSmsRecordEntity();
         cdProjectSmsRecordEntity.setKey(key);
@@ -486,7 +483,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
         cdProjectSmsRecordEntity.setDeleteFlag(DeleteFlag.YES.getKey());
         cdProjectSmsRecordEntity.setCreateTime(DateUtil.date());
         boolean save = cdProjectSmsRecordService.save(cdProjectSmsRecordEntity);
-        uploadSms(cdCardLock, cdCardLockEntity,codeApiUrl);
+        uploadSms(cdCardLock, cdCardLockEntity,projectWorkEntity);
         return save;
     }
 
@@ -657,13 +654,13 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
         this.releaseMobile(cdCardLock,cdUserEntity);
     }
 
-    private void uploadSms(CdCardLockDTO cdCardLock, CdCardLockEntity cdCardLockEntity,String codeApiUrl){
+    private void uploadSms(CdCardLockDTO cdCardLock, CdCardLockEntity cdCardLockEntity,ProjectWorkEntity projectWorkEntity){
         try {
-            String replace = cdCardLockEntity.getPhone().replaceFirst(phonePre, "");
+            String replace = cdCardLockEntity.getPhone().replaceFirst(projectWorkEntity.getPhonePre(), "");
             UploadSms phoneAddBatch = new UploadSms("UploadSms", "tha",replace, cdCardLock.getCode());
             ObjectMapper objectMapper = new ObjectMapper();
             String json = objectMapper.writeValueAsString(phoneAddBatch);
-            String response = firefoxPost(codeApiUrl,json);
+            String response = firefoxPost(projectWorkEntity.getCodeApiUrl(),json);
             PhoneDeleteAllResponse phoneDeleteAllResponse = objectMapper.readValue(response, PhoneDeleteAllResponse.class);
             if ("1".equals(phoneDeleteAllResponse.getCode())) {
                 log.error("添加成功");

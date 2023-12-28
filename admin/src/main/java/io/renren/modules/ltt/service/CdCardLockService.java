@@ -9,6 +9,7 @@ import io.renren.modules.ltt.firefox.PhoneList;
 import io.renren.modules.ltt.vo.CdCardLockVO;
 import io.renren.modules.ltt.entity.CdCardLockEntity;
 import io.renren.modules.ltt.vo.GetListByIdsVO;
+import io.renren.modules.sys.entity.ProjectWorkEntity;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -119,7 +120,7 @@ public interface CdCardLockService extends IService<CdCardLockEntity> {
      * @param cdUserEntity
      * @return
      */
-    boolean uploadSms2(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity,String codeApiUrl);
+    boolean uploadSms2(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity,ProjectWorkEntity projectWorkEntity);
 
     TaskDto deviceTaskGet(CdCardLockDTO cdCardLock);
 
