@@ -117,7 +117,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public CdCardLockVO getMobile(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity,String deviceId) {
+    public CdCardLockVO getMobile(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity,String deviceId,List<String> deviceIds) {
         //获取项目
         CdProjectVO cdProjectVO = cdProjectService.getById(cdCardLock.getProjectId());
         Assert.isNull(cdProjectVO,"ProjectDoesNotExist");
@@ -128,6 +128,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
         List<CdCardLockEntity> list = this.list(new QueryWrapper<CdCardLockEntity>().lambda()
                 .eq(CdCardLockEntity::getLock, Lock.NO.getKey())
                 .eq(StrUtil.isNotEmpty(deviceId),CdCardLockEntity::getDeviceId,deviceId)
+                .in(CollUtil.isNotEmpty(deviceIds),CdCardLockEntity::getDeviceId,deviceIds)
         );
         //没有可用的设备
         Assert.isTrue(CollUtil.isEmpty(list),"NoEquipmentAvailable");
@@ -431,7 +432,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
                 cdCardLockDTO.setIccid(cdCardLockEntity.getIccid());
                 CdUserEntity cdUserEntity1 = cdUserService.getById((Serializable) userId);
                 boolean b = releaseMobile(cdCardLockDTO, cdUserEntity1);
-                CdCardLockVO mobile = getMobile(cdCardLockDTO, cdUserEntity1, deviceId);
+                CdCardLockVO mobile = getMobile(cdCardLockDTO, cdUserEntity1, deviceId,null);
                 if (ObjectUtil.isNotNull(mobile)) {
                     //获取新的
                     List<PhoneList> phoneLists = new ArrayList<>();
@@ -597,7 +598,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
                     }
                     CdCardLockDTO cdCardLockDTO = new CdCardLockDTO();
                     cdCardLockDTO.setProjectId(projectId);
-                    CdCardLockVO mobile = getMobile(cdCardLockDTO, userEntity, cdCardLockEntity.getDeviceId());
+                    CdCardLockVO mobile = getMobile(cdCardLockDTO, userEntity, cdCardLockEntity.getDeviceId(),null);
                     if (ObjectUtil.isNotNull(mobile)) {
                         String replace = mobile.getPhone().replaceFirst(projectWorkEntity.getPhonePre(), "");
                         PhoneList phoneList = new PhoneList("tha",replace);

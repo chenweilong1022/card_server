@@ -39,7 +39,7 @@ public class AppCdCardLockController extends AbstractController {
     @RequestMapping("/getMobile")
     @Login
     public R getMobile(@RequestBody CdCardLockDTO cdCardLock){
-        return R.data(cdCardLockService.getMobile(cdCardLock,this.cdUserEntity,null));
+        return R.data(cdCardLockService.getMobile(cdCardLock,this.cdUserEntity,null,null));
     }
 
     /**
