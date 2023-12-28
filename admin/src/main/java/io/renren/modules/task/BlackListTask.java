@@ -10,6 +10,7 @@ import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.benmanes.caffeine.cache.Cache;
+import com.google.common.collect.Lists;
 import io.renren.common.utils.ConfigConstant;
 import io.renren.modules.ltt.conver.CdCardLockConver;
 import io.renren.modules.ltt.dto.CdCardLockDTO;
@@ -21,6 +22,7 @@ import io.renren.modules.ltt.enums.CodeAcquisitionType;
 import io.renren.modules.ltt.enums.Lock;
 import io.renren.modules.ltt.firefox.GetWaitPhoneList;
 import io.renren.modules.ltt.firefox.GetWaitPhoneListDaum;
+import io.renren.modules.ltt.firefox.PhoneList;
 import io.renren.modules.ltt.service.CdCardLockService;
 import io.renren.modules.ltt.service.CdDevicesService;
 import io.renren.modules.ltt.service.CdProjectService;
@@ -154,12 +156,16 @@ public class BlackListTask {
                 CdUserEntity cdUserEntity = cdUserService.getById((Serializable) projectWorkEntity.getUserId());
                 // 挂机模式
                 if (CodeAcquisitionType.CodeAcquisitionType2.getKey().equals(projectWorkEntity.getCodeAcquisitionType())) {
-
+                    List<PhoneList> phoneLists = new ArrayList<PhoneList>();
                     for (GetListByIdsVO cdCardLockEntity : list) {
                         if (ObjectUtil.isNull(cdCardLockEntity.getPhoneGetTime())) {
                             CdCardLockDTO cdCardLockDTO = CdCardLockConver.MAPPER.conver2(cdCardLockEntity);
                             //获取手机号码
-                            CdCardLockVO cdCardLockVO = cdCardLockService.getMobile2(cdCardLockDTO, cdUserEntity, cdCardLockDTO.getDeviceId());
+                            CdCardLockVO mobile = cdCardLockService.getMobile2(cdCardLockDTO, cdUserEntity, cdCardLockDTO.getDeviceId());
+                            if (ObjectUtil.isNotNull(mobile)) {
+                                PhoneList phoneList = new PhoneList("tha",mobile.getPhone().replace(projectWorkEntity.getPhonePre(),""));
+                                phoneLists.add(phoneList);
+                            }
                             continue;
                         }
                         DateTime dateTime = DateUtil.offsetMinute(cdCardLockEntity.getPhoneGetTime(), 0);
@@ -167,7 +173,18 @@ public class BlackListTask {
                         if (now.toJdkDate().getTime()> dateTime.toJdkDate().getTime()) {
                             CdCardLockDTO cdCardLockDTO = CdCardLockConver.MAPPER.conver2(cdCardLockEntity);
                             //获取手机号码
-                            CdCardLockVO cdCardLockVO = cdCardLockService.getMobile2(cdCardLockDTO, cdUserEntity, cdCardLockDTO.getDeviceId());
+                            CdCardLockVO mobile = cdCardLockService.getMobile2(cdCardLockDTO, cdUserEntity, cdCardLockDTO.getDeviceId());
+                            if (ObjectUtil.isNotNull(mobile)) {
+                                PhoneList phoneList = new PhoneList("tha",mobile.getPhone().replace(projectWorkEntity.getPhonePre(),""));
+                                phoneLists.add(phoneList);
+                            }
+                        }
+                    }
+
+                    if (CollUtil.isNotEmpty(phoneLists)) {
+                        List<List<PhoneList>> partition = Lists.partition(phoneLists, 49);
+                        for (List<PhoneList> lists : partition) {
+                            cdCardLockService.extracted(lists,"",projectWorkEntity.getCodeApiUrl());
                         }
                     }
                     continue;
