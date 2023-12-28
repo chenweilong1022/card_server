@@ -159,18 +159,6 @@ public class CdDevicesController {
         return R.data(true);
     }
 
-//    private void extracted() {
-//        ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(ConfigConstant.PROJECT_WORK_KEY);
-//        Root phoneAddBatch = new Root("PhoneDeleteAll");
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        String json = null;
-//        try {
-//            json = objectMapper.writeValueAsString(phoneAddBatch);
-//        } catch (JsonProcessingException e) {
-//
-//        }
-//        String response = HttpUtil.post(projectWorkEntity.getCodeApiUrl(), json);
-//    }
 
 //    /**
 //     * 初始化

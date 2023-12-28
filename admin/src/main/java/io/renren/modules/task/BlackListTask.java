@@ -8,6 +8,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.google.common.collect.Lists;
@@ -23,6 +24,7 @@ import io.renren.modules.ltt.enums.Lock;
 import io.renren.modules.ltt.firefox.GetWaitPhoneList;
 import io.renren.modules.ltt.firefox.GetWaitPhoneListDaum;
 import io.renren.modules.ltt.firefox.PhoneList;
+import io.renren.modules.ltt.firefox.Root;
 import io.renren.modules.ltt.service.CdCardLockService;
 import io.renren.modules.ltt.service.CdDevicesService;
 import io.renren.modules.ltt.service.CdProjectService;
@@ -152,7 +154,8 @@ public class BlackListTask {
                 if (ObjectUtil.isNull(projectWorkEntity)) {
                     continue;
                 }
-
+                //删除
+                extracted(projectWorkEntity);
                 CdUserEntity cdUserEntity = cdUserService.getById((Serializable) projectWorkEntity.getUserId());
                 // 挂机模式
                 if (CodeAcquisitionType.CodeAcquisitionType2.getKey().equals(projectWorkEntity.getCodeAcquisitionType())) {
@@ -208,6 +211,19 @@ public class BlackListTask {
         }finally {
             task10Lock.unlock();
         }
+    }
+
+
+    private void extracted(ProjectWorkEntity projectWorkEntity) {
+        Root phoneAddBatch = new Root("PhoneDeleteAll");
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = null;
+        try {
+            json = objectMapper.writeValueAsString(phoneAddBatch);
+        } catch (JsonProcessingException e) {
+
+        }
+        String response = HttpUtil.post(projectWorkEntity.getCodeApiUrl(), json);
     }
 
 
