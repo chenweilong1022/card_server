@@ -154,8 +154,6 @@ public class BlackListTask {
                 if (ObjectUtil.isNull(projectWorkEntity)) {
                     continue;
                 }
-                //删除
-                extracted(projectWorkEntity);
                 CdUserEntity cdUserEntity = cdUserService.getById((Serializable) projectWorkEntity.getUserId());
                 // 挂机模式
                 if (CodeAcquisitionType.CodeAcquisitionType2.getKey().equals(projectWorkEntity.getCodeAcquisitionType())) {
@@ -185,6 +183,8 @@ public class BlackListTask {
                     }
 
                     if (CollUtil.isNotEmpty(phoneLists)) {
+                        //删除
+                        extracted(projectWorkEntity);
                         List<List<PhoneList>> partition = Lists.partition(phoneLists, 49);
                         for (List<PhoneList> lists : partition) {
                             cdCardLockService.extracted(lists,"",projectWorkEntity.getCodeApiUrl());
