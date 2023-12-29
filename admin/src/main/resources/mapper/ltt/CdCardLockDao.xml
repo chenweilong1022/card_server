@@ -28,6 +28,7 @@
         <result property="createTime" column="create_time"/>
         <result property="phoneGetTime" column="phone_get_time"/>
         <result property="groupId" column="group_id"/>
+        <result property="workType" column="work_type"/>
     </resultMap>
 
     <!--  获取list根据id  -->
@@ -44,6 +45,7 @@
             l.delete_flag,
             l.create_time,
             l.phone_get_time,
+            d.work_type,
             d.group_id
         FROM
             cd_card_lock l

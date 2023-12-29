@@ -86,4 +86,9 @@ public class GetListByIdsVO {
      */
     @ApiModelProperty(required=false,value="")
     private Integer groupId;
+    /**
+     * 分组id
+     */
+    @ApiModelProperty(required=false,value="")
+    private Integer workType;
 }

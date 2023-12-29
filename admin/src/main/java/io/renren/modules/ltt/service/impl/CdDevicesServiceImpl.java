@@ -330,6 +330,7 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
             List<GetListByIdsVO> list = integerListMap.get(id);
 
             List<CdCardLockDTO> cdCardLockDTOS = new ArrayList<>();
+
             for (GetListByIdsVO cdCardLockEntity : list) {
                 if (ObjectUtil.isNotNull(cdCardLockEntity) && StrUtil.isNotEmpty(cdCardLockEntity.getIccid())) {
                     String replace = cdCardLockEntity.getPhone().replaceFirst(projectWorkEntity.getPhonePre(), "");
@@ -342,9 +343,11 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
                     cdCardLockDTOS.add(cdCardLockDTO);
                 }
             }
+
             if (CollUtil.isNotEmpty(cdCardLockDTOS)) {
                 boolean b = cdCardLockService.releaseMobiles(cdCardLockDTOS, userEntity);
             }
+
             if (CollUtil.isNotEmpty(phoneLists)) {
                 List<List<PhoneList>> partition = Lists.partition(phoneLists, 99);
                 for (List<PhoneList> lists : partition) {

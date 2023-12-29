@@ -21,6 +21,7 @@ import io.renren.modules.ltt.entity.CdProjectEntity;
 import io.renren.modules.ltt.entity.CdUserEntity;
 import io.renren.modules.ltt.enums.CodeAcquisitionType;
 import io.renren.modules.ltt.enums.Lock;
+import io.renren.modules.ltt.enums.WorkType;
 import io.renren.modules.ltt.firefox.GetWaitPhoneList;
 import io.renren.modules.ltt.firefox.GetWaitPhoneListDaum;
 import io.renren.modules.ltt.firefox.PhoneList;
@@ -211,9 +212,14 @@ public class BlackListTask {
                 List<Integer> ids = new ArrayList<>();
                 for (GetListByIdsVO cdCardLockEntity : list) {
                     if (ObjectUtil.isNull(cdCardLockEntity.getPhoneGetTime())) {
+                        DateTime dateTime = DateUtil.offsetMinute(cdCardLockEntity.getCreateTime(), 15);
+                        DateTime now = DateUtil.date();
+                        if (now.toJdkDate().getTime()> dateTime.toJdkDate().getTime()) {
+                            ids.add(cdCardLockEntity.getId());
+                        }
                         continue;
                     }
-                    DateTime dateTime = DateUtil.offsetMinute(cdCardLockEntity.getPhoneGetTime(), 5);
+                    DateTime dateTime = DateUtil.offsetMinute(cdCardLockEntity.getPhoneGetTime(), 3);
                     DateTime now = DateUtil.date();
                     if (now.toJdkDate().getTime()> dateTime.toJdkDate().getTime()) {
                         ids.add(cdCardLockEntity.getId());
@@ -248,6 +254,44 @@ public class BlackListTask {
     }
 
     static ReentrantLock task11Lock = new ReentrantLock();
+
+
+
+//    @Scheduled(fixedDelay = 5000)
+//    @Transactional(rollbackFor = Exception.class)
+//    public void autoBlock() {
+//
+//        List<GetListByIdsVO> getListByIdsVOS = cdCardLockService.getListByIds(null);
+//        Map<Integer, List<GetListByIdsVO>> integerListMap = getListByIdsVOS.stream().filter(x -> ObjectUtil.isNotNull(x.getGroupId())).collect(Collectors.groupingBy(GetListByIdsVO::getGroupId));
+//        for (Integer id : integerListMap.keySet()) {
+//            String cacheKey = String.format("%s_%s", ConfigConstant.PROJECT_WORK_KEY, id);
+//            ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(cacheKey);
+//            if(CodeAcquisitionType.CodeAcquisitionType2.getKey().equals(projectWorkEntity.getCodeAcquisitionType())) {
+//                continue;
+//            }else if(CodeAcquisitionType.CodeAcquisitionType3.getKey().equals(projectWorkEntity.getCodeAcquisitionType())) {
+//                continue;
+//            }
+//            List<GetListByIdsVO> list = integerListMap.get(id);
+//            if (CollUtil.isNotEmpty(list)) {
+//                for (GetListByIdsVO getListByIdsVO : list) {
+//                    if (Lock.NO.getKey().equals(getListByIdsVO.getLock())) {
+//                        continue;
+//                    }
+//                    if (ObjectUtil.isNotNull(getListByIdsVO.getPhoneGetTime())) {
+//                        continue;
+//                    }
+//                    if (!WorkType.WorkType3.equals(getListByIdsVO.getWorkType())) {
+//                     continue;
+//                    }
+//
+//
+//
+//
+//                }
+//            }
+//        }
+//
+//    }
 
     @Scheduled(fixedDelay = 5000)
     @Transactional(rollbackFor = Exception.class)
