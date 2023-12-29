@@ -336,6 +336,7 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
                     CdCardLockDTO cdCardLockDTO = new CdCardLockDTO();
                     cdCardLockDTO.setProjectId(cdCardLockEntity.getProjectId());
                     cdCardLockDTO.setIccid(cdCardLockEntity.getIccid());
+                    cdCardLockDTO.setId(cdCardLockEntity.getId());
                     boolean b = cdCardLockService.releaseMobile(cdCardLockDTO, userEntity);
                 }
             }

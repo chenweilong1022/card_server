@@ -303,15 +303,22 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean releaseMobile(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity) {
-        //获取当前手机号占用的设备
-        CdCardLockEntity cdCardLockEntity = this.getOne(new QueryWrapper<CdCardLockEntity>().lambda()
-                .eq(CdCardLockEntity::getIccid, cdCardLock.getIccid())
-                .eq(CdCardLockEntity::getProjectId, cdCardLock.getProjectId())
-        );
+
+        CdCardLockEntity cdCardLockEntity = null;
+        if (ObjectUtil.isNotNull(cdCardLock.getId())) {
+            cdCardLockEntity = this.getById((Serializable) cdCardLock.getId());
+        }
+        if (ObjectUtil.isNull(cdCardLockEntity)) {
+            //获取当前手机号占用的设备
+            cdCardLockEntity = this.getOne(new QueryWrapper<CdCardLockEntity>().lambda()
+                    .eq(StrUtil.isNotEmpty(cdCardLock.getIccid()),CdCardLockEntity::getIccid, cdCardLock.getIccid())
+                    .eq(ObjectUtil.isNotNull(cdCardLock.getProjectId()),CdCardLockEntity::getProjectId, cdCardLock.getProjectId())
+            );
+        }
+
         Assert.isNull(cdCardLockEntity,"NoAssociatedDevices");
         Assert.isNull(cdCardLockEntity.getUserId(),"NoPermissionReleaseDevice");
         Assert.isTrue(!cdCardLockEntity.getUserId().equals(cdUserEntity.getId()),"NoPermissionReleaseDevice");
-
 
         cdCardLockEntity.setId(cdCardLockEntity.getId());
         cdCardLockEntity.setUserId(null);
