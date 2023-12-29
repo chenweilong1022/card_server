@@ -6,6 +6,7 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.benmanes.caffeine.cache.Cache;
+import com.google.common.collect.Lists;
 import io.renren.common.utils.ConfigConstant;
 import io.renren.datasources.annotation.Game;
 import io.renren.modules.app.dto.TaskDto;
@@ -328,6 +329,7 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
             CdUserEntity userEntity = cdUserService.getById((Serializable) userId);
             List<GetListByIdsVO> list = integerListMap.get(id);
 
+            List<CdCardLockDTO> cdCardLockDTOS = new ArrayList<>();
             for (GetListByIdsVO cdCardLockEntity : list) {
                 if (ObjectUtil.isNotNull(cdCardLockEntity) && StrUtil.isNotEmpty(cdCardLockEntity.getIccid())) {
                     String replace = cdCardLockEntity.getPhone().replaceFirst(projectWorkEntity.getPhonePre(), "");
@@ -337,11 +339,18 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
                     cdCardLockDTO.setProjectId(cdCardLockEntity.getProjectId());
                     cdCardLockDTO.setIccid(cdCardLockEntity.getIccid());
                     cdCardLockDTO.setId(cdCardLockEntity.getId());
-                    boolean b = cdCardLockService.releaseMobile(cdCardLockDTO, userEntity);
+                    cdCardLockDTOS.add(cdCardLockDTO);
                 }
             }
-            //火狐狸把当前项目的号码释放掉
-            cdCardLockService.extracted(phoneLists,"PhoneDeleteBatch",projectWorkEntity.getCodeApiUrl());
+            if (CollUtil.isNotEmpty(cdCardLockDTOS)) {
+                boolean b = cdCardLockService.releaseMobiles(cdCardLockDTOS, userEntity);
+            }
+            if (CollUtil.isNotEmpty(phoneLists)) {
+                List<List<PhoneList>> partition = Lists.partition(phoneLists, 99);
+                for (List<PhoneList> lists : partition) {
+                    cdCardLockService.extracted(lists,"PhoneDeleteBatch",projectWorkEntity.getCodeApiUrl());
+                }
+            }
         }
     }
 

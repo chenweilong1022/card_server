@@ -302,6 +302,51 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    public boolean releaseMobiles(List<CdCardLockDTO> cdCardLocks, CdUserEntity cdUserEntity) {
+
+
+        List<Integer> ids = cdCardLocks.stream().map(CdCardLockDTO::getId).collect(Collectors.toList());
+
+
+        List<CdCardLockEntity> cdCardLockEntities = null;
+        if (CollUtil.isNotEmpty(ids)) {
+            cdCardLockEntities = this.listByIds(ids);
+        }
+        if (CollUtil.isEmpty(cdCardLockEntities)) {
+            //获取当前手机号占用的设备
+            List<String> iccids = cdCardLocks.stream().map(CdCardLockDTO::getIccid).collect(Collectors.toList());
+            List<Integer> projectIds = cdCardLocks.stream().map(CdCardLockDTO::getProjectId).collect(Collectors.toList());
+            cdCardLockEntities = this.list(new QueryWrapper<CdCardLockEntity>().lambda()
+                    .in(CollUtil.isNotEmpty(iccids),CdCardLockEntity::getIccid, iccids)
+                    .in(CollUtil.isNotEmpty(projectIds),CdCardLockEntity::getProjectId, projectIds)
+            );
+        }
+
+        List<CdCardLockEntity> cdCardLockEntityNews = new ArrayList<>();
+
+        for (CdCardLockEntity cdCardLockEntityEach : cdCardLockEntities) {
+            Assert.isNull(cdCardLockEntityEach,"NoAssociatedDevices");
+            Assert.isNull(cdCardLockEntityEach.getUserId(),"NoPermissionReleaseDevice");
+            Assert.isTrue(!cdCardLockEntityEach.getUserId().equals(cdUserEntity.getId()),"NoPermissionReleaseDevice");
+
+            CdCardLockEntity cdCardLockEntity = new CdCardLockEntity();
+            cdCardLockEntity.setId(cdCardLockEntityEach.getId());
+            cdCardLockEntity.setUserId(null);
+            cdCardLockEntity.setProjectId(null);
+            cdCardLockEntity.setCode(null);
+            cdCardLockEntity.setLock(Lock.NO.getKey());
+            cdCardLockEntity.setPhone(null);
+            cdCardLockEntity.setPhoneGetTime(null);
+            cdCardLockEntity.setIccid(null);
+            cdCardLockEntity.setDeleteFlag(DeleteFlag.NO.getKey());
+            cdCardLockEntity.setCreateTime(DateUtil.date());
+            cdCardLockEntityNews.add(cdCardLockEntity);
+        }
+        return this.updateBatchById(cdCardLockEntityNews);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean releaseMobile(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity) {
 
         CdCardLockEntity cdCardLockEntity = null;
