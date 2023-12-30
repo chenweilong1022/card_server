@@ -176,6 +176,11 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
                 }
             }
 
+            long count = iccids.stream().distinct().count();
+            if (cdCardEntities.size() <= count) {
+                continue;
+            }
+
             for (CdCardEntity cdDevicesEntity : cdCardEntities) {
                 if (iccids.contains(cdDevicesEntity.getIccid()) || StrUtil.isEmpty(cdDevicesEntity.getPhone())) {
                     continue;
@@ -231,12 +236,14 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
         }
         //如果设备不在线，跳出循环
         for (CdCardLockEntity cdCardLockEntity : list) {
+            log.info("cdCardLockEntity = {}",JSONUtil.toJsonStr(cdCardLockEntity));
             CdDevicesEntity one1 = cdDevicesService.getOne(new QueryWrapper<CdDevicesEntity>().lambda()
                     .eq(CdDevicesEntity::getIccid,cdCardLockEntity.getDeviceId())
             );
             if (ObjectUtil.isNull(one1)) {
                 continue;
             }
+            log.info("one1 = {}",JSONUtil.toJsonStr(one1));
             if (ObjectUtil.isNotNull(one1) && Online.NO.getKey().equals(one1.getOnline())) {
                 continue;
             }
@@ -250,6 +257,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
                     .notIn(CdCardEntity::getIccid,"无卡")
                     .notIn(CdCardEntity::getPhone,"无卡")
             );
+            log.info("cdCardEntities = {}",cdCardEntities.size());
             CdCardEntity cdCardEntity = null;
             if (CollUtil.isEmpty(cdCardEntities)) {
                 //获取设备下所有的信息列表 所有卡的信息
@@ -259,6 +267,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
                         .notIn(CdCardEntity::getIccid,"无卡")
                         .notIn(CdCardEntity::getPhone,"无卡")
                 );
+                log.info("cdCardEntities = {}",cdCardEntities.size());
                 //修改卡
                 for (int i = 0; i < useCdCardEntities.size(); i++) {
                     if (i == 0) {
