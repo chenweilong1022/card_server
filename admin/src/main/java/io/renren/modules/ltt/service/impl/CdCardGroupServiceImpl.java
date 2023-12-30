@@ -2,7 +2,9 @@ package io.renren.modules.ltt.service.impl;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.json.JSONUtil;
 import com.github.benmanes.caffeine.cache.Cache;
+import com.qiniu.util.Json;
 import io.renren.common.utils.ConfigConstant;
 import io.renren.datasources.annotation.Game;
 import io.renren.modules.ltt.dto.CdCardLockDTO;
@@ -12,6 +14,7 @@ import io.renren.modules.ltt.service.CdCardLockService;
 import io.renren.modules.ltt.vo.CdCardLockVO;
 import io.renren.modules.ltt.vo.GetListByIdsVO;
 import io.renren.modules.sys.entity.ProjectWorkEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -38,6 +41,7 @@ import java.util.stream.Collectors;
 
 @Service("cdCardGroupService")
 @Game
+@Slf4j
 public class CdCardGroupServiceImpl extends ServiceImpl<CdCardGroupDao, CdCardGroupEntity> implements CdCardGroupService {
 
     @Override
@@ -86,8 +90,9 @@ public class CdCardGroupServiceImpl extends ServiceImpl<CdCardGroupDao, CdCardGr
     @Override
     public CdCardLockVO getDeviceIdByProjectId(CdCardLockDTO cdCardLockDTO, CdUserEntity cdUserEntity) {
         List<GetListByIdsVO> getListByIdsVOS = cdCardLockService.getListByIds(null);
+        log.info("getListByIds = {}", JSONUtil.toJsonStr(getListByIdsVOS));
         Map<Integer, List<GetListByIdsVO>> integerListMap = getListByIdsVOS.stream().filter(x -> ObjectUtil.isNotNull(x.getGroupId())).collect(Collectors.groupingBy(GetListByIdsVO::getGroupId));
-
+        log.info("integerListMap = {}",JSONUtil.toJsonStr(integerListMap));
         for (Integer id : integerListMap.keySet()) {
             String cacheKey = String.format("%s_%s", ConfigConstant.PROJECT_WORK_KEY, id);
             ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(cacheKey);
