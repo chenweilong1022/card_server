@@ -194,4 +194,14 @@ public class CdCardServiceImpl extends ServiceImpl<CdCardDao, CdCardEntity> impl
         return baseMapper.groupByDeviceId();
     }
 
+    @Override
+    public Map<Integer, List<CdCardEntity>> listByDevicesId(CdCardDTO cdCard) {
+        List<CdCardEntity> list = this.list(new QueryWrapper<CdCardEntity>().lambda()
+                .eq(CdCardEntity::getDeviceId,cdCard.getDeviceId())
+        );
+
+        Map<Integer, List<CdCardEntity>> collect = list.stream().collect(Collectors.groupingBy(CdCardEntity::getBoardIndexed));
+        return collect;
+    }
+
 }

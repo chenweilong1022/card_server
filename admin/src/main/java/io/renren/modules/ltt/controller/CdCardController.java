@@ -43,6 +43,16 @@ public class CdCardController {
 
 
     /**
+     * 查询，根据设备id
+     */
+    @RequestMapping("/listByDevicesId")
+    @RequiresPermissions("ltt:cdcard:list")
+    public R listByDevicesId(@RequestBody CdCardDTO cdCard){
+        return R.ok().put("list", cdCardService.listByDevicesId(cdCard));
+    }
+
+
+    /**
      * 信息
      */
     @RequestMapping("/info/{id}")

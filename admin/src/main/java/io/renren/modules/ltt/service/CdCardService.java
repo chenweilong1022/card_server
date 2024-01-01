@@ -72,5 +72,11 @@ public interface CdCardService extends IService<CdCardEntity> {
 
     List<GroupByDeviceIdVO> groupByDeviceId();
 
+    /**
+     * 查询列表 根据设备id
+     * @param cdCard
+     * @return
+     */
+    Map<Integer, List<CdCardEntity>> listByDevicesId(CdCardDTO cdCard);
 }
 
