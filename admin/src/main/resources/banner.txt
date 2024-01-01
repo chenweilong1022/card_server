@@ -114,11 +114,22 @@ CREATE TABLE `cd_firefox_card` (
 ) ENGINE=InnoDB AUTO_INCREMENT=194641 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
+项目名称
+项目id
+总数量
+成功数量
+拉黑数量
 
-CREATE TABLE `cd_card_group` (
+
+
+CREATE TABLE `cd_project_statistics` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `group_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `param_value` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `project_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+ `project_id` int(11) DEFAULT NULL,
+ `total_count` int(11) DEFAULT NULL,
+ `success_count` int(11) DEFAULT NULL,
+ `error_count` int(11) DEFAULT NULL,
+
   `delete_flag` int(11) DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE

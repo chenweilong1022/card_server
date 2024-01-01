@@ -86,4 +86,14 @@ public class CdProjectSmsRecordController {
         return R.ok();
     }
 
+    /**
+     * 未回码清空
+     */
+    @RequestMapping("/noClearReplyCode")
+    @RequiresPermissions("ltt:cdprojectsmsrecord:delete")
+    public R noClearReplyCode(@RequestBody CdProjectSmsRecordDTO cdProjectSmsRecord){
+		cdProjectSmsRecordService.noClearReplyCode(cdProjectSmsRecord);
+        return R.ok();
+    }
+
 }

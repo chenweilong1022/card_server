@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.ltt.dao.CdProjectStatisticsDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.ltt.entity.CdProjectStatisticsEntity" id="cdProjectStatisticsMap">
+        <result property="id" column="id"/>
+        <result property="projectName" column="project_name"/>
+        <result property="projectId" column="project_id"/>
+        <result property="totalCount" column="total_count"/>
+        <result property="successCount" column="success_count"/>
+        <result property="errorCount" column="error_count"/>
+        <result property="deleteFlag" column="delete_flag"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <select id="statistics" resultType="io.renren.modules.ltt.vo.CdProjectStatisticsVO">
+        SELECT
+            COUNT(1) totalCount,
+            SUM(CASE WHEN `code` = '拉黑' THEN 1 ELSE 0 END) errorCount,
+            r.project_id projectId,
+            p.`name` projectName
+        FROM
+            cd_devices d
+                LEFT JOIN cd_project_sms_record r ON r.device_id = d.iccid
+                LEFT JOIN cd_project p ON p.id = r.project_id
+        <where>
+            <if test="dto.groupId != null and dto.groupId > 0">
+                d.group_id = #{dto.groupId}
+            </if>
+        </where>
+        GROUP BY r.project_id
+    </select>
+
+
+</mapper>

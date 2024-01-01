@@ -6,8 +6,8 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button v-if="isAuth('ltt:cdcardgroup:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button v-if="isAuth('ltt:cdcardgroup:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+        <el-button v-if="isAuth('ltt:cdprojectstatistics:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button v-if="isAuth('ltt:cdprojectstatistics:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -26,33 +26,43 @@
         prop="id"
         header-align="center"
         align="center"
-        label="id">
+        label="">
       </el-table-column>
       <el-table-column
         prop="groupName"
         header-align="center"
         align="center"
-        label="分组名称">
+        label="分组">
+      </el-table-column>
+      <el-table-column
+        prop="projectName"
+        header-align="center"
+        align="center"
+        label="项目名">
+      </el-table-column>
+      <el-table-column
+        prop="totalCount"
+        header-align="center"
+        align="center"
+        label="总数量">
+      </el-table-column>
+      <el-table-column
+        prop="successCount"
+        header-align="center"
+        align="center"
+        label="成功数量">
+      </el-table-column>
+      <el-table-column
+        prop="errorCount"
+        header-align="center"
+        align="center"
+        label="失败数量">
       </el-table-column>
       <el-table-column
         prop="createTime"
         header-align="center"
         align="center"
-        label="创建时间">
-      </el-table-column>
-      <el-table-column
-        fixed="right"
-        header-align="center"
-        align="center"
-        width="150"
-        label="操作">
-        <template slot-scope="scope">
-          <el-button type="text" size="small" @click="configAddOrUpdateHandle(scope.row.id,scope.row.groupName)">配置</el-button>
-          <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
-          <el-button type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
-          <el-button type="text" size="small" @click="generateStatistics(scope.row.id)">生成报表</el-button>
-          <el-button type="text" size="small" @click="noCodeClearHandle(scope.row.id)">未回码清空</el-button>
-        </template>
+        label="时间">
       </el-table-column>
     </el-table>
     <el-pagination
@@ -66,15 +76,11 @@
     </el-pagination>
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
-    <config-add-or-update  v-if="configAddOrUpdateVisible" ref="configAddOrUpdate" @refreshDataList="getDataList"></config-add-or-update>
-    <no-code-clear v-if="noCodeClearVisible" ref="noCodeClear" @refreshDataList="getDataList"></no-code-clear>
   </div>
 </template>
 
 <script>
-  import AddOrUpdate from './cdcardgroup-add-or-update'
-  import NoCodeClear from './cdcardgroup-no-code-clear'
-  import ConfigAddOrUpdate from '../sys/config-add-or-update.vue'
+  import AddOrUpdate from './cdprojectstatistics-add-or-update'
   export default {
     data () {
       return {
@@ -86,16 +92,12 @@
         pageSize: 10,
         totalPage: 0,
         dataListLoading: false,
-        configAddOrUpdateVisible: false,
-        noCodeClearVisible: false,
         dataListSelections: [],
         addOrUpdateVisible: false
       }
     },
     components: {
-      AddOrUpdate,
-      ConfigAddOrUpdate,
-      NoCodeClear
+      AddOrUpdate
     },
     activated () {
       this.getDataList()
@@ -105,7 +107,7 @@
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/ltt/cdcardgroup/list'),
+          url: this.$http.adornUrl('/ltt/cdprojectstatistics/list'),
           method: 'get',
           params: this.$http.adornParams({
             'page': this.pageIndex,
@@ -145,20 +147,6 @@
           this.$refs.addOrUpdate.init(id)
         })
       },
-      // 新增 / 修改
-      noCodeClearHandle (id) {
-        this.noCodeClearVisible = true
-        this.$nextTick(() => {
-          this.$refs.noCodeClear.init(id)
-        })
-      },
-      // 配置修改
-      configAddOrUpdateHandle (id,name) {
-        this.configAddOrUpdateVisible = true
-        this.$nextTick(() => {
-          this.$refs.configAddOrUpdate.init(id,name)
-        })
-      },
       // 删除
       deleteHandle (id) {
         var ids = id ? [id] : this.dataListSelections.map(item => {
@@ -170,36 +158,7 @@
           type: 'warning'
         }).then(() => {
           this.$http({
-            url: this.$http.adornUrl('/ltt/cdcardgroup/delete'),
-            method: 'post',
-            data: this.$http.adornData(ids, false)
-          }).then(({data}) => {
-            if (data && data.code === 0) {
-              this.$message({
-                message: '操作成功',
-                type: 'success',
-                duration: 1500,
-                onClose: () => {
-                  this.getDataList()
-                }
-              })
-            } else {
-              this.$message.error(data.msg)
-            }
-          })
-        })
-      },
-      generateStatistics (id) {
-        var ids = id ? [id] : this.dataListSelections.map(item => {
-          return item.id
-        })
-        this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '生成报表' : '批量生成报表'}]操作?`, '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.$http({
-            url: this.$http.adornUrl('/ltt/cdprojectstatistics/generateStatistics'),
+            url: this.$http.adornUrl('/ltt/cdprojectstatistics/delete'),
             method: 'post',
             data: this.$http.adornData(ids, false)
           }).then(({data}) => {

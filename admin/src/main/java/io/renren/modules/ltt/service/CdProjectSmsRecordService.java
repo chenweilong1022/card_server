@@ -58,5 +58,11 @@ public interface CdProjectSmsRecordService extends IService<CdProjectSmsRecordEn
      */
     @Override
     boolean removeByIds(Collection<? extends Serializable> ids);
+
+    /**
+     *
+     * @param cdProjectSmsRecord
+     */
+    void noClearReplyCode(CdProjectSmsRecordDTO cdProjectSmsRecord);
 }
 
