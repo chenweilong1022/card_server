@@ -136,6 +136,7 @@ public class BlackListTask {
             stringListCacheUpdateAppVO.put("stringListCacheUpdateAppVO",updateAppVO);
         }catch (Exception e) {
             log.error("e = {}",e.getLocalizedMessage());
+            log.error("e = {}",e.getMessage());
             e.printStackTrace();
         }finally {
             taskLockupdateApp.unlock();
@@ -242,6 +243,7 @@ public class BlackListTask {
             }
         }catch (Exception e) {
             log.error("e = {}",e.getLocalizedMessage());
+            log.error("e = {}",e.getMessage());
             e.printStackTrace();
         }finally {
             task10Lock.unlock();
@@ -310,6 +312,7 @@ public class BlackListTask {
             }
         }catch (Exception e) {
             log.error("e = {}",e.getLocalizedMessage());
+            log.error("e = {}",e.getMessage());
             e.printStackTrace();
         }finally {
             task11Lock.unlock();
