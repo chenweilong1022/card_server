@@ -5,6 +5,7 @@ import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -177,17 +178,19 @@ public class BlackListTask {
                         DateTime now = DateUtil.date();
                         //如果超时了去删除之前的卡
                         if (now.toJdkDate().getTime()> dateTime.toJdkDate().getTime()) {
-                            String replaceDel = cdCardLockEntity.getPhone().replaceFirst(projectWorkEntity.getPhonePre(), "");
-                            PhoneList phoneDelList = new PhoneList("tha",replaceDel);
-                            phoneDelLists.add(phoneDelList);
+                            if (StrUtil.isNotEmpty(cdCardLockEntity.getPhone())) {
+                                String replaceDel = cdCardLockEntity.getPhone().replaceFirst(projectWorkEntity.getPhonePre(), "");
+                                PhoneList phoneDelList = new PhoneList("tha",replaceDel);
+                                phoneDelLists.add(phoneDelList);
 
-                            CdCardLockDTO cdCardLockDTO = CdCardLockConver.MAPPER.conver2(cdCardLockEntity);
-                            //获取手机号码
-                            CdCardLockVO mobile = cdCardLockService.getMobile2(cdCardLockDTO, cdUserEntity, cdCardLockDTO.getDeviceId());
-                            if (ObjectUtil.isNotNull(mobile)) {
-                                String replace = mobile.getPhone().replaceFirst(projectWorkEntity.getPhonePre(), "");
-                                PhoneList phoneList = new PhoneList("tha",replace);
-                                phoneLists.add(phoneList);
+                                CdCardLockDTO cdCardLockDTO = CdCardLockConver.MAPPER.conver2(cdCardLockEntity);
+                                //获取手机号码
+                                CdCardLockVO mobile = cdCardLockService.getMobile2(cdCardLockDTO, cdUserEntity, cdCardLockDTO.getDeviceId());
+                                if (ObjectUtil.isNotNull(mobile)) {
+                                    String replace = mobile.getPhone().replaceFirst(projectWorkEntity.getPhonePre(), "");
+                                    PhoneList phoneList = new PhoneList("tha",replace);
+                                    phoneLists.add(phoneList);
+                                }
                             }
                         }
                     }
