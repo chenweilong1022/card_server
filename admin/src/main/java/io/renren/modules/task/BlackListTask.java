@@ -41,6 +41,8 @@ import io.renren.modules.netty.server.NettyChannelManager;
 import io.renren.modules.sys.entity.ProjectWorkEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,6 +63,7 @@ import java.util.stream.Collectors;
  */
 @Component
 @Slf4j
+@EnableAsync
 public class BlackListTask {
 
     @Autowired
@@ -85,6 +88,7 @@ public class BlackListTask {
     private NettyChannelManager nettyChannelManager;
 
     @Scheduled(fixedDelay = 5000)
+    @Async
     @Transactional(rollbackFor = Exception.class)
     public void updateApp() {
         boolean b = taskLockupdateApp.tryLock();
@@ -130,6 +134,9 @@ public class BlackListTask {
             count++;
             peek.setCount(count);
             stringListCacheUpdateAppVO.put("stringListCacheUpdateAppVO",updateAppVO);
+        }catch (Exception e) {
+            log.error("e = {}",e.getLocalizedMessage());
+            e.printStackTrace();
         }finally {
             taskLockupdateApp.unlock();
         }
@@ -137,16 +144,17 @@ public class BlackListTask {
 
 
     @Scheduled(fixedDelay = 5000)
+    @Async
     @Transactional(rollbackFor = Exception.class)
     public void withBlack() {
         boolean b = task10Lock.tryLock();
         if (!b) {
             return;
         }
-
         try {
 
             List<GetListByIdsVO> getListByIdsVOS = cdCardLockService.getListByIds(null);
+
             Map<Integer, List<GetListByIdsVO>> integerListMap = getListByIdsVOS.stream().filter(x -> ObjectUtil.isNotNull(x.getGroupId())).collect(Collectors.groupingBy(GetListByIdsVO::getGroupId));
 
             for (Integer id : integerListMap.keySet()) {
@@ -232,71 +240,18 @@ public class BlackListTask {
                 cdDevicesService.withBlack(ArrayUtil.toArray(ids,Integer.class));
 
             }
+        }catch (Exception e) {
+            log.error("e = {}",e.getLocalizedMessage());
+            e.printStackTrace();
         }finally {
             task10Lock.unlock();
         }
     }
 
-
-    private void extracted(ProjectWorkEntity projectWorkEntity) {
-        Root phoneAddBatch = new Root("PhoneDeleteAll");
-        ObjectMapper objectMapper = new ObjectMapper();
-        String json = null;
-        try {
-            json = objectMapper.writeValueAsString(phoneAddBatch);
-        } catch (JsonProcessingException e) {
-
-        }
-        String response = HttpUtil.post(projectWorkEntity.getCodeApiUrl(), json);
-    }
-
-
-    public static void main(String[] args) {
-        String response = HttpUtil.get("https://www.firefox.fun/ksapi.ashx?key=76082377BDE44F99" + "&act=GetWaitPhoneList");
-        System.out.println(response);
-    }
-
     static ReentrantLock task11Lock = new ReentrantLock();
 
-
-
-//    @Scheduled(fixedDelay = 5000)
-//    @Transactional(rollbackFor = Exception.class)
-//    public void autoBlock() {
-//
-//        List<GetListByIdsVO> getListByIdsVOS = cdCardLockService.getListByIds(null);
-//        Map<Integer, List<GetListByIdsVO>> integerListMap = getListByIdsVOS.stream().filter(x -> ObjectUtil.isNotNull(x.getGroupId())).collect(Collectors.groupingBy(GetListByIdsVO::getGroupId));
-//        for (Integer id : integerListMap.keySet()) {
-//            String cacheKey = String.format("%s_%s", ConfigConstant.PROJECT_WORK_KEY, id);
-//            ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(cacheKey);
-//            if(CodeAcquisitionType.CodeAcquisitionType2.getKey().equals(projectWorkEntity.getCodeAcquisitionType())) {
-//                continue;
-//            }else if(CodeAcquisitionType.CodeAcquisitionType3.getKey().equals(projectWorkEntity.getCodeAcquisitionType())) {
-//                continue;
-//            }
-//            List<GetListByIdsVO> list = integerListMap.get(id);
-//            if (CollUtil.isNotEmpty(list)) {
-//                for (GetListByIdsVO getListByIdsVO : list) {
-//                    if (Lock.NO.getKey().equals(getListByIdsVO.getLock())) {
-//                        continue;
-//                    }
-//                    if (ObjectUtil.isNotNull(getListByIdsVO.getPhoneGetTime())) {
-//                        continue;
-//                    }
-//                    if (!WorkType.WorkType3.equals(getListByIdsVO.getWorkType())) {
-//                     continue;
-//                    }
-//
-//
-//
-//
-//                }
-//            }
-//        }
-//
-//    }
-
     @Scheduled(fixedDelay = 5000)
+    @Async
     @Transactional(rollbackFor = Exception.class)
     public void sayHello() {
         boolean task11LockFlag = task11Lock.tryLock();
@@ -353,6 +308,9 @@ public class BlackListTask {
                     log.error("error = {}",e.getLocalizedMessage());
                 }
             }
+        }catch (Exception e) {
+            log.error("e = {}",e.getLocalizedMessage());
+            e.printStackTrace();
         }finally {
             task11Lock.unlock();
         }
