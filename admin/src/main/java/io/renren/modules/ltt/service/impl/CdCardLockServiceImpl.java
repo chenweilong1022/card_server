@@ -285,6 +285,9 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
                 cdCardService.updateById(cdCardEntity);
             }
 
+            if (ObjectUtil.isNull(cdCardEntity)) {
+                return null;
+            }
             //将当前手机上锁
             CdCardLockEntity update = new CdCardLockEntity();
             update.setId(cdCardLockEntity.getId());

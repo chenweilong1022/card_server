@@ -37,7 +37,15 @@
         </el-select>
       </el-form-item>
       <el-form-item label="接码平台接口" prop="codeApiUrl"  v-if="type === 2">
-        <el-input v-model="dataForm.codeApiUrl" placeholder="备注"></el-input>
+<!--        <el-input v-model="dataForm.codeApiUrl" placeholder="备注"></el-input>-->
+        <el-select v-model="dataForm.projectId" placeholder="平台" clearable @change="platformHandler">
+          <el-option
+            v-for="item in projectDataList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id">
+          </el-option>
+        </el-select>
       </el-form-item>
 
 
