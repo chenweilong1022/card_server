@@ -73,7 +73,7 @@ public class AppCdCardLockController extends AbstractController {
     @Login
     public R withBlackMobile(@RequestBody CdCardLockDTO cdCardLock){
         cdCardLockService.withBlackMobile(cdCardLock,this.cdUserEntity);
-        return R.ok();
+        return R.data(true);
     }
 
     /**

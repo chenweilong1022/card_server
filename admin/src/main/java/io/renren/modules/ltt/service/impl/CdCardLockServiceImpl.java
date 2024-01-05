@@ -483,8 +483,10 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
         cdProjectSmsRecordEntity.setIccid(cdCardLockEntity.getIccid());
         cdProjectSmsRecordEntity.setDeleteFlag(DeleteFlag.YES.getKey());
         cdProjectSmsRecordEntity.setCreateTime(DateUtil.date());
-
-        boolean save = cdProjectSmsRecordService.save(cdProjectSmsRecordEntity);
+        boolean save = false;
+        if(StrUtil.isNotEmpty(cdProjectSmsRecordEntity.getPhone())) {
+            save = cdProjectSmsRecordService.save(cdProjectSmsRecordEntity);
+        }
 
         if ((ObjectUtil.isNotNull(cdProjectVO) && cdCardLock.getCode().contains(cdProjectVO.getName())) || cdCardLock.getCode().contains("拉黑")) {
             cdCardLockEntity.setId(cdCardLockEntity.getId());
@@ -560,7 +562,10 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
         cdProjectSmsRecordEntity.setIccid(cdCardLockEntity.getIccid());
         cdProjectSmsRecordEntity.setDeleteFlag(DeleteFlag.YES.getKey());
         cdProjectSmsRecordEntity.setCreateTime(DateUtil.date());
-        boolean save = cdProjectSmsRecordService.save(cdProjectSmsRecordEntity);
+        boolean save = false;
+        if(StrUtil.isNotEmpty(cdProjectSmsRecordEntity.getPhone())) {
+            save = cdProjectSmsRecordService.save(cdProjectSmsRecordEntity);
+        }
         uploadSms(cdCardLock, cdCardLockEntity,projectWorkEntity);
         return save;
     }
