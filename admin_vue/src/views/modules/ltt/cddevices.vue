@@ -76,6 +76,7 @@
         <el-button type="primary" @click="rebootHandler()" :disabled="dataListSelections.length <= 0">批量重启</el-button>
         <el-button type="primary" @click="updateBatchHandler(null,1)" :disabled="dataListSelections.length <= 0">批量闲置</el-button>
         <el-button type="primary" @click="updateBatchHandler(null,3)" :disabled="dataListSelections.length <= 0">批量工作</el-button>
+        <el-button type="primary" @click="releaseMobileAllHandler()" :disabled="dataListSelections.length <= 0">释放卡</el-button>
         <el-button type="primary" @click="cddevicesGroupChangeHandle()" :disabled="dataListSelections.length <= 0">分组</el-button>
       </el-form-item>
     </el-form>
@@ -344,6 +345,38 @@ export default {
           data: {
             'ids': ids,
             'workType': workType
+          }
+        }).then(({data}) => {
+          if (data && data.code === 0) {
+            this.$message({
+              message: '操作成功',
+              type: 'success',
+              duration: 1500,
+              onClose: () => {
+                this.getDataList()
+              }
+            })
+          } else {
+            this.$message.error(data.msg)
+          }
+        })
+      })
+    },
+    releaseMobileAllHandler (id) {
+      var ids = id ? [id] : this.dataListSelections.map(item => {
+        return item.id
+      })
+      this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '释放' : '批量释放状态'}]操作?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$http({
+          url: this.$http.adornUrl('/ltt/cdcardlock/releaseMobileAll'),
+          method: 'post',
+          data: {
+            'ids': ids,
+            'token': '545148dc498842ca8cea980b1a677b27'
           }
         }).then(({data}) => {
           if (data && data.code === 0) {

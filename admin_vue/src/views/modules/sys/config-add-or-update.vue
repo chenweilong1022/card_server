@@ -37,13 +37,12 @@
         </el-select>
       </el-form-item>
       <el-form-item label="接码平台接口" prop="codeApiUrl"  v-if="type === 2">
-<!--        <el-input v-model="dataForm.codeApiUrl" placeholder="备注"></el-input>-->
-        <el-select v-model="dataForm.projectId" placeholder="平台" clearable @change="platformHandler">
+        <el-select v-model="dataForm.codeApiUrl" placeholder="平台" clearable @change="platformHandler">
           <el-option
-            v-for="item in projectDataList"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id">
+            v-for="item in codeApiUrlDataList"
+            :key="item"
+            :label="item"
+            :value="item">
           </el-option>
         </el-select>
       </el-form-item>
@@ -92,7 +91,10 @@
         type: 2,
         platform: 1,
         visible: false,
-        projectDataList: [],
+        codeApiUrlDataList: [
+          'https://www.firefox.fun/ksapi.ashx?key=76082377BDE44F99',
+          'https://www.firefox.fun/ksapi.ashx?key=A379FA5332B2FB70',
+        ],
         codeAcquisitionTypeOptions: [
           {
             value: 1,

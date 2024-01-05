@@ -25,7 +25,7 @@ import java.util.Arrays;
  * @date 2023-10-19 02:22:45
  */
 @RestController
-@RequestMapping("app/cdcardlock")
+@RequestMapping({"app/cdcardlock","ltt/cdcardlock"})
 public class AppCdCardLockController extends AbstractController {
     @Autowired
     private CdCardLockService cdCardLockService;

@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -31,6 +32,12 @@ public class CdCardLockDTO extends PageParam implements Serializable {
 	@TableId(type = IdType.AUTO)
 	@ApiModelProperty(required=false,value="")
 	private Integer id;
+	/**
+	 *
+	 */
+	@TableId(type = IdType.AUTO)
+	@ApiModelProperty(required=false,value="")
+	private List<Integer> ids;
 	/**
 	 *
 	 */

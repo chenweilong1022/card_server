@@ -393,9 +393,17 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean releaseMobileAll(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity) {
-        List<CdCardLockEntity> list = this.list(new QueryWrapper<CdCardLockEntity>().lambda()
-                .eq(CdCardLockEntity::getUserId,cdUserEntity.getId())
-        );
+        List<CdCardLockEntity> list = null;
+        if (CollUtil.isNotEmpty(cdCardLock.getIds())) {
+            list = this.listByIds(cdCardLock.getIds());
+        }else {
+            list = this.list(new QueryWrapper<CdCardLockEntity>().lambda()
+                    .eq(CdCardLockEntity::getUserId,cdUserEntity.getId())
+            );
+        }
+        if (CollUtil.isEmpty(list)) {
+            return false;
+        }
         for (CdCardLockEntity cdCardLockEntity : list) {
             cdCardLockEntity.setId(cdCardLockEntity.getId());
             cdCardLockEntity.setUserId(null);
