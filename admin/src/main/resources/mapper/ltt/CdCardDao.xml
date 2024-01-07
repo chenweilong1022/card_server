@@ -15,7 +15,24 @@
 
 
     <select id="groupByDeviceId" resultType="io.renren.modules.ltt.vo.GroupByDeviceIdVO">
-        SELECT device_id as deviceId,COUNT(iccid) as initTotalNumber,COUNT(DISTINCT IF('无卡' = iccid,NULL,iccid)) as initSuccessNumber  FROM cd_card GROUP BY device_id
+        SELECT
+            device_id AS deviceId,
+            COUNT( phone ) AS initTotalNumber,
+            COUNT(
+                    DISTINCT
+                    CASE
+                        phone
+                        WHEN '无卡' THEN
+                            NULL
+                        WHEN '无信号' THEN
+                            NULL
+                        ELSE iccid
+                        END
+            ) AS initSuccessNumber
+        FROM
+            cd_card
+        GROUP BY
+            device_id
     </select>
 
 
