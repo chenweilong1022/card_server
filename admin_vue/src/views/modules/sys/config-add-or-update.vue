@@ -27,7 +27,7 @@
       </el-form-item>
 
       <el-form-item label="平台" prop="platform" v-if="type === 2">
-        <el-select v-model="platform" placeholder="平台" clearable @change="platformHandler">
+        <el-select v-model="platform" placeholder="平台" clearable>
           <el-option
             v-for="item in platformOptions"
             :key="item.value"
@@ -36,20 +36,21 @@
           </el-option>
         </el-select>
       </el-form-item>
+
       <el-form-item label="接码平台接口" prop="codeApiUrl"  v-if="type === 2">
-        <el-select v-model="dataForm.codeApiUrl" placeholder="平台" clearable @change="platformHandler">
+        <el-select v-model="codeApiUrl" placeholder="平台" clearable @change="codeApiUrlDataListHandler">
           <el-option
-            v-for="item in codeApiUrlDataList"
-            :key="item"
-            :label="item"
-            :value="item">
+            v-for="item in codeApiUrlDataListOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
           </el-option>
         </el-select>
       </el-form-item>
 
 
       <el-form-item label="项目id" prop="projectId"  v-if="type === 2">
-        <el-select v-model="dataForm.projectId" placeholder="平台" clearable @change="platformHandler">
+        <el-select v-model="dataForm.projectId" placeholder="平台" clearable>
           <el-option
             v-for="item in projectDataList"
             :key="item.id"
@@ -91,10 +92,24 @@
         type: 2,
         platform: 1,
         visible: false,
-        codeApiUrlDataList: [
-          'https://www.firefox.fun/ksapi.ashx?key=76082377BDE44F99',
-          'https://www.firefox.fun/ksapi.ashx?key=A379FA5332B2FB70',
-          'https://www.firefox.fun/ksapi.ashx?key=2EEE96B60EA080A2'
+        projectDataList: [],
+        codeApiUrl: null,
+        codeApiUrlDataListOptions: [
+          {
+            value: 1,
+            label: '挂机(76082377BDE44F99)',
+            url: 'https://www.firefox.fun/ksapi.ashx?key=76082377BDE44F99'
+          },
+          {
+            value: 2,
+            label: 'TG(A379FA5332B2FB70)',
+            url: 'https://www.firefox.fun/ksapi.ashx?key=A379FA5332B2FB70'
+          },
+          {
+            value: 3,
+            label: 'WS(2EEE96B60EA080A2)',
+            url: 'https://www.firefox.fun/ksapi.ashx?key=2EEE96B60EA080A2'
+          }
         ],
         codeAcquisitionTypeOptions: [
           {
@@ -156,10 +171,24 @@
       }
     },
     methods: {
-      platformHandler (item) {
-        for (let platformOption of this.platformOptions) {
+      // platformHandler (item) {
+      //   for (let platformOption of this.platformOptions) {
+      //     if (platformOption.value === item) {
+      //       this.dataForm.codeApiUrl = platformOption.url
+      //     }
+      //   }
+      // },
+      codeApiUrlDataListHandler (item) {
+        for (let platformOption of this.codeApiUrlDataListOptions) {
           if (platformOption.value === item) {
             this.dataForm.codeApiUrl = platformOption.url
+          }
+        }
+      },
+      codeApiUrlDataListHandlerShow (item) {
+        for (let platformOption of this.codeApiUrlDataListOptions) {
+          if (platformOption.url === item) {
+            this.codeApiUrl = platformOption.value
           }
         }
       },
@@ -185,6 +214,7 @@
                 this.dataForm.phonePre = data.config.phonePre
                 this.dataForm.codeApiUrl = data.config.codeApiUrl
                 this.codeAcquisitionType = data.config.codeAcquisitionType
+                this.codeApiUrlDataListHandlerShow(data.config.codeApiUrl);
               }
             })
           }
