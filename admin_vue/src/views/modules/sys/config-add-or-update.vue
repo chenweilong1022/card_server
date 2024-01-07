@@ -94,6 +94,7 @@
         codeApiUrlDataList: [
           'https://www.firefox.fun/ksapi.ashx?key=76082377BDE44F99',
           'https://www.firefox.fun/ksapi.ashx?key=A379FA5332B2FB70',
+          'https://www.firefox.fun/ksapi.ashx?key=2EEE96B60EA080A2'
         ],
         codeAcquisitionTypeOptions: [
           {
