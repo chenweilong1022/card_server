@@ -67,6 +67,11 @@ public class CdProjectSmsRecordDTO extends PageParam implements Serializable {
 	@ApiModelProperty(required=false,value="卡的iccid")
 	private String iccid;
 	/**
+	 * 清除类型
+	 */
+	@ApiModelProperty(required=false,value="清除类型")
+	private Integer clearType;
+	/**
 	 * 删除标志
 	 */
 	@ApiModelProperty(required=false,value="删除标志")

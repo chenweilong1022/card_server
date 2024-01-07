@@ -17,7 +17,8 @@
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>
-      <el-button type="primary" @click="dataFormSubmit()">确定</el-button>
+      <el-button type="primary" @click="dataFormSubmit(1)">未回码清空</el-button>
+      <el-button type="primary" @click="dataFormSubmit(2)">全部清空</el-button>
     </span>
   </el-dialog>
 </template>
@@ -75,7 +76,7 @@
         this.getDataList();
       },
       // 表单提交
-      dataFormSubmit () {
+      dataFormSubmit (type) {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.$http({
@@ -83,7 +84,8 @@
               method: 'post',
               data: this.$http.adornData({
                 'id': this.dataForm.id,
-                'projectId': this.projectId
+                'projectId': this.projectId,
+                'clearType': type
               })
             }).then(({data}) => {
               if (data && data.code === 0) {

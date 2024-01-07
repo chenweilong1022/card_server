@@ -1,10 +1,13 @@
 package io.renren.modules.ltt.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import com.google.common.collect.Lists;
 import io.renren.common.validator.Assert;
 import io.renren.datasources.annotation.Admin;
 import io.renren.datasources.annotation.Game;
 import io.renren.modules.ltt.entity.CdDevicesEntity;
+import io.renren.modules.ltt.enums.ClearType;
+import io.renren.modules.ltt.firefox.PhoneList;
 import io.renren.modules.ltt.service.CdCardGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -82,12 +85,23 @@ public class CdProjectSmsRecordServiceImpl extends ServiceImpl<CdProjectSmsRecor
 
         Assert.isTrue(CollUtil.isEmpty(list),"该分组下没有设备");
         List<String> iccids = list.stream().map(CdDevicesEntity::getIccid).collect(Collectors.toList());
-        
-        this.remove(new QueryWrapper<CdProjectSmsRecordEntity>().lambda()
-                .eq(CdProjectSmsRecordEntity::getProjectId,cdProjectSmsRecord.getProjectId())
-                .eq(CdProjectSmsRecordEntity::getCode,"拉黑")
-                .in(CdProjectSmsRecordEntity::getDeviceId,iccids)
-        );
+
+
+        List<List<String>> partition = Lists.partition(iccids, 59);
+        for (List<String> lists : partition) {
+            if (ClearType.CLEAR_TYPE1.getKey().equals(cdProjectSmsRecord.getClearType())) {
+                this.remove(new QueryWrapper<CdProjectSmsRecordEntity>().lambda()
+                        .eq(CdProjectSmsRecordEntity::getProjectId,cdProjectSmsRecord.getProjectId())
+                        .eq(CdProjectSmsRecordEntity::getCode,"拉黑")
+                        .in(CdProjectSmsRecordEntity::getDeviceId,lists)
+                );
+            }else if (ClearType.CLEAR_TYPE2.getKey().equals(cdProjectSmsRecord.getClearType())) {
+                this.remove(new QueryWrapper<CdProjectSmsRecordEntity>().lambda()
+                        .eq(CdProjectSmsRecordEntity::getProjectId,cdProjectSmsRecord.getProjectId())
+                        .in(CdProjectSmsRecordEntity::getDeviceId,lists)
+                );
+            }
+        }
     }
 
 }
