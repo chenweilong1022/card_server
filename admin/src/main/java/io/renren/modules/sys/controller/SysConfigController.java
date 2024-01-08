@@ -88,6 +88,7 @@ public class SysConfigController extends AbstractController {
 			config.setUserId(projectWorkEntity.getUserId());
 			config.setCodeApiUrl(projectWorkEntity.getCodeApiUrl());
 			config.setPlatform(projectWorkEntity.getPlatform());
+			config.setInterval(projectWorkEntity.getInterval());
 			config.setCodeAcquisitionType(projectWorkEntity.getCodeAcquisitionType());
 		}else {
 			//
@@ -103,6 +104,7 @@ public class SysConfigController extends AbstractController {
 			configNew.setPlatform(p2.getPlatform());
 			configNew.setPhonePre(p2.getPhonePre());
 			configNew.setCodeApiUrl(p2.getCodeApiUrl());
+			config.setInterval(projectWorkEntity.getInterval());
 			configNew.setCodeAcquisitionType(p2.getCodeAcquisitionType());
 			configNew.setType(2);
 			configNew.setKey(cacheKey);

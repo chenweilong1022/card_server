@@ -74,8 +74,12 @@
             :value="item.value">
           </el-option>
         </el-select>
-
       </el-form-item>
+
+      <el-form-item label="间隔" prop="interval" v-if="type === 2 && codeAcquisitionType === 2">
+        <el-input v-model="dataForm.interval" placeholder="间隔"></el-input>
+      </el-form-item>
+
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>
@@ -155,6 +159,7 @@
           userId: '',
           platform: null,
           codeAcquisitionType: null,
+          interval: null,
           projectId: '',
           phonePre: '',
           codeApiUrl: '',
@@ -213,6 +218,7 @@
                 this.dataForm.projectId = data.config.projectId
                 this.dataForm.phonePre = data.config.phonePre
                 this.dataForm.codeApiUrl = data.config.codeApiUrl
+                this.dataForm.interval = data.config.interval
                 this.codeAcquisitionType = data.config.codeAcquisitionType
                 this.codeApiUrlDataListHandlerShow(data.config.codeApiUrl);
               }
@@ -249,6 +255,7 @@
                 'projectId': this.dataForm.projectId,
                 'phonePre': this.dataForm.phonePre,
                 'codeApiUrl': this.dataForm.codeApiUrl,
+                'interval': this.dataForm.interval,
                 'type': this.type,
                 'platform': this.platform,
                 'codeAcquisitionType': this.codeAcquisitionType,

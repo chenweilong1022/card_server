@@ -22,4 +22,6 @@ public class ProjectWorkEntity {
     private Integer platform;
 
     private Integer codeAcquisitionType;
+
+    private Integer interval;
 }

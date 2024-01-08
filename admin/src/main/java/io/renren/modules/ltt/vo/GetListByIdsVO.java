@@ -87,6 +87,11 @@ public class GetListByIdsVO {
     @ApiModelProperty(required=false,value="")
     private Integer groupId;
     /**
+     * online
+     */
+    @ApiModelProperty(required=false,value="")
+    private Integer online;
+    /**
      * 分组id
      */
     @ApiModelProperty(required=false,value="")

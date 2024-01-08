@@ -63,4 +63,7 @@ public class SysConfigEntity extends AbstractEntity implements Serializable {
 
 	@TableField(exist = false)
 	private Integer codeAcquisitionType;
+
+	@TableField(exist = false)
+	private Integer interval;
 }

@@ -224,92 +224,91 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
     }
 
     @Override
-    public CdCardLockVO getMobile2(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity, String deviceId) {
+    public CdCardLockVO getMobile2(CdCardLockDTO cdCardLock, CdUserEntity cdUserEntity, String deviceId,ProjectWorkEntity projectWorkEntity) {
 
-        //获取设备
-        List<CdCardLockEntity> list = this.list(new QueryWrapper<CdCardLockEntity>().lambda()
-                .eq(StrUtil.isNotEmpty(deviceId),CdCardLockEntity::getDeviceId,deviceId)
-        );
-        //如果设备为空返回null
-        if (CollUtil.isEmpty(list)) {
+        log.info("cdCardLockEntity = {}",JSONUtil.toJsonStr(cdCardLock));
+        if (ObjectUtil.isNotNull(cdCardLock) && Online.NO.getKey().equals(cdCardLock.getOnline())) {
             return null;
         }
-        //如果设备不在线，跳出循环
-        for (CdCardLockEntity cdCardLockEntity : list) {
-            log.info("cdCardLockEntity = {}",JSONUtil.toJsonStr(cdCardLockEntity));
-            CdDevicesEntity one1 = cdDevicesService.getOne(new QueryWrapper<CdDevicesEntity>().lambda()
-                    .eq(CdDevicesEntity::getIccid,cdCardLockEntity.getDeviceId())
-            );
-            if (ObjectUtil.isNull(one1)) {
-                continue;
-            }
-            log.info("one1 = {}",JSONUtil.toJsonStr(one1));
-            if (ObjectUtil.isNotNull(one1) && Online.NO.getKey().equals(one1.getOnline())) {
-                continue;
-            }
-            if (!WorkType.WorkType3.getKey().equals(one1.getWorkType())) {
-                continue;
-            }
+        if (!WorkType.WorkType3.getKey().equals(cdCardLock.getWorkType())) {
+            return null;
+        }
+        //获取设备下所有的信息列表 所有卡的信息
+        List<CdCardEntity> cdCardEntities = cdCardService.list(new QueryWrapper<CdCardEntity>().lambda()
+                .eq(CdCardEntity::getDeviceId,cdCardLock.getDeviceId())
+                .eq(CdCardEntity::getUseStatus, UseStatus.UseStatus1.getKey())
+                .notIn(CdCardEntity::getIccid,"无卡","无信号")
+                .notIn(CdCardEntity::getPhone,"无卡","无信号")
+        );
+        log.info("cdCardEntities = {}",cdCardEntities.size());
+        CdCardEntity cdCardEntity = null;
+        if (CollUtil.isEmpty(cdCardEntities)) {
             //获取设备下所有的信息列表 所有卡的信息
-            List<CdCardEntity> cdCardEntities = cdCardService.list(new QueryWrapper<CdCardEntity>().lambda()
-                    .eq(CdCardEntity::getDeviceId,cdCardLockEntity.getDeviceId())
-                    .eq(CdCardEntity::getUseStatus, UseStatus.UseStatus1.getKey())
-                    .notIn(CdCardEntity::getIccid,"无卡")
-                    .notIn(CdCardEntity::getPhone,"无卡")
+            List<CdCardEntity> useCdCardEntities = cdCardService.list(new QueryWrapper<CdCardEntity>().lambda()
+                    .eq(CdCardEntity::getDeviceId,cdCardLock.getDeviceId())
+                    .eq(CdCardEntity::getUseStatus, UseStatus.UseStatus2.getKey())
+                    .notIn(CdCardEntity::getIccid,"无卡","无信号")
+                    .notIn(CdCardEntity::getPhone,"无卡","无信号")
             );
             log.info("cdCardEntities = {}",cdCardEntities.size());
-            CdCardEntity cdCardEntity = null;
-            if (CollUtil.isEmpty(cdCardEntities)) {
-                //获取设备下所有的信息列表 所有卡的信息
-                List<CdCardEntity> useCdCardEntities = cdCardService.list(new QueryWrapper<CdCardEntity>().lambda()
-                        .eq(CdCardEntity::getDeviceId,cdCardLockEntity.getDeviceId())
-                        .eq(CdCardEntity::getUseStatus, UseStatus.UseStatus2.getKey())
-                        .notIn(CdCardEntity::getIccid,"无卡")
-                        .notIn(CdCardEntity::getPhone,"无卡")
-                );
-                log.info("cdCardEntities = {}",cdCardEntities.size());
-                //修改卡
-                for (int i = 0; i < useCdCardEntities.size(); i++) {
-                    if (i == 0) {
-                        cdCardEntity = useCdCardEntities.get(i);
-                    }else {
-                        CdCardEntity currentCdCardEntity = useCdCardEntities.get(i);
-                        currentCdCardEntity.setUseStatus(UseStatus.UseStatus1.getKey());
-                    }
+            //修改卡
+            for (int i = 0; i < useCdCardEntities.size(); i++) {
+                if (i == 0) {
+                    cdCardEntity = useCdCardEntities.get(i);
+                }else {
+                    CdCardEntity currentCdCardEntity = useCdCardEntities.get(i);
+                    currentCdCardEntity.setUseStatus(UseStatus.UseStatus1.getKey());
                 }
-                cdCardService.updateBatchById(useCdCardEntities);
-            }else {
-                //修改当前卡为已使用
-                cdCardEntity = cdCardEntities.get(0);
-                cdCardEntity.setUseStatus(UseStatus.UseStatus2.getKey());
-                cdCardService.updateById(cdCardEntity);
             }
-
-            if (ObjectUtil.isNull(cdCardEntity)) {
-                return null;
-            }
-            //将当前手机上锁
-            CdCardLockEntity update = new CdCardLockEntity();
-            update.setId(cdCardLockEntity.getId());
-            update.setUserId(cdUserEntity.getId());
-            update.setProjectId(cdCardLock.getProjectId());
-            update.setDeviceId(cdCardLockEntity.getDeviceId());
-            update.setPhone(cdCardEntity.getPhone());
-            update.setLock(Lock.YES.getKey());
-            update.setIccid(cdCardEntity.getIccid());
-            update.setDeleteFlag(DeleteFlag.NO.getKey());
-            update.setCreateTime(DateUtil.date());
-            update.setPhoneGetTime(DateUtil.offsetMinute(DateUtil.date(),20));
-            this.updateById(update);
-            //通知客戶端修改卡
-            ChangeCardResponse taskDto = new ChangeCardResponse();
-            taskDto.setBoardIndexed(cdCardEntity.getBoardIndexed());
-            taskDto.setIndexed(cdCardEntity.getIndexed());
-            taskDto.setDeviceId(cdCardEntity.getIccid());
-            nettyChannelManager.send(cdCardLockEntity.getDeviceId(),new Invocation(ChangeCardResponse.TYPE, taskDto));
-            return new CdCardLockVO().setPhone(update.getPhone()).setIccid(update.getIccid());
+            cdCardService.updateBatchById(useCdCardEntities);
+        }else {
+            //修改当前卡为已使用
+            cdCardEntity = cdCardEntities.get(0);
+            cdCardEntity.setUseStatus(UseStatus.UseStatus2.getKey());
+            cdCardService.updateById(cdCardEntity);
         }
-        return null;
+
+        if (ObjectUtil.isNull(cdCardEntity)) {
+            return null;
+        }
+        //将当前手机上锁
+        CdCardLockEntity update = new CdCardLockEntity();
+        update.setId(cdCardLock.getId());
+        update.setUserId(cdUserEntity.getId());
+        update.setProjectId(cdCardLock.getProjectId());
+        update.setDeviceId(cdCardLock.getDeviceId());
+        update.setPhone(cdCardEntity.getPhone());
+        update.setLock(Lock.YES.getKey());
+        update.setIccid(cdCardEntity.getIccid());
+        update.setDeleteFlag(DeleteFlag.NO.getKey());
+        update.setCreateTime(DateUtil.date());
+        update.setPhoneGetTime(DateUtil.offsetMinute(DateUtil.date(),20));
+        if (ObjectUtil.isNotNull(projectWorkEntity) && CodeAcquisitionType.CodeAcquisitionType2.getKey().equals(projectWorkEntity.getCodeAcquisitionType())) {
+            update.setPhoneGetTime(DateUtil.offsetMinute(DateUtil.date(),projectWorkEntity.getInterval()));
+        }
+        this.updateById(update);
+        //通知客戶端修改卡
+        ChangeCardResponse taskDto = new ChangeCardResponse();
+        taskDto.setBoardIndexed(cdCardEntity.getBoardIndexed());
+        taskDto.setIndexed(cdCardEntity.getIndexed());
+        taskDto.setDeviceId(cdCardEntity.getIccid());
+        nettyChannelManager.send(cdCardLock.getDeviceId(),new Invocation(ChangeCardResponse.TYPE, taskDto));
+        return new CdCardLockVO().setPhone(update.getPhone()).setIccid(update.getIccid());
+
+
+        //获取设备
+//        List<CdCardLockEntity> list = this.list(new QueryWrapper<CdCardLockEntity>().lambda()
+//                .eq(StrUtil.isNotEmpty(deviceId),CdCardLockEntity::getDeviceId,deviceId)
+//        );
+//        //如果设备为空返回null
+//        if (CollUtil.isEmpty(list)) {
+//            return null;
+//        }
+//        //如果设备不在线，跳出循环
+//        for (CdCardLockEntity cdCardLockEntity : list) {
+//
+//        }
+//        return null;
     }
 
     @Override
@@ -618,6 +617,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
                     config.setUserId(bean.getUserId());
                     config.setCodeApiUrl(bean.getCodeApiUrl());
                     config.setPlatform(bean.getPlatform());
+                    config.setInterval(bean.getInterval());
                     config.setCodeAcquisitionType(bean.getCodeAcquisitionType());
                     if (ObjectUtil.isNull(bean.getPlatform())) {
                         config.setPlatform(1);

@@ -93,5 +93,20 @@ public class CdCardLockDTO extends PageParam implements Serializable {
 	 */
 	@ApiModelProperty(required=false,value="")
 	private Date phoneGetTime;
+	/**
+	 * 分组id
+	 */
+	@ApiModelProperty(required=false,value="")
+	private Integer groupId;
+	/**
+	 * online
+	 */
+	@ApiModelProperty(required=false,value="")
+	private Integer online;
+	/**
+	 * 分组id
+	 */
+	@ApiModelProperty(required=false,value="")
+	private Integer workType;
 
 }
