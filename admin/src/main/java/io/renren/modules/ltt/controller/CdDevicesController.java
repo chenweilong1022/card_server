@@ -13,6 +13,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.benmanes.caffeine.cache.Cache;
 import io.renren.common.utils.ConfigConstant;
+import io.renren.common.validator.Assert;
 import io.renren.modules.ltt.dto.CdCardLockDTO;
 import io.renren.modules.ltt.dto.CdDevicesInitDTO;
 import io.renren.modules.ltt.dto.CdDevicesUpdateAppDTO;
@@ -24,6 +25,7 @@ import io.renren.modules.ltt.firefox.Root;
 import io.renren.modules.ltt.service.CdCardLockService;
 import io.renren.modules.ltt.service.CdUserService;
 import io.renren.modules.sys.entity.ProjectWorkEntity;
+import io.renren.modules.sys.entity.SysConfigEntity;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -136,15 +138,42 @@ public class CdDevicesController {
         return R.data(true);
     }
 
+    @Resource(name = "caffeineCacheProjectWorkEntity")
+    private Cache<String, ProjectWorkEntity> caffeineCacheProjectWorkEntity;
+
     /**
-     * 手机号删除
+     * 火狐狸清空
      */
     @RequestMapping("/phoneDeleteAll2")
     @RequiresPermissions("ltt:cddevices:list")
-    public R phoneDeleteAll2(@RequestBody Integer[] ids){
-//        extracted();
+    public R phoneDeleteAll2(@RequestBody SysConfigEntity config){
+        //查询config
+        String cacheKey = String.format("%s_%s", ConfigConstant.PROJECT_WORK_KEY, config.getId());
+        ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(cacheKey);
+        Root phoneAddBatch = new Root("PhoneDeleteAll");
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = null;
+        try {
+            json = objectMapper.writeValueAsString(phoneAddBatch);
+        } catch (JsonProcessingException e) {
+            Assert.isTrue(true,e.getMessage());
+        }
+        String response = HttpUtil.post(projectWorkEntity.getCodeApiUrl(), json);
         return R.data(true);
     }
+
+//    private void extracted() {
+//        ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(ConfigConstant.PROJECT_WORK_KEY);
+//        Root phoneAddBatch = new Root("PhoneDeleteAll");
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        String json = null;
+//        try {
+//            json = objectMapper.writeValueAsString(phoneAddBatch);
+//        } catch (JsonProcessingException e) {
+//
+//        }
+//        String response = HttpUtil.post(projectWorkEntity.getCodeApiUrl(), json);
+//    }
 
     /**
      * 接码

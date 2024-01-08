@@ -48,8 +48,9 @@
         label="操作">
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="configAddOrUpdateHandle(scope.row.id,scope.row.groupName)">配置</el-button>
-          <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
+<!--          <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>-->
           <el-button type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
+          <el-button type="text" size="small" @click="clearFirefoxHandle(scope.row.id)">火狐狸清空</el-button>
           <el-button type="text" size="small" @click="generateStatistics(scope.row.id)">生成报表</el-button>
           <el-button type="text" size="small" @click="noCodeClearHandle(scope.row.id)">未回码清空</el-button>
         </template>
@@ -157,6 +158,35 @@
         this.configAddOrUpdateVisible = true
         this.$nextTick(() => {
           this.$refs.configAddOrUpdate.init(id,name)
+        })
+      },
+      // 清空火狐狸
+      clearFirefoxHandle (id) {
+        this.$confirm(`确定对[id=${id}]进行[${id ? '清空火狐狸' : '批量清空火狐狸'}]操作?`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$http({
+            url: this.$http.adornUrl('/ltt/cddevices/phoneDeleteAll2'),
+            method: 'post',
+            data: {
+              id:id
+            }
+          }).then(({data}) => {
+            if (data && data.code === 0) {
+              this.$message({
+                message: '操作成功',
+                type: 'success',
+                duration: 1500,
+                onClose: () => {
+                  this.getDataList()
+                }
+              })
+            } else {
+              this.$message.error(data.msg)
+            }
+          })
         })
       },
       // 删除

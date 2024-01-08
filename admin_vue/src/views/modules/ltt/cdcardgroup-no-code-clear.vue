@@ -17,8 +17,8 @@
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>
+      <el-button type="primary" @click="deleteHandle(2)">全部清空</el-button>
       <el-button type="primary" @click="dataFormSubmit(1)">未回码清空</el-button>
-      <el-button type="primary" @click="dataFormSubmit(2)">全部清空</el-button>
     </span>
   </el-dialog>
 </template>
@@ -74,6 +74,16 @@
         this.dataForm.id = id || 0
         this.visible = true
         this.getDataList();
+      },
+      // 删除
+      deleteHandle (type) {
+        this.$confirm(`确认全部清空吗，确认后不可恢复?`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.dataFormSubmit(type)
+        })
       },
       // 表单提交
       dataFormSubmit (type) {
