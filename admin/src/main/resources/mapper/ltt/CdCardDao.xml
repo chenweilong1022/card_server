@@ -35,5 +35,16 @@
             device_id
     </select>
 
+    <select id="groupByGroupId" resultType="io.renren.modules.ltt.vo.GroupByDeviceIdVO">
+        SELECT
+            d.group_id,
+            COUNT( DISTINCT CASE c.phone WHEN '无卡' THEN NULL WHEN '无信号' THEN NULL ELSE c.iccid END ) AS initSuccessNumber
+        FROM
+            cd_card c
+                LEFT JOIN cd_devices d ON c.device_id = d.iccid
+        GROUP BY
+            d.group_id
+    </select>
+
 
 </mapper>

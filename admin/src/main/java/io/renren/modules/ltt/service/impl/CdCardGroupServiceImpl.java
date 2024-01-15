@@ -7,12 +7,14 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.qiniu.util.Json;
 import io.renren.common.utils.ConfigConstant;
 import io.renren.datasources.annotation.Game;
+import io.renren.modules.ltt.dao.CdCardDao;
 import io.renren.modules.ltt.dto.CdCardLockDTO;
 import io.renren.modules.ltt.entity.CdUserEntity;
 import io.renren.modules.ltt.enums.CodeAcquisitionType;
 import io.renren.modules.ltt.service.CdCardLockService;
 import io.renren.modules.ltt.vo.CdCardLockVO;
 import io.renren.modules.ltt.vo.GetListByIdsVO;
+import io.renren.modules.ltt.vo.GroupByDeviceIdVO;
 import io.renren.modules.sys.entity.ProjectWorkEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,14 +46,34 @@ import java.util.stream.Collectors;
 @Slf4j
 public class CdCardGroupServiceImpl extends ServiceImpl<CdCardGroupDao, CdCardGroupEntity> implements CdCardGroupService {
 
+
+    @Resource(name = "caffeineCacheProjectWorkEntity")
+    private Cache<String, ProjectWorkEntity> caffeineCacheProjectWorkEntity;
+
+    @Autowired
+    private CdCardDao cdCardDao;
+
     @Override
     public PageUtils<CdCardGroupVO> queryPage(CdCardGroupDTO cdCardGroup) {
         IPage<CdCardGroupEntity> page = baseMapper.selectPage(
                 new Query<CdCardGroupEntity>(cdCardGroup).getPage(),
                 new QueryWrapper<CdCardGroupEntity>()
         );
-
-        return PageUtils.<CdCardGroupVO>page(page).setList(CdCardGroupConver.MAPPER.conver(page.getRecords()));
+        List<CdCardGroupVO> cardGroupVOS = CdCardGroupConver.MAPPER.conver(page.getRecords());
+        List<GroupByDeviceIdVO> groupByDeviceIdVOS = cdCardDao.groupByGroupId();
+        Map<Integer, GroupByDeviceIdVO> collect = groupByDeviceIdVOS.stream().collect(Collectors.toMap(GroupByDeviceIdVO::getGroupId, x -> x));
+        for (CdCardGroupVO cardGroupVO : cardGroupVOS) {
+            String cacheKey = String.format("%s_%s", ConfigConstant.PROJECT_WORK_KEY, cardGroupVO.getId());
+            ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(cacheKey);
+            if (ObjectUtil.isNotNull(projectWorkEntity)) {
+                cardGroupVO.setProjectWorkEntity(projectWorkEntity);
+            }
+            GroupByDeviceIdVO groupByDeviceIdVO = collect.get(cardGroupVO.getId());
+            if (ObjectUtil.isNotNull(groupByDeviceIdVO)) {
+                cardGroupVO.setGroupByDeviceIdVO(groupByDeviceIdVO);
+            }
+        }
+        return PageUtils.<CdCardGroupVO>page(page).setList(cardGroupVOS);
     }
     @Override
     public CdCardGroupVO getById(Integer id) {
@@ -85,8 +107,6 @@ public class CdCardGroupServiceImpl extends ServiceImpl<CdCardGroupDao, CdCardGr
     @Autowired
     private CdCardLockService cdCardLockService;
 
-    @Resource(name = "caffeineCacheProjectWorkEntity")
-    private Cache<String, ProjectWorkEntity> caffeineCacheProjectWorkEntity;
     @Override
     public CdCardLockVO getDeviceIdByProjectId(CdCardLockDTO cdCardLockDTO, CdUserEntity cdUserEntity) {
         List<GetListByIdsVO> getListByIdsVOS = cdCardLockService.getListByIds(null);

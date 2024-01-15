@@ -14,4 +14,6 @@ public class GroupByDeviceIdVO {
     private Integer initTotalNumber;
 
     private String deviceId;
+
+    private Integer groupId;
 }

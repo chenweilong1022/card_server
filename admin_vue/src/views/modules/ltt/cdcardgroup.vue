@@ -35,6 +35,33 @@
         label="分组名称">
       </el-table-column>
       <el-table-column
+        header-align="center"
+        align="center"
+        label="取码类型">
+        <template slot-scope="scope">
+          {{getTypeStr(scope.row.projectWorkEntity)}}
+        </template>
+      </el-table-column>
+
+      <el-table-column
+        header-align="center"
+        align="center"
+        label="账号">
+        <template slot-scope="scope">
+          {{getLabelStr(scope.row.projectWorkEntity)}}
+        </template>
+      </el-table-column>
+
+      <el-table-column
+        header-align="center"
+        align="center"
+        label="卡数量">
+        <template slot-scope="scope">
+          {{scope.row.groupByDeviceIdVO ? scope.row.groupByDeviceIdVO.initSuccessNumber : ""}}
+        </template>
+      </el-table-column>
+
+      <el-table-column
         prop="createTime"
         header-align="center"
         align="center"
@@ -82,6 +109,37 @@
         dataForm: {
           key: ''
         },
+        codeAcquisitionTypes: [
+          {
+            type: 1,
+            typeStr: "指定项目"
+          },
+          {
+            type: 2,
+            typeStr: "挂机模式"
+          },
+          {
+            type: 3,
+            typeStr: "自己注册"
+          }
+        ],
+        codeApiUrlDataListOptions: [
+          {
+            value: 1,
+            label: '挂机(76082377BDE44F99)',
+            url: 'https://www.firefox.fun/ksapi.ashx?key=76082377BDE44F99'
+          },
+          {
+            value: 2,
+            label: 'TG(A379FA5332B2FB70)',
+            url: 'https://www.firefox.fun/ksapi.ashx?key=A379FA5332B2FB70'
+          },
+          {
+            value: 3,
+            label: 'WS(2EEE96B60EA080A2)',
+            url: 'https://www.firefox.fun/ksapi.ashx?key=2EEE96B60EA080A2'
+          }
+        ],
         dataList: [],
         pageIndex: 1,
         pageSize: 10,
@@ -123,6 +181,28 @@
           }
           this.dataListLoading = false
         })
+      },
+      getLabelStr (entity) {
+        if (entity) {
+          for (let i = 0; i < this.codeApiUrlDataListOptions.length; i++) {
+            let codeApiUrlDataListOption = this.codeApiUrlDataListOptions[i]
+            if (entity.codeApiUrl === codeApiUrlDataListOption.url) {
+              return codeApiUrlDataListOption.label;
+            }
+          }
+        }
+        return "";
+      },
+      getTypeStr(entity) {
+        if (entity) {
+          for (let i = 0; i < this.codeAcquisitionTypes.length; i++) {
+            let codeAcquisitionType = this.codeAcquisitionTypes[i]
+            if (entity.codeAcquisitionType === codeAcquisitionType.type) {
+              return codeAcquisitionType.typeStr;
+            }
+          }
+        }
+        return "";
       },
       // 每页数
       sizeChangeHandle (val) {

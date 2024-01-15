@@ -18,7 +18,7 @@ import io.renren.common.utils.R;
 
 
 /**
- * 
+ *
  *
  * @author chenweilong
  * @email chenweilong@qq.com
@@ -37,7 +37,6 @@ public class CdCardGroupController {
     @RequiresPermissions("ltt:cdcardgroup:list")
     public R list(CdCardGroupDTO cdCardGroup){
         PageUtils page = cdCardGroupService.queryPage(cdCardGroup);
-
         return R.ok().put("page", page);
     }
 

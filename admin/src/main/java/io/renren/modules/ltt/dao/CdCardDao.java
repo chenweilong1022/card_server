@@ -18,4 +18,6 @@ import java.util.List;
 public interface CdCardDao extends BaseMapper<CdCardEntity> {
 
     List<GroupByDeviceIdVO> groupByDeviceId();
+
+    List<GroupByDeviceIdVO> groupByGroupId();
 }
