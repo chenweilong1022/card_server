@@ -15,7 +15,7 @@ import java.util.Date;
  *
  * @author chenweilong
  * @email chenweilong@qq.com
- * @date 2023-10-30 00:10:56
+ * @date 2024-01-16 17:38:19
  */
 @Data
 @TableName("cd_iccid_phone")
@@ -50,5 +50,15 @@ public class CdIccidPhoneVO implements Serializable {
 	 */
 	@ApiModelProperty(required=false,value="创建时间")
 	private Date createTime;
+	/**
+	 * 拨号信息
+	 */
+	@ApiModelProperty(required=false,value="拨号信息")
+	private String ussdMsg;
+	/**
+	 * 到期时间
+	 */
+	@ApiModelProperty(required=false,value="到期时间")
+	private Date expireTime;
 
 }

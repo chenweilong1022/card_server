@@ -10,6 +10,18 @@
     <el-form-item label="卡的iccid" prop="iccid">
       <el-input v-model="dataForm.iccid" placeholder="卡的iccid"></el-input>
     </el-form-item>
+    <el-form-item label="删除标志" prop="deleteFlag">
+      <el-input v-model="dataForm.deleteFlag" placeholder="删除标志"></el-input>
+    </el-form-item>
+    <el-form-item label="创建时间" prop="createTime">
+      <el-input v-model="dataForm.createTime" placeholder="创建时间"></el-input>
+    </el-form-item>
+    <el-form-item label="拨号信息" prop="ussdMsg">
+      <el-input v-model="dataForm.ussdMsg" placeholder="拨号信息"></el-input>
+    </el-form-item>
+    <el-form-item label="到期时间" prop="expireTime">
+      <el-input v-model="dataForm.expireTime" placeholder="到期时间"></el-input>
+    </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>
@@ -28,7 +40,9 @@
           phone: '',
           iccid: '',
           deleteFlag: '',
-          createTime: ''
+          createTime: '',
+          ussdMsg: '',
+          expireTime: ''
         },
         dataRule: {
           phone: [
@@ -42,6 +56,12 @@
           ],
           createTime: [
             { required: true, message: '创建时间不能为空', trigger: 'blur' }
+          ],
+          ussdMsg: [
+            { required: true, message: '拨号信息不能为空', trigger: 'blur' }
+          ],
+          expireTime: [
+            { required: true, message: '到期时间不能为空', trigger: 'blur' }
           ]
         }
       }
@@ -59,10 +79,12 @@
               params: this.$http.adornParams()
             }).then(({data}) => {
               if (data && data.code === 0) {
-                this.dataForm.phone = data.cdIccidPhone.phone
-                this.dataForm.iccid = data.cdIccidPhone.iccid
-                this.dataForm.deleteFlag = data.cdIccidPhone.deleteFlag
-                this.dataForm.createTime = data.cdIccidPhone.createTime
+                this.dataForm.phone = data.cdiccidphone.phone
+                this.dataForm.iccid = data.cdiccidphone.iccid
+                this.dataForm.deleteFlag = data.cdiccidphone.deleteFlag
+                this.dataForm.createTime = data.cdiccidphone.createTime
+                this.dataForm.ussdMsg = data.cdiccidphone.ussdMsg
+                this.dataForm.expireTime = data.cdiccidphone.expireTime
               }
             })
           }
@@ -80,7 +102,9 @@
                 'phone': this.dataForm.phone,
                 'iccid': this.dataForm.iccid,
                 'deleteFlag': this.dataForm.deleteFlag,
-                'createTime': this.dataForm.createTime
+                'createTime': this.dataForm.createTime,
+                'ussdMsg': this.dataForm.ussdMsg,
+                'expireTime': this.dataForm.expireTime
               })
             }).then(({data}) => {
               if (data && data.code === 0) {
