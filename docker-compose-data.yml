@@ -20,7 +20,7 @@ services:
     privileged: true
     command: redis-server --requirepass Jz123456
     volumes:
-      - /home/webfile/redis/home/redis:/data
+      - /Users/chenweilong/Desktop/data/redis/home/redis:/data
     ports:
       - "6379:6379"
   minio:

@@ -35,4 +35,9 @@ public class AppCdCardUpdateIccidDTO extends PageParam implements Serializable {
      */
     @ApiModelProperty(required=false,value="手机号")
     private String phone;
+    /**
+     * 到期时间
+     */
+    @ApiModelProperty(required=false,value="到期时间")
+    private String expireTimeStr;
 }

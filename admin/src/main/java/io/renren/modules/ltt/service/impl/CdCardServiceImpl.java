@@ -118,15 +118,20 @@ public class CdCardServiceImpl extends ServiceImpl<CdCardDao, CdCardEntity> impl
 //                .eq(CdCardEntity::getIndexed,iccidDTO.getIndexed())
 //        );
 //
-//        CdIccidPhoneEntity one = cdIccidPhoneService.getOne(new QueryWrapper<CdIccidPhoneEntity>().lambda()
-//                .eq(CdIccidPhoneEntity::getIccid,iccidDTO.getIccid())
-//        );
-//        if (ObjectUtil.isNull(one)) {
-//            CdIccidPhoneEntity save = new CdIccidPhoneEntity();
-//            save.setIccid(iccidDTO.getIccid());
-//            save.setPhone(iccidDTO.getPhone());
-//            cdIccidPhoneService.save(save);
-//        }
+        CdIccidPhoneEntity one = cdIccidPhoneService.getOne(new QueryWrapper<CdIccidPhoneEntity>().lambda()
+                .eq(CdIccidPhoneEntity::getPhone,iccidDTO.getPhone())
+        );
+        if (ObjectUtil.isNull(one)) {
+            CdIccidPhoneEntity save = new CdIccidPhoneEntity();
+            save.setIccid(iccidDTO.getIccid());
+            save.setPhone(iccidDTO.getPhone());
+            save.setUssdMsg(iccidDTO.getExpireTimeStr());
+            cdIccidPhoneService.save(save);
+        }else {
+            one.setIccid(iccidDTO.getIccid());
+            one.setUssdMsg(iccidDTO.getExpireTimeStr());
+            cdIccidPhoneService.updateById(one);
+        }
     }
 
     @Override
@@ -148,12 +153,15 @@ public class CdCardServiceImpl extends ServiceImpl<CdCardDao, CdCardEntity> impl
                 continue;
             }else if (s.contains("ussd")) {
                 continue;
+            }else if (s.contains("expireTime")) {
+                continue;
             }
             String[] rs = s.split("R");
             int boardIndexed = Integer.parseInt(rs[0], 10);
             int indexed = Integer.parseInt(rs[1], 16);
             String iccid = params.get(s);
             String phoneNumber = params.get(s + "phoneNumber");
+            String expireTimeStr = params.get(s + "expireTime");
 
             AppCdCardUpdateIccidDTO appCdCardUpdateIccidDTO = new AppCdCardUpdateIccidDTO();
             appCdCardUpdateIccidDTO.setDeviceId(deviceId);
@@ -165,6 +173,12 @@ public class CdCardServiceImpl extends ServiceImpl<CdCardDao, CdCardEntity> impl
             if (StrUtil.isNotEmpty(phoneNumber)) {
                 appCdCardUpdateIccidDTO.setPhone(phoneNumber);
             }
+            appCdCardUpdateIccidDTO.setExpireTimeStr("");
+            if (StrUtil.isNotEmpty(expireTimeStr)) {
+                appCdCardUpdateIccidDTO.setExpireTimeStr(expireTimeStr);
+            }
+            //上传iccid和手机号对应
+            this.uploadIccid(appCdCardUpdateIccidDTO);
             appCdCardUpdateIccidDTOS.add(appCdCardUpdateIccidDTO);
         }
         //上报的卡数据更新
