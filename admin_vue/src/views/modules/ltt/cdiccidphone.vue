@@ -5,9 +5,16 @@
         <el-input v-model="dataForm.key" placeholder="参数名" clearable></el-input>
       </el-form-item>
       <el-form-item>
+        <el-date-picker
+          v-model="dataForm.endTime"
+          type="date"
+          format="yyyy-MM-dd"
+          value-format="yyyy-MM-dd"
+          placeholder="时间"
+        />
+      </el-form-item>
+      <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button v-if="isAuth('ltt:cdiccidphone:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button v-if="isAuth('ltt:cdiccidphone:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -23,12 +30,6 @@
         width="50">
       </el-table-column>
       <el-table-column
-        prop="id"
-        header-align="center"
-        align="center"
-        label="主键">
-      </el-table-column>
-      <el-table-column
         prop="phone"
         header-align="center"
         align="center"
@@ -39,18 +40,6 @@
         header-align="center"
         align="center"
         label="卡的iccid">
-      </el-table-column>
-      <el-table-column
-        prop="deleteFlag"
-        header-align="center"
-        align="center"
-        label="删除标志">
-      </el-table-column>
-      <el-table-column
-        prop="createTime"
-        header-align="center"
-        align="center"
-        label="创建时间">
       </el-table-column>
       <el-table-column
         prop="ussdMsg"
@@ -96,7 +85,8 @@
     data () {
       return {
         dataForm: {
-          key: ''
+          key: '',
+          endTime: null
         },
         dataList: [],
         pageIndex: 1,
@@ -123,7 +113,8 @@
           params: this.$http.adornParams({
             'page': this.pageIndex,
             'limit': this.pageSize,
-            'key': this.dataForm.key
+            'key': this.dataForm.key,
+            'endTime': this.dataForm.endTime
           })
         }).then(({data}) => {
           if (data && data.code === 0) {

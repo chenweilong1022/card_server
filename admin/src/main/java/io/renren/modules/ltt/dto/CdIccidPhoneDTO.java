@@ -8,6 +8,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -61,5 +63,11 @@ public class CdIccidPhoneDTO extends PageParam implements Serializable {
 	 */
 	@ApiModelProperty(required=false,value="到期时间")
 	private Date expireTime;
+	/**
+	 * 结束时间
+	 */
+	@ApiModelProperty(required=false,value="结束时间")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date endTime;
 
 }

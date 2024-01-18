@@ -1,5 +1,6 @@
 package io.renren.modules.ltt.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
 import io.renren.datasources.annotation.Game;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -27,7 +28,9 @@ public class CdIccidPhoneServiceImpl extends ServiceImpl<CdIccidPhoneDao, CdIcci
     public PageUtils<CdIccidPhoneVO> queryPage(CdIccidPhoneDTO cdIccidPhone) {
         IPage<CdIccidPhoneEntity> page = baseMapper.selectPage(
                 new Query<CdIccidPhoneEntity>(cdIccidPhone).getPage(),
-                new QueryWrapper<CdIccidPhoneEntity>()
+                new QueryWrapper<CdIccidPhoneEntity>().lambda()
+                        .lt(ObjectUtil.isNotNull(cdIccidPhone.getEndTime()),CdIccidPhoneEntity::getExpireTime,cdIccidPhone.getEndTime())
+                        .orderByAsc(CdIccidPhoneEntity::getExpireTime)
         );
 
         return PageUtils.<CdIccidPhoneVO>page(page).setList(CdIccidPhoneConver.MAPPER.conver(page.getRecords()));
