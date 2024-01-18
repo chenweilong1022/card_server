@@ -42,8 +42,7 @@ public class ExpireTimeTask {
 
         List<CdIccidPhoneEntity> list = cdIccidPhoneService.list(new QueryWrapper<CdIccidPhoneEntity>().lambda()
                 .isNull(CdIccidPhoneEntity::getExpireTime)
-                .isNotNull(CdIccidPhoneEntity::getUssdMsg)
-                .last("limit 100")
+                .last("AND ussd_msg != '' limit 100")
         );
 
         if (CollUtil.isEmpty(list)) {
