@@ -1,7 +1,9 @@
 package io.renren.modules.ltt.controller;
 
+import java.io.IOException;
 import java.util.Arrays;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +17,7 @@ import io.renren.modules.ltt.service.CdIccidPhoneService;
 import io.renren.common.utils.PageUtils;
 import io.renren.common.utils.R;
 
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -39,6 +42,21 @@ public class CdIccidPhoneController {
         PageUtils page = cdIccidPhoneService.queryPage(cdIccidPhone);
 
         return R.ok().put("page", page);
+    }
+
+
+    /**
+     * 导出txt
+     */
+    @RequestMapping("/exportTxt")
+    @RequiresPermissions("ltt:cdiccidphone:list")
+    public void export(CdIccidPhoneDTO cdIccidPhone, HttpServletResponse response) throws IOException {
+        byte[] bytes = cdIccidPhoneService.export(cdIccidPhone);
+        response.reset();
+        response.setHeader("Content-Disposition", String.format("attachment; filename=\"%s.txt\"",java.net.URLEncoder.encode("充值","UTF-8")));
+        response.addHeader("Content-Length", "" + bytes.length);
+        response.setContentType("application/octet-stream; charset=UTF-8");
+        IOUtils.write(bytes, response.getOutputStream());
     }
 
 

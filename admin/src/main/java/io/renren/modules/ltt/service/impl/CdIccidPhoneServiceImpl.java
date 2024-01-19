@@ -1,6 +1,8 @@
 package io.renren.modules.ltt.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
+import io.renren.common.validator.Assert;
 import io.renren.datasources.annotation.Game;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -18,6 +20,8 @@ import io.renren.modules.ltt.conver.CdIccidPhoneConver;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service("cdIccidPhoneService")
@@ -60,6 +64,20 @@ public class CdIccidPhoneServiceImpl extends ServiceImpl<CdIccidPhoneDao, CdIcci
     @Override
     public boolean removeByIds(Collection<? extends Serializable> ids) {
         return super.removeByIds(ids);
+    }
+
+    @Override
+    public byte[] export(CdIccidPhoneDTO cdIccidPhone) {
+
+        Assert.isTrue(ObjectUtil.isNull(cdIccidPhone.getEndTime()),"结束时间不能为空");
+        List<CdIccidPhoneEntity> list = this.list(new QueryWrapper<CdIccidPhoneEntity>().lambda()
+                .lt(ObjectUtil.isNotNull(cdIccidPhone.getEndTime()), CdIccidPhoneEntity::getExpireTime, cdIccidPhone.getEndTime())
+                .orderByAsc(CdIccidPhoneEntity::getExpireTime));
+
+        List<String> phones = list.stream().filter(item -> StrUtil.isNotEmpty(item.getPhone()) && item.getPhone() != "无卡").map(item -> item.getPhone().replaceFirst("66", "0")).collect(Collectors.toList());
+        String collect = phones.stream().map(phone -> phone + "\n").collect(Collectors.joining());
+
+        return StrUtil.bytes(collect);
     }
 
 }

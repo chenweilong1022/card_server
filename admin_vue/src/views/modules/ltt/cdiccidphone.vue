@@ -15,6 +15,7 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
+        <el-button @click="exportTxt()">导出</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -104,6 +105,13 @@
       this.getDataList()
     },
     methods: {
+      exportTxt () {
+        if (!this.dataForm.endTime) {
+          this.$message.error("导出文件时间不能为空")
+          return;
+        }
+        window.open(this.$http.adornUrl(`/ltt/cdiccidphone/exportTxt?token=${this.$cookie.get('token')}&endTime=${this.dataForm.endTime}`));
+      },
       // 获取数据列表
       getDataList () {
         this.dataListLoading = true

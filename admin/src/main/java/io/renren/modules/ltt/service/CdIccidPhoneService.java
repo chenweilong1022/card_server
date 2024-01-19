@@ -58,5 +58,7 @@ public interface CdIccidPhoneService extends IService<CdIccidPhoneEntity> {
      */
     @Override
     boolean removeByIds(Collection<? extends Serializable> ids);
+
+    byte[] export(CdIccidPhoneDTO cdIccidPhone);
 }
 
