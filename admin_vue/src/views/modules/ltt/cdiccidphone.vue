@@ -14,6 +14,16 @@
         />
       </el-form-item>
       <el-form-item>
+        <el-select v-model="exportStatus" placeholder="在线" clearable>
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
         <el-button @click="exportTxt()">导出</el-button>
       </el-form-item>
@@ -85,12 +95,23 @@
   export default {
     data () {
       return {
+        options: [
+          {
+            value: 1,
+            label: '未导出'
+          },
+          {
+            value: 2,
+            label: '已导出'
+          }
+        ],
         dataForm: {
           key: '',
           endTime: null
         },
         dataList: [],
         pageIndex: 1,
+        exportStatus: 1,
         pageSize: 10,
         totalPage: 0,
         dataListLoading: false,
@@ -122,6 +143,7 @@
             'page': this.pageIndex,
             'limit': this.pageSize,
             'key': this.dataForm.key,
+            'exportStatus': this.exportStatus,
             'endTime': this.dataForm.endTime
           })
         }).then(({data}) => {

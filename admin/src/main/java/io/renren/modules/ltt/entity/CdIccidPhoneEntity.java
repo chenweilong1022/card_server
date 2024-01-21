@@ -47,6 +47,11 @@ public class CdIccidPhoneEntity implements Serializable {
 	@ApiModelProperty(required=false,value="删除标志")
 	private Integer deleteFlag;
 	/**
+	 * 导出状态
+	 */
+	@ApiModelProperty(required=false,value="导出状态")
+	private Integer exportStatus;
+	/**
 	 * 创建时间
 	 */
 	@ApiModelProperty(required=false,value="创建时间")

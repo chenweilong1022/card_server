@@ -4,6 +4,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import io.renren.common.validator.Assert;
 import io.renren.datasources.annotation.Game;
+import io.renren.modules.ltt.enums.ExportStatus;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -17,8 +18,10 @@ import io.renren.modules.ltt.dto.CdIccidPhoneDTO;
 import io.renren.modules.ltt.vo.CdIccidPhoneVO;
 import io.renren.modules.ltt.service.CdIccidPhoneService;
 import io.renren.modules.ltt.conver.CdIccidPhoneConver;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,6 +36,7 @@ public class CdIccidPhoneServiceImpl extends ServiceImpl<CdIccidPhoneDao, CdIcci
         IPage<CdIccidPhoneEntity> page = baseMapper.selectPage(
                 new Query<CdIccidPhoneEntity>(cdIccidPhone).getPage(),
                 new QueryWrapper<CdIccidPhoneEntity>().lambda()
+                        .eq(ObjectUtil.isNotNull(cdIccidPhone.getExportStatus()),CdIccidPhoneEntity::getExportStatus,cdIccidPhone.getExportStatus())
                         .lt(ObjectUtil.isNotNull(cdIccidPhone.getEndTime()),CdIccidPhoneEntity::getExpireTime,cdIccidPhone.getEndTime())
                         .orderByAsc(CdIccidPhoneEntity::getExpireTime)
         );
@@ -67,16 +71,26 @@ public class CdIccidPhoneServiceImpl extends ServiceImpl<CdIccidPhoneDao, CdIcci
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public byte[] export(CdIccidPhoneDTO cdIccidPhone) {
 
         Assert.isTrue(ObjectUtil.isNull(cdIccidPhone.getEndTime()),"结束时间不能为空");
         List<CdIccidPhoneEntity> list = this.list(new QueryWrapper<CdIccidPhoneEntity>().lambda()
+                .eq(ObjectUtil.isNotNull(cdIccidPhone.getExportStatus()),CdIccidPhoneEntity::getExportStatus,cdIccidPhone.getExportStatus())
                 .lt(ObjectUtil.isNotNull(cdIccidPhone.getEndTime()), CdIccidPhoneEntity::getExpireTime, cdIccidPhone.getEndTime())
-                .orderByAsc(CdIccidPhoneEntity::getExpireTime));
+                .orderByAsc(CdIccidPhoneEntity::getExpireTime)
+        );
 
+        List<CdIccidPhoneEntity> updates = new ArrayList<>();
+        for (CdIccidPhoneEntity cdIccidPhoneEntity : list) {
+            CdIccidPhoneEntity update = new CdIccidPhoneEntity();
+            update.setId(cdIccidPhoneEntity.getId());
+            update.setExportStatus(ExportStatus.ExportStatus2.getKey());
+            updates.add(update);
+        }
+        this.updateBatchById(updates);
         List<String> phones = list.stream().filter(item -> StrUtil.isNotEmpty(item.getPhone()) && item.getPhone() != "无卡").map(item -> item.getPhone().replaceFirst("66", "0")).collect(Collectors.toList());
         String collect = phones.stream().map(phone -> phone + "\n").collect(Collectors.joining());
-
         return StrUtil.bytes(collect);
     }
 
