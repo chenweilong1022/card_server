@@ -28,7 +28,13 @@ public class DateThParse {
             }
         }
         if (yearIndex > -1 && monthIndex > -1 && dayIndex > -1) {
-            int i = Integer.parseInt(all.get(yearIndex)) - 543;
+            int i1 = Integer.parseInt(all.get(yearIndex));
+            int i = 2023;
+            if(i1 <= 2025) {
+                i = i1;
+            }else {
+                i = i1 - 543;
+            }
             String format = String.format("%s-%s-%s",String.valueOf(i), all.get(monthIndex), all.get(dayIndex));
             return DateUtil.parseDate(format);
         }
