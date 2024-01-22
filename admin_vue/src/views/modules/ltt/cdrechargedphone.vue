@@ -5,39 +5,9 @@
         <el-input v-model="dataForm.key" placeholder="参数名" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-date-picker
-          v-model="dataForm.endTime"
-          type="date"
-          format="yyyy-MM-dd"
-          value-format="yyyy-MM-dd"
-          placeholder="时间"
-        />
-      </el-form-item>
-      <el-form-item>
-        <el-select v-model="exportStatus" placeholder="导出状态" clearable>
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-          </el-option>
-        </el-select>
-      </el-form-item>
-
-      <el-form-item>
-        <el-select v-model="expireTimeStatus" placeholder="时间筛选" clearable>
-          <el-option
-            v-for="item in options1"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-          </el-option>
-        </el-select>
-      </el-form-item>
-
-      <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button @click="exportTxt()">导出</el-button>
+        <el-button v-if="isAuth('ltt:cdrechargedphone:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button v-if="isAuth('ltt:cdrechargedphone:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -53,28 +23,28 @@
         width="50">
       </el-table-column>
       <el-table-column
+        prop="id"
+        header-align="center"
+        align="center"
+        label="主键">
+      </el-table-column>
+      <el-table-column
         prop="phone"
         header-align="center"
         align="center"
         label="手机号">
       </el-table-column>
       <el-table-column
-        prop="iccid"
+        prop="deleteFlag"
         header-align="center"
         align="center"
-        label="卡的iccid">
+        label="删除标志">
       </el-table-column>
       <el-table-column
-        prop="ussdMsg"
+        prop="createTime"
         header-align="center"
         align="center"
-        label="拨号信息">
-      </el-table-column>
-      <el-table-column
-        prop="expireTime"
-        header-align="center"
-        align="center"
-        label="到期时间">
+        label="创建时间">
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -103,38 +73,15 @@
 </template>
 
 <script>
-  import AddOrUpdate from './cdiccidphone-add-or-update'
+  import AddOrUpdate from './cdrechargedphone-add-or-update'
   export default {
     data () {
       return {
-        options: [
-          {
-            value: 1,
-            label: '未导出'
-          },
-          {
-            value: 2,
-            label: '已导出'
-          }
-        ],
-        options1: [
-          {
-            value: 1,
-            label: '有时间'
-          },
-          {
-            value: 2,
-            label: '没有时间'
-          }
-        ],
         dataForm: {
-          key: '',
-          endTime: null
+          key: ''
         },
         dataList: [],
         pageIndex: 1,
-        exportStatus: 1,
-        expireTimeStatus: 1,
         pageSize: 10,
         totalPage: 0,
         dataListLoading: false,
@@ -149,28 +96,16 @@
       this.getDataList()
     },
     methods: {
-      exportTxt () {
-        if (!this.dataForm.endTime) {
-          if (1 === this.expireTimeStatus) {
-            this.$message.error("导出文件时间不能为空")
-            return;
-          }
-        }
-        window.open(this.$http.adornUrl(`/ltt/cdiccidphone/exportTxt?token=${this.$cookie.get('token')}&endTime=${this.dataForm.endTime ? this.dataForm.endTime : ''}&expireTimeStatus=${this.expireTimeStatus}`));
-      },
       // 获取数据列表
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/ltt/cdiccidphone/list'),
+          url: this.$http.adornUrl('/ltt/cdrechargedphone/list'),
           method: 'get',
           params: this.$http.adornParams({
             'page': this.pageIndex,
             'limit': this.pageSize,
-            'key': this.dataForm.key,
-            'exportStatus': this.exportStatus,
-            'expireTimeStatus': this.expireTimeStatus,
-            'endTime': this.dataForm.endTime
+            'key': this.dataForm.key
           })
         }).then(({data}) => {
           if (data && data.code === 0) {
@@ -216,7 +151,7 @@
           type: 'warning'
         }).then(() => {
           this.$http({
-            url: this.$http.adornUrl('/ltt/cdiccidphone/delete'),
+            url: this.$http.adornUrl('/ltt/cdrechargedphone/delete'),
             method: 'post',
             data: this.$http.adornData(ids, false)
           }).then(({data}) => {

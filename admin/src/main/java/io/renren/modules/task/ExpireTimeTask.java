@@ -2,6 +2,7 @@ package io.renren.modules.task;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.QueryChainWrapper;
@@ -53,6 +54,9 @@ public class ExpireTimeTask {
             if (StrUtil.isNotEmpty(cdIccidPhoneEntity.getUssdMsg())) {
                 DateTime parse = DateThParse.parse(cdIccidPhoneEntity.getUssdMsg());
                 cdIccidPhoneEntity.setExpireTime(parse);
+                if (ObjectUtil.isNull(parse)) {
+                    cdIccidPhoneEntity.setUssdMsg("");
+                }
             }
         }
         cdIccidPhoneService.updateBatchById(list);

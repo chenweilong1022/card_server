@@ -589,6 +589,22 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
 
     @Autowired
     private CdCardGroupService cdCardGroupService;
+    @Autowired
+    private CdRechargedPhoneService cdRechargedPhoneService;
+    @Resource(name = "caffeineCacheSet")
+    private Cache<String, HashSet<String>> caffeineCacheSet;
+
+    //缓存所有已经充值过的手机号
+    @EventListener
+    @Order(value = 9998)
+    public void handlerApplicationReadyEvent1(ApplicationReadyEvent event) {
+        List<CdRechargedPhoneEntity> list = cdRechargedPhoneService.list();
+        HashSet<String> hashSet = new HashSet<>(60000);
+        for (CdRechargedPhoneEntity cdRechargedPhoneEntity : list) {
+            hashSet.add(cdRechargedPhoneEntity.getPhone());
+        }
+        caffeineCacheSet.put("caffeineCacheSet",hashSet);
+    }
 
     @EventListener
     @Order(value = 9999)

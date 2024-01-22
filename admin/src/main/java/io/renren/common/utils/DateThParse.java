@@ -1,5 +1,6 @@
 package io.renren.common.utils;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.PatternPool;
@@ -15,7 +16,9 @@ import java.util.List;
 public class DateThParse {
     public static DateTime parse(String dateStr) {
         List<String> all = ReUtil.findAll(PatternPool.NUMBERS, dateStr, 0);
-
+        if(CollUtil.isEmpty(all) || all.size() < 3) {
+            return null;
+        }
         int yearIndex = -1;
         int monthIndex = -1;
         int dayIndex = -1;

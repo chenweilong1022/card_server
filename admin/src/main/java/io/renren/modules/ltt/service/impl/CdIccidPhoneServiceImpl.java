@@ -2,8 +2,11 @@ package io.renren.modules.ltt.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.github.benmanes.caffeine.cache.Cache;
 import io.renren.common.validator.Assert;
 import io.renren.datasources.annotation.Game;
+import io.renren.modules.ltt.enums.ExpireTimeStatus;
 import io.renren.modules.ltt.enums.ExportStatus;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -20,9 +23,11 @@ import io.renren.modules.ltt.service.CdIccidPhoneService;
 import io.renren.modules.ltt.conver.CdIccidPhoneConver;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,12 +38,20 @@ public class CdIccidPhoneServiceImpl extends ServiceImpl<CdIccidPhoneDao, CdIcci
 
     @Override
     public PageUtils<CdIccidPhoneVO> queryPage(CdIccidPhoneDTO cdIccidPhone) {
+
+        LambdaQueryWrapper<CdIccidPhoneEntity> cdIccidPhoneEntityLambdaQueryWrapper = new QueryWrapper<CdIccidPhoneEntity>().lambda()
+                .eq(ObjectUtil.isNotNull(cdIccidPhone.getExportStatus()), CdIccidPhoneEntity::getExportStatus, cdIccidPhone.getExportStatus())
+                .lt(ObjectUtil.isNotNull(cdIccidPhone.getEndTime()), CdIccidPhoneEntity::getExpireTime, cdIccidPhone.getEndTime())
+                .orderByAsc(CdIccidPhoneEntity::getExpireTime);
+        //如果是没有时间查询没有时间的
+        if (ExpireTimeStatus.NO.getKey().equals(cdIccidPhone.getExpireTimeStatus())) {
+            cdIccidPhoneEntityLambdaQueryWrapper.isNull(CdIccidPhoneEntity::getExpireTime);
+        } else if (ExpireTimeStatus.YES.getKey().equals(cdIccidPhone.getExpireTimeStatus())) {
+            cdIccidPhoneEntityLambdaQueryWrapper.isNotNull(CdIccidPhoneEntity::getExpireTime);
+        }
         IPage<CdIccidPhoneEntity> page = baseMapper.selectPage(
                 new Query<CdIccidPhoneEntity>(cdIccidPhone).getPage(),
-                new QueryWrapper<CdIccidPhoneEntity>().lambda()
-                        .eq(ObjectUtil.isNotNull(cdIccidPhone.getExportStatus()),CdIccidPhoneEntity::getExportStatus,cdIccidPhone.getExportStatus())
-                        .lt(ObjectUtil.isNotNull(cdIccidPhone.getEndTime()),CdIccidPhoneEntity::getExpireTime,cdIccidPhone.getEndTime())
-                        .orderByAsc(CdIccidPhoneEntity::getExpireTime)
+                cdIccidPhoneEntityLambdaQueryWrapper
         );
 
         return PageUtils.<CdIccidPhoneVO>page(page).setList(CdIccidPhoneConver.MAPPER.conver(page.getRecords()));
@@ -70,16 +83,27 @@ public class CdIccidPhoneServiceImpl extends ServiceImpl<CdIccidPhoneDao, CdIcci
         return super.removeByIds(ids);
     }
 
+
+    @Resource(name = "caffeineCacheSet")
+    private Cache<String, HashSet<String>> caffeineCacheSet;
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public byte[] export(CdIccidPhoneDTO cdIccidPhone) {
-
-        Assert.isTrue(ObjectUtil.isNull(cdIccidPhone.getEndTime()),"结束时间不能为空");
-        List<CdIccidPhoneEntity> list = this.list(new QueryWrapper<CdIccidPhoneEntity>().lambda()
-                .eq(ObjectUtil.isNotNull(cdIccidPhone.getExportStatus()),CdIccidPhoneEntity::getExportStatus,cdIccidPhone.getExportStatus())
+        if (ExpireTimeStatus.YES.getKey().equals(cdIccidPhone.getExpireTimeStatus())) {
+            Assert.isTrue(ObjectUtil.isNull(cdIccidPhone.getEndTime()),"结束时间不能为空");
+        }
+        LambdaQueryWrapper<CdIccidPhoneEntity> cdIccidPhoneEntityLambdaQueryWrapper = new QueryWrapper<CdIccidPhoneEntity>().lambda()
+                .eq(ObjectUtil.isNotNull(cdIccidPhone.getExportStatus()), CdIccidPhoneEntity::getExportStatus, cdIccidPhone.getExportStatus())
                 .lt(ObjectUtil.isNotNull(cdIccidPhone.getEndTime()), CdIccidPhoneEntity::getExpireTime, cdIccidPhone.getEndTime())
-                .orderByAsc(CdIccidPhoneEntity::getExpireTime)
-        );
+                .orderByAsc(CdIccidPhoneEntity::getExpireTime);
+        //如果是没有时间查询没有时间的
+        if (ExpireTimeStatus.NO.getKey().equals(cdIccidPhone.getExpireTimeStatus())) {
+            cdIccidPhoneEntityLambdaQueryWrapper.isNull(CdIccidPhoneEntity::getExpireTime);
+        } else if (ExpireTimeStatus.YES.getKey().equals(cdIccidPhone.getExpireTimeStatus())) {
+            cdIccidPhoneEntityLambdaQueryWrapper.isNotNull(CdIccidPhoneEntity::getExpireTime);
+        }
+        List<CdIccidPhoneEntity> list = this.list(cdIccidPhoneEntityLambdaQueryWrapper);
 
         List<CdIccidPhoneEntity> updates = new ArrayList<>();
         for (CdIccidPhoneEntity cdIccidPhoneEntity : list) {
@@ -88,10 +112,25 @@ public class CdIccidPhoneServiceImpl extends ServiceImpl<CdIccidPhoneDao, CdIcci
             update.setExportStatus(ExportStatus.ExportStatus2.getKey());
             updates.add(update);
         }
+
         this.updateBatchById(updates);
-        List<String> phones = list.stream().filter(item -> StrUtil.isNotEmpty(item.getPhone()) && item.getPhone() != "无卡").map(item -> item.getPhone().replaceFirst("66", "0")).collect(Collectors.toList());
-        String collect = phones.stream().map(phone -> phone + "\n").collect(Collectors.joining());
+        List<String> exportList = new ArrayList<>();
+        //剔除已经充值过的手机号
+        extracted(list, exportList);
+        String collect = exportList.stream().map(phone -> phone + "\n").collect(Collectors.joining());
         return StrUtil.bytes(collect);
+    }
+
+    private void extracted(List<CdIccidPhoneEntity> list, List<String> exportList) {
+        List<String> phones = list.stream().filter(item -> StrUtil.isNotEmpty(item.getPhone()) && item.getPhone() != "无卡").map(item -> item.getPhone().replaceFirst("66", "0")).collect(Collectors.toList());
+        HashSet<String> cacheSet = caffeineCacheSet.getIfPresent("caffeineCacheSet");
+        for (String phone : phones) {
+            String newPhone = phone.replaceFirst("0", "");
+            boolean contains = cacheSet.contains(newPhone);
+            if (!contains) {
+                exportList.add(phone);
+            }
+        }
     }
 
 }
