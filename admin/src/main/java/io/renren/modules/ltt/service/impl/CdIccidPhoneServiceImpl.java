@@ -103,6 +103,7 @@ public class CdIccidPhoneServiceImpl extends ServiceImpl<CdIccidPhoneDao, CdIcci
         } else if (ExpireTimeStatus.YES.getKey().equals(cdIccidPhone.getExpireTimeStatus())) {
             cdIccidPhoneEntityLambdaQueryWrapper.isNotNull(CdIccidPhoneEntity::getExpireTime);
         }
+
         List<CdIccidPhoneEntity> list = this.list(cdIccidPhoneEntityLambdaQueryWrapper);
 
         List<CdIccidPhoneEntity> updates = new ArrayList<>();

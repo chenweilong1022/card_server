@@ -156,7 +156,7 @@
             return;
           }
         }
-        window.open(this.$http.adornUrl(`/ltt/cdiccidphone/exportTxt?token=${this.$cookie.get('token')}&endTime=${this.dataForm.endTime ? this.dataForm.endTime : ''}&expireTimeStatus=${this.expireTimeStatus}`));
+        window.open(this.$http.adornUrl(`/ltt/cdiccidphone/exportTxt?exportStatus=${this.exportStatus}&token=${this.$cookie.get('token')}&endTime=${this.dataForm.endTime ? this.dataForm.endTime : ''}&expireTimeStatus=${this.expireTimeStatus}`));
       },
       // 获取数据列表
       getDataList () {

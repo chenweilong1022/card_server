@@ -104,7 +104,7 @@ public class SysConfigController extends AbstractController {
 			configNew.setPlatform(p2.getPlatform());
 			configNew.setPhonePre(p2.getPhonePre());
 			configNew.setCodeApiUrl(p2.getCodeApiUrl());
-			config.setInterval(projectWorkEntity.getInterval());
+			configNew.setInterval(p2.getInterval());
 			configNew.setCodeAcquisitionType(p2.getCodeAcquisitionType());
 			configNew.setType(2);
 			configNew.setKey(cacheKey);
