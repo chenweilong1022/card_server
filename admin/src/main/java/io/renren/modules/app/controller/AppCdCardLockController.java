@@ -1,5 +1,6 @@
 package io.renren.modules.app.controller;
 
+import cn.hutool.core.util.StrUtil;
 import io.renren.common.utils.PageUtils;
 import io.renren.common.utils.R;
 import io.renren.modules.app.annotation.Login;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -95,7 +98,21 @@ public class AppCdCardLockController extends AbstractController {
     @RequestMapping("/getSms")
     @Login
     public R getSms(@RequestBody CdCardLockDTO cdCardLock){
-        return R.data(cdCardLockService.getSms(cdCardLock,this.cdUserEntity));
+        String sms = cdCardLockService.getSms(cdCardLock, this.cdUserEntity);
+        if (StrUtil.isEmpty(sms)) {
+            return R.error("等待验证码");
+        }
+        return R.data(extractVerificationCode(sms));
+    }
+
+    public String extractVerificationCode(String smsText) {
+        // 使用正则表达式匹配短信内容中的验证码
+        Pattern pattern = Pattern.compile("\\d{6}"); // 此处使用六位数字作为验证码的示例
+        Matcher matcher = pattern.matcher(smsText);
+        if (matcher.find()) {
+            return matcher.group();
+        }
+        return null;
     }
 
     /**
