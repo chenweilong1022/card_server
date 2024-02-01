@@ -38,6 +38,7 @@
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
         <el-button @click="exportTxt()">导出</el-button>
+        <el-button @click="refreshPhoneHandler()">更新手机号</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -181,6 +182,19 @@
             this.totalPage = 0
           }
           this.dataListLoading = false
+        })
+      },
+      // 获取数据列表
+      refreshPhoneHandler () {
+        this.$http({
+          url: this.$http.adornUrl('/ltt/cdiccidphone/refreshPhone'),
+          method: 'get'
+        }).then(({data}) => {
+          this.$message({
+            message: '操作成功',
+            type: 'success',
+            duration: 1500
+          })
         })
       },
       // 每页数

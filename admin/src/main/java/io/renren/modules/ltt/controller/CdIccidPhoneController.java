@@ -2,7 +2,12 @@ package io.renren.modules.ltt.controller;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import io.renren.modules.ltt.entity.CdRechargedPhoneEntity;
+import io.renren.modules.ltt.service.CdRechargedPhoneService;
 import org.apache.commons.io.IOUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +22,7 @@ import io.renren.modules.ltt.service.CdIccidPhoneService;
 import io.renren.common.utils.PageUtils;
 import io.renren.common.utils.R;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
 
@@ -42,6 +48,26 @@ public class CdIccidPhoneController {
         PageUtils page = cdIccidPhoneService.queryPage(cdIccidPhone);
 
         return R.ok().put("page", page);
+    }
+
+
+    @Autowired
+    private CdRechargedPhoneService cdRechargedPhoneService;
+    @Resource(name = "caffeineCacheSet")
+    private Cache<String, HashSet<String>> caffeineCacheSet;
+    /**
+     * 列表
+     */
+    @RequestMapping("/refreshPhone")
+    @RequiresPermissions("ltt:cdiccidphone:list")
+    public R refreshPhone(){
+        List<CdRechargedPhoneEntity> list = cdRechargedPhoneService.list();
+        HashSet<String> hashSet = new HashSet<>(60000);
+        for (CdRechargedPhoneEntity cdRechargedPhoneEntity : list) {
+            hashSet.add(cdRechargedPhoneEntity.getPhone());
+        }
+        caffeineCacheSet.put("caffeineCacheSet",hashSet);
+        return R.ok();
     }
 
 
