@@ -3,6 +3,8 @@ package io.renren.config;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import io.renren.modules.app.dto.TaskDto;
+import io.renren.modules.ltt.entity.CdProjectEntity;
+import io.renren.modules.ltt.vo.CdProjectVO;
 import io.renren.modules.ltt.vo.UpdateAppVO;
 import io.renren.modules.netty.message.heartbeat.HeartbeatRequest;
 import io.renren.modules.sys.entity.ProjectWorkEntity;
@@ -68,6 +70,18 @@ public class CacheConfig {
 
     @Bean(value = "caffeineCacheSet")
     public Cache<String, HashSet<String>> caffeineCacheSet() {
+        return Caffeine.newBuilder()
+                // 设置最后一次写入或访问后两个小时后过期
+                .expireAfterWrite(7200, TimeUnit.DAYS)
+                // 初始的缓存空间大小
+                .initialCapacity(100)
+                // 缓存的最大条数
+                .maximumSize(1000)
+                .build();
+    }
+
+    @Bean(value = "cdProjectListVOCache")
+    public Cache<String, List<CdProjectEntity>> cdProjectListVOCache() {
         return Caffeine.newBuilder()
                 // 设置最后一次写入或访问后两个小时后过期
                 .expireAfterWrite(7200, TimeUnit.DAYS)

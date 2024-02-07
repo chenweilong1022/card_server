@@ -1,8 +1,10 @@
 package io.renren.modules.ltt.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import com.github.benmanes.caffeine.cache.Cache;
 import io.renren.datasources.annotation.Game;
 import io.renren.modules.ltt.entity.CdCountryEntity;
 import io.renren.modules.ltt.enums.AuditStatus;
@@ -24,6 +26,7 @@ import io.renren.modules.ltt.service.CdProjectService;
 import io.renren.modules.ltt.conver.CdProjectConver;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -68,6 +71,19 @@ public class CdProjectServiceImpl extends ServiceImpl<CdProjectDao, CdProjectEnt
     @Override
     public CdProjectVO getById(Integer id) {
         return CdProjectConver.MAPPER.conver(baseMapper.selectById(id));
+    }
+
+    @Resource(name = "cdProjectListVOCache")
+    private Cache<String, List<CdProjectEntity>> cdProjectListVOCache;
+
+    @Override
+    public List<CdProjectEntity> listByCache() {
+        List<CdProjectEntity> c = cdProjectListVOCache.getIfPresent("c");
+        if (CollUtil.isEmpty(c)) {
+            c = this.list();
+            cdProjectListVOCache.put("c",c);
+        }
+        return c;
     }
 
     @Override

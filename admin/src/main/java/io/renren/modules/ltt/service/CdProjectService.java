@@ -8,6 +8,7 @@ import io.renren.modules.ltt.entity.CdProjectEntity;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 
 
 /**
@@ -31,6 +32,12 @@ public interface CdProjectService extends IService<CdProjectEntity> {
      * @return
      */
     CdProjectVO getById(Integer id);
+    /**
+     * 根据id查询
+     * @param
+     * @return
+     */
+    List<CdProjectEntity> listByCache();
     /**
      * 保存
      * @param cdProject

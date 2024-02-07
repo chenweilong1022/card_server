@@ -556,7 +556,7 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
         CdProjectSmsRecordEntity cdProjectSmsRecordEntity = new CdProjectSmsRecordEntity();
         cdProjectSmsRecordEntity.setKey(key);
         cdProjectSmsRecordEntity.setCode(cdCardLock.getCode());
-        List<CdProjectEntity> list = cdProjectService.list();
+        List<CdProjectEntity> list = cdProjectService.listByCache();
         //补充projectID
         if (CollUtil.isNotEmpty(list)) {
             for (CdProjectEntity cdProjectEntity : list) {
