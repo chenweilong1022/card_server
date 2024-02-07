@@ -102,17 +102,17 @@
           {
             value: 1,
             label: '挂机(76082377BDE44F99)',
-            url: 'https://www.firefox.fun/ksapi.ashx?key=76082377BDE44F99'
+            url: 'https://ks.firefox.fun/ksapi.ashx?key=76082377BDE44F99'
           },
           {
             value: 2,
             label: 'TG(A379FA5332B2FB70)',
-            url: 'https://www.firefox.fun/ksapi.ashx?key=A379FA5332B2FB70'
+            url: 'https://ks.firefox.fun/ksapi.ashx?key=A379FA5332B2FB70'
           },
           {
             value: 3,
             label: 'WS(2EEE96B60EA080A2)',
-            url: 'https://www.firefox.fun/ksapi.ashx?key=2EEE96B60EA080A2'
+            url: 'https://ks.firefox.fun/ksapi.ashx?key=2EEE96B60EA080A2'
           }
         ],
         codeAcquisitionTypeOptions: [
@@ -133,7 +133,7 @@
           {
             value: 1,
             label: '火狐狸',
-            url: 'https://www.firefox.fun/ksapi.ashx?key=76082377BDE44F99'
+            url: 'https://ks.firefox.fun/ksapi.ashx?key=76082377BDE44F99'
           },
           {
             value: 2,
