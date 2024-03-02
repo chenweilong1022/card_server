@@ -17,7 +17,7 @@ import java.util.List;
 public class PhoneUtils {
     public static void main(String[] args) {
 
-        ExcelReader reader = ExcelUtil.getReader("/Users/chenweilong/Downloads/TRUE  27884_副本.xlsx");
+        ExcelReader reader = ExcelUtil.getReader("/Users/chenweilong/Downloads/TRUE- 12433.xlsx");
 
 
         List<String> sqls = new ArrayList<>();
@@ -35,7 +35,7 @@ public class PhoneUtils {
         }
 
 
-        FileUtil.writeLines(sqls,"/Users/chenweilong/Desktop/java代码/card_server/admin/sql/phone3.txt","UTF-8");
+        FileUtil.writeLines(sqls,"/Users/chenweilong/Desktop/java代码/card_server/admin/sql/phone4.txt","UTF-8");
 
     }
 }

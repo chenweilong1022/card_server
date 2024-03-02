@@ -80,6 +80,7 @@
           <el-button type="text" size="small" @click="clearFirefoxHandle(scope.row.id)">火狐狸清空</el-button>
           <el-button type="text" size="small" @click="generateStatistics(scope.row.id)">生成报表</el-button>
           <el-button type="text" size="small" @click="noCodeClearHandle(scope.row.id)">未回码清空</el-button>
+          <el-button type="text" size="small" @click="exportPhoneHandler(scope.row.id)">手机号导出</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -225,6 +226,9 @@
         this.$nextTick(() => {
           this.$refs.addOrUpdate.init(id)
         })
+      },
+      exportPhoneHandler (id) {
+        window.open(this.$http.adornUrl(`/ltt/cdcardgroup/exportPhoneTxt?id=${id}&token=${this.$cookie.get('token')}`));
       },
       // 新增 / 修改
       noCodeClearHandle (id) {

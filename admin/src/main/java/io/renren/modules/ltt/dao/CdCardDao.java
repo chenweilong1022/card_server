@@ -4,6 +4,7 @@ import io.renren.modules.ltt.entity.CdCardEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import io.renren.modules.ltt.vo.GroupByDeviceIdVO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -20,4 +21,6 @@ public interface CdCardDao extends BaseMapper<CdCardEntity> {
     List<GroupByDeviceIdVO> groupByDeviceId();
 
     List<GroupByDeviceIdVO> groupByGroupId();
+
+    List<String> listPhoneByGroupId(@Param("groupId") Integer groupId);
 }

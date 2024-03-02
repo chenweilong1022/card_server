@@ -46,5 +46,15 @@
             d.group_id
     </select>
 
+    <select id="listPhoneByGroupId" resultType="java.lang.String">
+        SELECT
+            c.phone
+        FROM
+            cd_card c
+                LEFT JOIN cd_devices d ON c.device_id = d.iccid
+        WHERE
+            d.group_id = #{groupId}
+    </select>
+
 
 </mapper>

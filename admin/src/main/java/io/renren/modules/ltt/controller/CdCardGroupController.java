@@ -1,7 +1,11 @@
 package io.renren.modules.ltt.controller;
 
+import java.io.IOException;
 import java.util.Arrays;
 
+import io.renren.modules.ltt.dto.CdCardGroupExportPhoneTxtDTO;
+import io.renren.modules.ltt.dto.CdIccidPhoneDTO;
+import org.apache.commons.io.IOUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +19,7 @@ import io.renren.modules.ltt.service.CdCardGroupService;
 import io.renren.common.utils.PageUtils;
 import io.renren.common.utils.R;
 
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -38,6 +43,20 @@ public class CdCardGroupController {
     public R list(CdCardGroupDTO cdCardGroup){
         PageUtils page = cdCardGroupService.queryPage(cdCardGroup);
         return R.ok().put("page", page);
+    }
+
+    /**
+     * 导出txt
+     */
+    @RequestMapping("/exportPhoneTxt")
+    @RequiresPermissions("ltt:cdcardgroup:list")
+    public void export(CdCardGroupExportPhoneTxtDTO exportPhoneTxtDTO, HttpServletResponse response) throws IOException {
+        byte[] bytes = cdCardGroupService.export(exportPhoneTxtDTO);
+        response.reset();
+        response.setHeader("Content-Disposition", String.format("attachment; filename=\"%s.txt\"",java.net.URLEncoder.encode("导出手机号","UTF-8")));
+        response.addHeader("Content-Length", "" + bytes.length);
+        response.setContentType("application/octet-stream; charset=UTF-8");
+        IOUtils.write(bytes, response.getOutputStream());
     }
 
 

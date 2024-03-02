@@ -2,12 +2,14 @@ package io.renren.modules.ltt.service.impl;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.qiniu.util.Json;
 import io.renren.common.utils.ConfigConstant;
 import io.renren.datasources.annotation.Game;
 import io.renren.modules.ltt.dao.CdCardDao;
+import io.renren.modules.ltt.dto.CdCardGroupExportPhoneTxtDTO;
 import io.renren.modules.ltt.dto.CdCardLockDTO;
 import io.renren.modules.ltt.entity.CdUserEntity;
 import io.renren.modules.ltt.enums.CodeAcquisitionType;
@@ -132,6 +134,13 @@ public class CdCardGroupServiceImpl extends ServiceImpl<CdCardGroupDao, CdCardGr
             return mobile;
         }
         return null;
+    }
+
+    @Override
+    public byte[] export(CdCardGroupExportPhoneTxtDTO exportPhoneTxtDTO) {
+        List<String> strings = cdCardDao.listPhoneByGroupId(exportPhoneTxtDTO.getId());
+        String collect = strings.stream().map(phone -> phone + "\n").collect(Collectors.joining());
+        return StrUtil.bytes(collect);
     }
 
 }
