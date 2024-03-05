@@ -10,10 +10,7 @@ import io.renren.modules.ltt.vo.CdCardLockVO;
 import io.renren.modules.sys.controller.AbstractController;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.regex.Matcher;
@@ -68,6 +65,22 @@ public class AppCdCardLockController extends AbstractController {
     }
 
     /**
+     * 释放手机号
+     * @param token
+     * @param projectId
+     * @param iccid
+     * @return
+     */
+    @GetMapping("/releaseMobile/get")
+    @Login
+    public R releaseMobileGet(@RequestParam(name = "token",required = false)String token, @RequestParam(name = "projectId",required = false)Integer projectId, @RequestParam(name = "iccid",required = false)String iccid){
+        CdCardLockDTO cdCardLock = new CdCardLockDTO();
+        cdCardLock.setProjectId(projectId);
+        cdCardLock.setIccid(iccid);
+        return R.data(cdCardLockService.releaseMobile(cdCardLock,this.cdUserEntity));
+    }
+
+    /**
      * 拉黑手机
      * @param cdCardLock
      * @return
@@ -75,6 +88,24 @@ public class AppCdCardLockController extends AbstractController {
     @RequestMapping("/withBlackMobile")
     @Login
     public R withBlackMobile(@RequestBody CdCardLockDTO cdCardLock){
+        cdCardLockService.withBlackMobile(cdCardLock,this.cdUserEntity);
+        return R.data(true);
+    }
+
+
+    /**
+     * 拉黑手机s
+     * @param token
+     * @param projectId
+     * @param iccid
+     * @return
+     */
+    @GetMapping("/withBlackMobile/get")
+    @Login
+    public R withBlackMobileGet(@RequestParam(name = "token",required = false)String token, @RequestParam(name = "projectId",required = false)Integer projectId, @RequestParam(name = "iccid",required = false)String iccid){
+        CdCardLockDTO cdCardLock = new CdCardLockDTO();
+        cdCardLock.setProjectId(projectId);
+        cdCardLock.setIccid(iccid);
         cdCardLockService.withBlackMobile(cdCardLock,this.cdUserEntity);
         return R.data(true);
     }
@@ -98,6 +129,26 @@ public class AppCdCardLockController extends AbstractController {
     @RequestMapping("/getSms")
     @Login
     public R getSms(@RequestBody CdCardLockDTO cdCardLock){
+        String sms = cdCardLockService.getSms(cdCardLock, this.cdUserEntity);
+        if (StrUtil.isEmpty(sms)) {
+            return R.error("等待验证码");
+        }
+        return R.data(extractVerificationCode(sms));
+    }
+
+    /**
+     * 获取验证码
+     * @param token
+     * @param projectId
+     * @param iccid
+     * @return
+     */
+    @GetMapping("/getSms/get")
+    @Login
+    public R getSmsGet(@RequestParam(name = "token",required = false)String token, @RequestParam(name = "projectId",required = false)Integer projectId, @RequestParam(name = "iccid",required = false)String iccid){
+        CdCardLockDTO cdCardLock = new CdCardLockDTO();
+        cdCardLock.setProjectId(projectId);
+        cdCardLock.setIccid(iccid);
         String sms = cdCardLockService.getSms(cdCardLock, this.cdUserEntity);
         if (StrUtil.isEmpty(sms)) {
             return R.error("等待验证码");
