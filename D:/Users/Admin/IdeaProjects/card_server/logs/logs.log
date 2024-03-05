@@ -4594,3 +4594,14 @@ org.springframework.web.bind.MissingServletRequestParameterException: Required S
 2024-03-05 21:14:40.236 DEBUG 14587 --- [http-nio-8880-exec-2] m.m.a.RequestResponseBodyMethodProcessor : Written [{msg=没有关联的设备, code=500}] as "application/json" using [org.springframework.http.converter.json.MappingJackson2HttpMessageConverter@12aa381f]
 2024-03-05 21:14:40.236 DEBUG 14587 --- [http-nio-8880-exec-2] o.s.web.servlet.DispatcherServlet        : Null ModelAndView returned to DispatcherServlet with name 'dispatcherServlet': assuming HandlerAdapter completed request handling
 2024-03-05 21:14:40.236 DEBUG 14587 --- [http-nio-8880-exec-2] o.s.web.servlet.DispatcherServlet        : Successfully completed request
+2024-03-05 21:32:38.698  INFO 14587 --- [Thread-24] ConfigServletWebServerApplicationContext : Closing org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@729d991e: startup date [Tue Mar 05 21:14:09 CST 2024]; root of context hierarchy
+2024-03-05 21:32:38.710  INFO 14587 --- [Thread-24] o.s.c.support.DefaultLifecycleProcessor  : Stopping beans in phase 2147483647
+2024-03-05 21:32:38.712  INFO 14587 --- [Thread-24] o.s.j.e.a.AnnotationMBeanExporter        : Unregistering JMX-exposed beans on shutdown
+2024-03-05 21:32:38.713  INFO 14587 --- [Thread-24] o.s.j.e.a.AnnotationMBeanExporter        : Unregistering JMX-exposed beans
+2024-03-05 21:32:38.713  INFO 14587 --- [Thread-24] o.s.s.concurrent.ThreadPoolTaskExecutor  : Shutting down ExecutorService 'poolExecutor'
+2024-03-05 21:32:38.714  INFO 14587 --- [Thread-24] o.s.s.c.ThreadPoolTaskScheduler          : Shutting down ExecutorService 'taskScheduler'
+2024-03-05 21:32:38.736  INFO 14587 --- [Thread-24] a.s.s.m.AbstractValidatingSessionManager : Disabled session validation scheduler.
+2024-03-05 21:32:38.738  INFO 14587 --- [Thread-24] c.b.d.d.DynamicRoutingDataSource         : dynamic-datasource start closing ....
+2024-03-05 21:32:38.741  INFO 14587 --- [Thread-24] com.alibaba.druid.pool.DruidDataSource   : {dataSource-2} closed
+2024-03-05 21:32:38.741  INFO 14587 --- [Thread-24] com.alibaba.druid.pool.DruidDataSource   : {dataSource-1} closed
+2024-03-05 21:32:38.741  INFO 14587 --- [Thread-24] c.b.d.d.DynamicRoutingDataSource         : dynamic-datasource all closed success,bye

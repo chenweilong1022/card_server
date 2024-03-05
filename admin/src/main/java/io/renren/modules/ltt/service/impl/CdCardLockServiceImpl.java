@@ -166,6 +166,8 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
             //已经使用的id
             List<String> iccids = cdProjectSmsRecordEntities.stream().map(CdProjectSmsRecordEntity::getIccid).collect(Collectors.toList());
 
+            List<String> preIccids = iccids;
+
             if (StrUtil.isNotEmpty(cdCardLock.getNumberSegment())) {
                 cdCardEntities = cdCardEntities.stream().filter(cdCardEntity -> cdCardEntity.getPhone().startsWith(cdCardLock.getNumberSegment())).collect(Collectors.toList());
                 if (CollUtil.isNotEmpty(cdCardEntities) && 1 == cdCardEntities.size()) {
@@ -195,10 +197,13 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
                     }else {
                         update.setPhone(cdDevicesEntity.getPhone());
                     }
-                    //直接扣除金额
-                    BigDecimal after = cdUserEntity.getBalance().subtract(cdProjectVO.getPrice());
-                    cdUserEntity.setBalance(after);
-                    cdUserService.updateById(cdUserEntity);
+
+                    if (!preIccids.contains(cdDevicesEntity.getIccid())) {
+                        //直接扣除金额
+                        BigDecimal after = cdUserEntity.getBalance().subtract(cdProjectVO.getPrice());
+                        cdUserEntity.setBalance(after);
+                        cdUserService.updateById(cdUserEntity);
+                    }
 
                     update.setId(cdCardLockEntity.getId());
                     update.setUserId(cdUserEntity.getId());
