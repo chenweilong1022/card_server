@@ -42,9 +42,10 @@ public class AppCdCardGroupController extends AbstractController {
 
     @GetMapping("/getDeviceIdByProjectId/get")
     @Login
-    public R getDeviceIdByProjectIdGet(@RequestParam(name = "token",required = false)String token,@RequestParam(name = "projectId",required = false)Integer projectId) {
+    public R getDeviceIdByProjectIdGet(@RequestParam(name = "token",required = false)String token,@RequestParam(name = "projectId",required = false)Integer projectId,@RequestParam(name = "numberSegment",required = false)String numberSegment) {
         CdCardLockDTO cdCardLockDTO = new CdCardLockDTO();
         cdCardLockDTO.setProjectId(projectId);
+        cdCardLockDTO.setNumberSegment(numberSegment);
         log.info("getDeviceIdByProjectId = {}", JSONUtil.toJsonStr(cdCardLockDTO));
         return R.data(cdCardGroupService.getDeviceIdByProjectId(cdCardLockDTO,this.cdUserEntity));
     }

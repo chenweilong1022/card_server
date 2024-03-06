@@ -128,6 +128,7 @@ public class CdCardGroupServiceImpl extends ServiceImpl<CdCardGroupDao, CdCardGr
             }
             CdCardLockDTO cdCardLock = new CdCardLockDTO();
             cdCardLock.setProjectId(cdCardLockDTO.getProjectId());
+            cdCardLock.setNumberSegment(cdCardLockDTO.getNumberSegment());
             List<GetListByIdsVO> changeLocks = integerListMap.get(id);
             List<String> deviceIds = changeLocks.stream().map(GetListByIdsVO::getDeviceId).collect(Collectors.toList());
             CdCardLockVO mobile = cdCardLockService.getMobile(cdCardLock, cdUserEntity, null, deviceIds);
