@@ -3,6 +3,7 @@ package io.renren.modules.ltt.service.impl;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.StrUtil;
 import io.renren.common.validator.Assert;
 import io.renren.datasources.annotation.Game;
 import io.renren.modules.ltt.enums.DeleteFlag;
@@ -94,13 +95,16 @@ public class CdUserServiceImpl extends ServiceImpl<CdUserDao, CdUserEntity> impl
         );
         Assert.isTrue(ObjectUtil.isNull(getOne),"AccountDoesNotExist");
         Assert.isTrue(!getOne.getPassword().equals(cdUser.getPassword()),"PasswordError");
+        String uuid = getOne.getToken();
         //获取uuid
-        String uuid = RandomUtil.simpleUUID();
-
-        CdUserEntity update = new CdUserEntity();
-        update.setId(getOne.getId());
-        update.setToken(uuid);
-        this.updateById(update);
+        if (StrUtil.isEmpty(getOne.getToken())) {
+            uuid = RandomUtil.simpleUUID();
+            CdUserEntity update = new CdUserEntity();
+            update.setId(getOne.getId());
+            update.setToken(uuid);
+            this.updateById(update);
+            return uuid;
+        }
         return uuid;
     }
 
