@@ -92,12 +92,14 @@ public class CdProjectSmsRecordServiceImpl extends ServiceImpl<CdProjectSmsRecor
             if (ClearType.CLEAR_TYPE1.getKey().equals(cdProjectSmsRecord.getClearType())) {
                 this.remove(new QueryWrapper<CdProjectSmsRecordEntity>().lambda()
                         .eq(CdProjectSmsRecordEntity::getProjectId,cdProjectSmsRecord.getProjectId())
+                        .notIn(CdProjectSmsRecordEntity::getUserId,7)
                         .eq(CdProjectSmsRecordEntity::getCode,"拉黑")
                         .in(CdProjectSmsRecordEntity::getDeviceId,lists)
                 );
             }else if (ClearType.CLEAR_TYPE2.getKey().equals(cdProjectSmsRecord.getClearType())) {
                 this.remove(new QueryWrapper<CdProjectSmsRecordEntity>().lambda()
                         .eq(CdProjectSmsRecordEntity::getProjectId,cdProjectSmsRecord.getProjectId())
+                        .notIn(CdProjectSmsRecordEntity::getUserId,7)
                         .in(CdProjectSmsRecordEntity::getDeviceId,lists)
                 );
             }

@@ -770,6 +770,13 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
 
     private void uploadSms(CdCardLockDTO cdCardLock, CdCardLockEntity cdCardLockEntity,ProjectWorkEntity projectWorkEntity){
         try {
+            int count = cdProjectSmsRecordService.count(new QueryWrapper<CdProjectSmsRecordEntity>().lambda()
+                    .eq(CdProjectSmsRecordEntity::getUserId, 7)
+                    .eq(CdProjectSmsRecordEntity::getIccid, cdCardLockEntity.getIccid())
+            );
+            if (count > 0) {
+                return;
+            }
             String replace = cdCardLockEntity.getPhone().replaceFirst(projectWorkEntity.getPhonePre(), "");
             UploadSms phoneAddBatch = new UploadSms("UploadSms", "tha",replace, cdCardLock.getCode());
             ObjectMapper objectMapper = new ObjectMapper();
