@@ -119,6 +119,8 @@ public class BlackListTask {
                 return;
             }
 
+            log.info("device = {} update = {}",devicesEntity.getIccid(),"updateVersion");
+
             //更新app
             if (0 == count || (count % 5 == 0)) {
                 UpdateappResponse taskDto = new UpdateappResponse();
@@ -126,7 +128,7 @@ public class BlackListTask {
                 taskDto.setHttpUrl(peek.getHttpUrl());
                 nettyChannelManager.send(peek.getDeviceId(),new Invocation(UpdateappResponse.TYPE, taskDto));
             }
-            if (count > 15) {
+            if (count > 3) {
                 updateAppVO.poll();
                 stringListCacheUpdateAppVO.put("stringListCacheUpdateAppVO",updateAppVO);
                 return;
