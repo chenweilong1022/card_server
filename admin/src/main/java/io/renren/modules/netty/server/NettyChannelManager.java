@@ -125,6 +125,7 @@ public class NettyChannelManager {
             logger.error("[send][连接({})未激活]", channel.id());
             return;
         }
+        logger.error("user = {} 开始 update",user);
         // 发送消息
         channel.writeAndFlush(invocation.response());
     }
