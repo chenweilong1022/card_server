@@ -63,4 +63,10 @@
     </select>
 
 
+    <select id="getDeviceByGroupId" resultType="java.lang.String">
+        SELECT DISTINCT l.device_id
+        FROM cd_card_lock l
+                 inner JOIN cd_devices d ON d.id = l.id
+        where d.group_id = #{groupId} and l.lock = #{lock}
+    </select>
 </mapper>

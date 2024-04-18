@@ -254,7 +254,7 @@ public class CdDevicesController {
     }
 
     /**
-     * 保存
+     * 更新app
      */
     @RequestMapping("/updateApp")
     @RequiresPermissions("ltt:cddevices:delete")

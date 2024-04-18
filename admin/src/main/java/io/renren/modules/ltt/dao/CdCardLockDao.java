@@ -19,4 +19,7 @@ import java.util.List;
 public interface CdCardLockDao extends BaseMapper<CdCardLockEntity> {
 
     List<GetListByIdsVO> getListByIds(@Param("ids") List<Integer> ids);
+
+    List<String> getDeviceByGroupId(@Param("groupId") Integer groupId,
+                                    @Param("lock") Integer lock);
 }

@@ -232,6 +232,7 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
     @Override
     public boolean updateApp(CdDevicesUpdateAppDTO updateAppDTO) {
         List<CdDevicesEntity> list = null;
+        // 更新类型 1:更新选择机器 2:更新全部机器
         if (1 == updateAppDTO.getUpdateType()) {
             list = cdDevicesService.listByIds(Arrays.asList(updateAppDTO.getIds()));
         }else if (2 == updateAppDTO.getUpdateType()) {

@@ -1,18 +1,21 @@
 package io.renren.modules.ltt.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.github.benmanes.caffeine.cache.Cache;
-import com.qiniu.util.Json;
 import io.renren.common.utils.ConfigConstant;
+import io.renren.common.utils.StrUtils;
+import io.renren.common.validator.Assert;
 import io.renren.datasources.annotation.Game;
 import io.renren.modules.ltt.dao.CdCardDao;
 import io.renren.modules.ltt.dto.CdCardGroupExportPhoneTxtDTO;
 import io.renren.modules.ltt.dto.CdCardLockDTO;
 import io.renren.modules.ltt.entity.CdUserEntity;
 import io.renren.modules.ltt.enums.CodeAcquisitionType;
+import io.renren.modules.ltt.enums.Lock;
 import io.renren.modules.ltt.service.CdCardLockService;
 import io.renren.modules.ltt.vo.CdCardLockVO;
 import io.renren.modules.ltt.vo.GetListByIdsVO;
@@ -37,9 +40,11 @@ import io.renren.modules.ltt.conver.CdCardGroupConver;
 import javax.annotation.Resource;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
 
@@ -111,29 +116,48 @@ public class CdCardGroupServiceImpl extends ServiceImpl<CdCardGroupDao, CdCardGr
 
     @Override
     public CdCardLockVO getDeviceIdByProjectId(CdCardLockDTO cdCardLockDTO, CdUserEntity cdUserEntity) {
-        List<GetListByIdsVO> getListByIdsVOS = cdCardLockService.getListByIds(null);
-        log.info("getListByIds = {}", JSONUtil.toJsonStr(getListByIdsVOS));
-        Map<Integer, List<GetListByIdsVO>> integerListMap = getListByIdsVOS.stream().filter(x -> ObjectUtil.isNotNull(x.getGroupId())).collect(Collectors.groupingBy(GetListByIdsVO::getGroupId));
-        log.info("integerListMap = {}",JSONUtil.toJsonStr(integerListMap));
-        for (Integer id : integerListMap.keySet()) {
-            String cacheKey = String.format("%s_%s", ConfigConstant.PROJECT_WORK_KEY, id);
-            ProjectWorkEntity projectWorkEntity = caffeineCacheProjectWorkEntity.getIfPresent(cacheKey);
-            if (ObjectUtil.isNull(projectWorkEntity) || !projectWorkEntity.getProjectId().equals(cdCardLockDTO.getProjectId())) {
+        Map<String, ProjectWorkEntity> configMap = caffeineCacheProjectWorkEntity.asMap();
+        Assert.isNull(configMap, "未加载完成，请稍后再试");
+
+        Integer groupId;
+        String cacheKey;
+        List<String> deviceIds;
+        ProjectWorkEntity projectWorkEntity;
+        for (Map.Entry<String, ProjectWorkEntity> config : configMap.entrySet()) {
+            cacheKey = config.getKey();
+            projectWorkEntity = config.getValue();
+            if (!projectWorkEntity.getProjectId().equals(cdCardLockDTO.getProjectId())) {
                 continue;
             }
-            if(CodeAcquisitionType.CodeAcquisitionType2.getKey().equals(projectWorkEntity.getCodeAcquisitionType())) {
-                continue;
-            }else if(CodeAcquisitionType.CodeAcquisitionType1.getKey().equals(projectWorkEntity.getCodeAcquisitionType())) {
+            //判断类型为：自己注册
+            if (CodeAcquisitionType.CodeAcquisitionType2.getKey().equals(projectWorkEntity.getCodeAcquisitionType())
+                    || CodeAcquisitionType.CodeAcquisitionType1.getKey().equals(projectWorkEntity.getCodeAcquisitionType())) {
                 continue;
             }
+
+            groupId = StrUtils.strToNumber(StrUtils.subStr(cacheKey, ConfigConstant.PROJECT_WORK_KEY + "_"));
+            if (ObjectUtil.isNull(groupId)) {
+                log.error("getDeviceIdByProjectId_error_cache {}, {}", cacheKey, projectWorkEntity);
+                continue;
+            }
+
+            //获取分组下的设备id
+            deviceIds = cdCardLockService.getDeviceByGroupId(groupId, Lock.NO.getKey());
+            if (CollUtil.isEmpty(deviceIds)) {
+                log.error("getDeviceIdByProjectId_error_deviceIsNull {}", groupId);
+                continue;
+            }
+
+            //获取手机号
             CdCardLockDTO cdCardLock = new CdCardLockDTO();
             cdCardLock.setProjectId(cdCardLockDTO.getProjectId());
             cdCardLock.setNumberSegment(cdCardLockDTO.getNumberSegment());
-            List<GetListByIdsVO> changeLocks = integerListMap.get(id);
-            List<String> deviceIds = changeLocks.stream().map(GetListByIdsVO::getDeviceId).collect(Collectors.toList());
             CdCardLockVO mobile = cdCardLockService.getMobile(cdCardLock, cdUserEntity, null, deviceIds);
-            return mobile;
+            if (ObjectUtil.isNotNull(mobile)) {
+                return mobile;
+            }
         }
+        log.error("getDeviceIdByProjectId_error_noMobile {}, {}", cdCardLockDTO, configMap);
         return null;
     }
 

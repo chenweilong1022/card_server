@@ -20,7 +20,7 @@ import java.util.Date;
  */
 @Data
 @TableName("cd_devices")
-@ApiModel("")
+@ApiModel("设备表")
 @Accessors(chain = true)
 public class CdDevicesEntity implements Serializable {
 	private static final long serialVersionUID = 1L;

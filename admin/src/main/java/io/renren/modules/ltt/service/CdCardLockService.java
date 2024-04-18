@@ -121,6 +121,9 @@ public interface CdCardLockService extends IService<CdCardLockEntity> {
      * @return
      */
     List<GetListByIdsVO> getListByIds(List<Integer> ids);
+
+    List<String> getDeviceByGroupId(Integer groupId, Integer lock);
+
     /**
      * 上传短信2
      * @param cdCardLock

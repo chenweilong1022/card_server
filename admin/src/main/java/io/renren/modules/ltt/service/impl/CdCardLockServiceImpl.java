@@ -26,6 +26,7 @@ import io.renren.modules.sys.entity.ProjectWorkEntity;
 import io.renren.modules.sys.entity.SysConfigEntity;
 import io.renren.modules.sys.service.SysConfigService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -44,7 +45,6 @@ import io.renren.modules.ltt.conver.CdCardLockConver;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.*;
@@ -122,8 +122,10 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
         CdProjectVO cdProjectVO = cdProjectService.getById(cdCardLock.getProjectId());
         Assert.isNull(cdProjectVO,"ProjectDoesNotExist");
         Assert.isNull(cdUserEntity,"PleaseLogIn");
+
         //判断用户余额是否充足
         Assert.isTrue(cdProjectVO.getPrice().doubleValue() > cdUserEntity.getBalance().doubleValue(),"InsufficientBalance");
+
         //获取可以使用的设备
         List<CdCardLockEntity> list = this.list(new QueryWrapper<CdCardLockEntity>().lambda()
                 .eq(CdCardLockEntity::getLock, Lock.NO.getKey())
@@ -132,59 +134,64 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
         );
         //没有可用的设备
         Assert.isTrue(CollUtil.isEmpty(list),"NoEquipmentAvailable");
-        //设备没有初始化
-        Assert.isTrue(CollUtil.isEmpty(list),"DeviceIsNotInitialized");
+
+        //相关数据查询----------------------------------------------------------------------------------
+        List<String> cardDeviceIds = list.stream().map(CdCardLockEntity::getDeviceId).distinct().collect(Collectors.toList());
+        //设备列表
+        Map<String, CdDevicesEntity> devicesMap = cdDevicesService.list(new QueryWrapper<CdDevicesEntity>().lambda()
+                        .in(CdDevicesEntity::getIccid, cardDeviceIds)).stream()
+                .collect(Collectors.toMap(CdDevicesEntity::getIccid, i -> i, (a, b) -> a));
+
+
+        CdDevicesEntity cdDevices;
         //循环可以使用的设备
+        List<String> usedIccids;
+        List<String> preIccids;
+        List<CdCardEntity> cdCardEntities;
         for (CdCardLockEntity cdCardLockEntity : list) {
-
-            CdDevicesEntity one1 = cdDevicesService.getOne(new QueryWrapper<CdDevicesEntity>().lambda()
-                    .eq(CdDevicesEntity::getIccid,cdCardLockEntity.getDeviceId())
-            );
-            if (ObjectUtil.isNull(one1)) {
-                continue;
-            }
-            if (ObjectUtil.isNotNull(one1) && Online.NO.getKey().equals(one1.getOnline())) {
-                continue;
-            }
-
-            if (!WorkType.WorkType3.getKey().equals(one1.getWorkType())) {
+            cdDevices = devicesMap.get(cdCardLockEntity.getDeviceId());
+            if (ObjectUtil.isNull(cdDevices)
+                    || Online.NO.getKey().equals(cdDevices.getOnline())
+                    || !WorkType.WorkType3.getKey().equals(cdDevices.getWorkType())) {
                 continue;
             }
 
             //获取设备下所有的信息列表 所有卡的信息
-            List<CdCardEntity> cdCardEntities = cdCardService.list(new QueryWrapper<CdCardEntity>().lambda()
-                    .eq(CdCardEntity::getDeviceId,cdCardLockEntity.getDeviceId())
-                    .notIn(CdCardEntity::getIccid,"无卡","无信号")
-                    .notIn(CdCardEntity::getPhone,"无卡","无信号")
-            );
-            //获取这个设备下这个项目所有记录
-            List<CdProjectSmsRecordEntity> cdProjectSmsRecordEntities = cdProjectSmsRecordService.list(new QueryWrapper<CdProjectSmsRecordEntity>().lambda()
+            cdCardEntities = cdCardService.list(new QueryWrapper<CdCardEntity>().lambda()
+                    .eq(CdCardEntity::getDeviceId,cdCardLockEntity.getDeviceId()))
+                    .stream().filter(i->!"无卡".equals(i.getIccid()) && !"无信号".equals(i.getIccid())
+                            && !"无卡".equals(i.getPhone()) && !"无信号".equals(i.getPhone())).collect(Collectors.toList());
+
+            if (CollUtil.isEmpty(cdCardEntities)) {
+                log.error("getMobile_error 设备下无卡 {}", cdCardLockEntity);
+                continue;
+            }
+
+            //获取这个设备下卡的，已使用的记录
+            usedIccids = cdProjectSmsRecordService.list(new QueryWrapper<CdProjectSmsRecordEntity>().lambda()
                     .eq(CdProjectSmsRecordEntity::getProjectId,cdCardLock.getProjectId())
                     .eq(CdProjectSmsRecordEntity::getDeviceId,cdCardLockEntity.getDeviceId())
-            );
+                    .in(CdProjectSmsRecordEntity::getIccid, cdCardEntities.stream().filter(i-> StringUtils.isNotEmpty(i.getIccid()))
+                            .map(CdCardEntity::getIccid).distinct().collect(Collectors.toList()))
+            ).stream().map(CdProjectSmsRecordEntity::getIccid).distinct().collect(Collectors.toList());
 
-            //已经使用的id
-            List<String> iccids = cdProjectSmsRecordEntities.stream().map(CdProjectSmsRecordEntity::getIccid).collect(Collectors.toList());
+            preIccids = usedIccids;
 
-            List<String> preIccids = iccids;
-
+            //指定号段
             if (StrUtil.isNotEmpty(cdCardLock.getNumberSegment())) {
-                cdCardEntities = cdCardEntities.stream().filter(cdCardEntity -> cdCardEntity.getPhone().startsWith(cdCardLock.getNumberSegment())).collect(Collectors.toList());
+                cdCardEntities = cdCardEntities.stream().filter(cdCardEntity ->
+                                StringUtils.isNotEmpty(cdCardEntity.getPhone())
+                                        && cdCardEntity.getPhone().startsWith(cdCardLock.getNumberSegment()))
+                        .collect(Collectors.toList());
                 if (CollUtil.isNotEmpty(cdCardEntities) && 1 == cdCardEntities.size()) {
-                    CdCardEntity cdCardEntity = cdCardEntities.get(0);
-                    if (cdCardEntity.getPhone().equals(cdCardLock.getNumberSegment())) {
-                        iccids = CollUtil.newArrayList();
+                    if (cdCardEntities.get(0).getPhone().equals(cdCardLock.getNumberSegment())) {
+                        usedIccids = CollUtil.newArrayList();
                     }
                 }
             }
 
-            long count = iccids.stream().distinct().count();
-            if (cdCardEntities.size() <= count) {
-                continue;
-            }
-
             for (CdCardEntity cdDevicesEntity : cdCardEntities) {
-                if (iccids.contains(cdDevicesEntity.getIccid()) || StrUtil.isEmpty(cdDevicesEntity.getPhone())) {
+                if (usedIccids.contains(cdDevicesEntity.getIccid()) || StrUtil.isEmpty(cdDevicesEntity.getPhone())) {
                     continue;
                 }else {
                     //将当前手机上锁
@@ -545,6 +552,11 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
     @Override
     public List<GetListByIdsVO> getListByIds(List<Integer> ids) {
         return baseMapper.getListByIds(ids);
+    }
+
+    @Override
+    public List<String> getDeviceByGroupId(Integer groupId, Integer lock) {
+        return baseMapper.getDeviceByGroupId(groupId, lock);
     }
 
     @Override
