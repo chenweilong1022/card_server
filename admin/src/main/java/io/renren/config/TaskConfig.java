@@ -9,8 +9,10 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.locks.Lock;
 
 
 /**
@@ -23,6 +25,10 @@ import java.util.concurrent.ThreadPoolExecutor;
 @Configuration
 public class TaskConfig {
 
+    @Bean
+    public ConcurrentHashMap<String, Lock> lockMap() {
+        return new ConcurrentHashMap<>();
+    }
     @Bean
     public TaskScheduler taskScheduler() {
         ThreadPoolTaskScheduler taskScheduler = new ThreadPoolTaskScheduler();

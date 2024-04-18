@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.google.common.collect.Lists;
 import io.renren.common.utils.ConfigConstant;
+import io.renren.common.utils.LockMapKeyResource;
 import io.renren.common.validator.Assert;
 import io.renren.datasources.annotation.Game;
 import io.renren.modules.app.dto.TaskDto;
@@ -48,6 +49,8 @@ import javax.annotation.Resource;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 
@@ -78,6 +81,8 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
     private Cache<String, TaskDto> caffeineCacheCodeTaskDto;
     @Autowired
     private CdUserService cdUserService;
+    @Autowired
+    private ConcurrentHashMap<String, java.util.concurrent.locks.Lock> lockMap;
 
     @Override
     public PageUtils<CdCardLockVO> queryPage(CdCardLockDTO cdCardLock) {
@@ -194,41 +199,52 @@ public class CdCardLockServiceImpl extends ServiceImpl<CdCardLockDao, CdCardLock
                 if (usedIccids.contains(cdDevicesEntity.getIccid()) || StrUtil.isEmpty(cdDevicesEntity.getPhone())) {
                     continue;
                 }else {
-                    //将当前手机上锁
-                    CdCardLockEntity update = new CdCardLockEntity();
-                    if (StrUtil.isEmpty(cdDevicesEntity.getPhone())) {
-                        CdIccidPhoneEntity one = cdIccidPhoneService.getOne(new QueryWrapper<CdIccidPhoneEntity>().lambda()
-                                .eq(CdIccidPhoneEntity::getIccid,cdDevicesEntity.getIccid())
-                        );
-                        update.setPhone(one.getPhone());
+                    String keyByResource = LockMapKeyResource.getKeyByResource(LockMapKeyResource.LockMapKeyResource1, cdDevicesEntity.getDeviceId());
+                    java.util.concurrent.locks.Lock lock = lockMap.computeIfAbsent(keyByResource, k -> new ReentrantLock());
+                    boolean triedLock = lock.tryLock();
+                    log.info("keyByResource = {} 获取的锁为 = {}",keyByResource,triedLock);
+                    if(triedLock) {
+                        try{
+                            //将当前手机上锁
+                            CdCardLockEntity update = new CdCardLockEntity();
+                            if (StrUtil.isEmpty(cdDevicesEntity.getPhone())) {
+                                CdIccidPhoneEntity one = cdIccidPhoneService.getOne(new QueryWrapper<CdIccidPhoneEntity>().lambda()
+                                        .eq(CdIccidPhoneEntity::getIccid,cdDevicesEntity.getIccid())
+                                );
+                                update.setPhone(one.getPhone());
+                            }else {
+                                update.setPhone(cdDevicesEntity.getPhone());
+                            }
+
+                            if (!preIccids.contains(cdDevicesEntity.getIccid())) {
+                                //直接扣除金额
+                                BigDecimal after = cdUserEntity.getBalance().subtract(cdProjectVO.getPrice());
+                                cdUserEntity.setBalance(after);
+                                cdUserService.updateById(cdUserEntity);
+                            }
+
+                            update.setId(cdCardLockEntity.getId());
+                            update.setUserId(cdUserEntity.getId());
+                            update.setProjectId(cdCardLock.getProjectId());
+                            update.setDeviceId(cdDevicesEntity.getDeviceId());
+                            update.setLock(Lock.YES.getKey());
+                            update.setIccid(cdDevicesEntity.getIccid());
+                            update.setDeleteFlag(DeleteFlag.NO.getKey());
+                            update.setCreateTime(DateUtil.date());
+                            this.updateById(update);
+                            //通知客戶端修改卡
+                            ChangeCardResponse taskDto = new ChangeCardResponse();
+                            taskDto.setBoardIndexed(cdDevicesEntity.getBoardIndexed());
+                            taskDto.setIndexed(cdDevicesEntity.getIndexed());
+                            taskDto.setDeviceId(cdDevicesEntity.getIccid());
+                            nettyChannelManager.send(cdDevicesEntity.getDeviceId(),new Invocation(ChangeCardResponse.TYPE, taskDto));
+                            return new CdCardLockVO().setPhone(update.getPhone()).setIccid(update.getIccid());
+                        }finally {
+                            lock.unlock();
+                        }
                     }else {
-                        update.setPhone(cdDevicesEntity.getPhone());
+                        log.info("keyByResource = {} 在执行",keyByResource);
                     }
-
-                    if (!preIccids.contains(cdDevicesEntity.getIccid())) {
-                        //直接扣除金额
-                        BigDecimal after = cdUserEntity.getBalance().subtract(cdProjectVO.getPrice());
-                        cdUserEntity.setBalance(after);
-                        cdUserService.updateById(cdUserEntity);
-                    }
-
-                    update.setId(cdCardLockEntity.getId());
-                    update.setUserId(cdUserEntity.getId());
-                    update.setProjectId(cdCardLock.getProjectId());
-                    update.setDeviceId(cdDevicesEntity.getDeviceId());
-                    update.setLock(Lock.YES.getKey());
-                    update.setIccid(cdDevicesEntity.getIccid());
-                    update.setDeleteFlag(DeleteFlag.NO.getKey());
-                    update.setCreateTime(DateUtil.date());
-                    this.updateById(update);
-                    //通知客戶端修改卡
-                    ChangeCardResponse taskDto = new ChangeCardResponse();
-                    taskDto.setBoardIndexed(cdDevicesEntity.getBoardIndexed());
-                    taskDto.setIndexed(cdDevicesEntity.getIndexed());
-                    taskDto.setDeviceId(cdDevicesEntity.getIccid());
-                    nettyChannelManager.send(cdDevicesEntity.getDeviceId(),new Invocation(ChangeCardResponse.TYPE, taskDto));
-
-                    return new CdCardLockVO().setPhone(update.getPhone()).setIccid(update.getIccid());
                 }
             }
         }
