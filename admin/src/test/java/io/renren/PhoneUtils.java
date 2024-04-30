@@ -25,7 +25,7 @@ public class PhoneUtils {
 //        List<List<Object>> read = reader.read();
 
 
-        List<String> strings = FileUtil.readLines("/Users/chenweilong/Downloads/充值 (14).txt", "UTF-8");
+        List<String> strings = FileUtil.readLines("/Users/chenweilong/Downloads/Telegram Desktop/充值 (9).txt", "UTF-8");
 
         for (Object object : strings) {
             String format = String.format("INSERT INTO cd_recharged_phone (phone) VALUE ('%s');", object);
@@ -37,7 +37,7 @@ public class PhoneUtils {
         }
 
 
-        FileUtil.writeLines(sqls,"/Users/chenweilong/Desktop/java代码/card_server/admin/sql/phone6.txt","UTF-8");
+        FileUtil.writeLines(sqls,"/Users/chenweilong/Desktop/java代码/card_server/admin/sql/phone7.txt","UTF-8");
 
     }
 }

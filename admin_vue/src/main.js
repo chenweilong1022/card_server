@@ -11,6 +11,8 @@ import httpRequest from '@/utils/httpRequest' // api: https://github.com/axios/a
 import { isAuth } from '@/utils'
 import cloneDeep from 'lodash/cloneDeep'
 
+import i18n from '@/i18n'
+
 Vue.use(VueCookie)
 Vue.config.productionTip = false
 
@@ -26,9 +28,11 @@ Vue.prototype.isAuth = isAuth     // 权限方法
 // 保存整站vuex本地储存初始状态
 window.SITE_CONFIG['storeState'] = cloneDeep(store.state)
 
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
+  i18n,
   router,
   store,
   template: '<App/>',

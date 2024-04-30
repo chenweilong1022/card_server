@@ -3,7 +3,7 @@
     <div class="site-content__wrapper">
       <div class="site-content">
         <div class="brand-info">
-          <h2 class="brand-info__text">卡池</h2>
+          <h2 class="brand-info__text">卡池{{ $t("message") }}</h2>
           <p class="brand-info__intro">卡池管理后台系统</p>
         </div>
         <div class="login-main">
