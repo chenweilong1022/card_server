@@ -5,7 +5,7 @@
         <el-input v-model="dataForm.userName" placeholder="用户名" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="getDataList()">查询</el-button>
+        <el-button @click="getDataList()">{{$t("查询")}}</el-button>
         <el-button v-if="isAuth('sys:user:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
         <el-button v-if="isAuth('sys:user:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
@@ -45,7 +45,7 @@
         prop="mobile"
         header-align="center"
         align="center"
-        label="手机号">
+        :label="$t('手机号')">
       </el-table-column>
       <el-table-column
         prop="status"
@@ -62,7 +62,7 @@
         header-align="center"
         align="center"
         width="180"
-        label="创建时间">
+        :label="$t('创建时间')">
       </el-table-column>
       <el-table-column
         fixed="right"

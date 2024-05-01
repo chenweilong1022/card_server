@@ -2,11 +2,12 @@
   <nav class="site-navbar" :class="'site-navbar--' + navbarLayoutType">
     <div class="site-navbar__header">
       <h1 class="site-navbar__brand" @click="$router.push({ name: 'home' })">
-        <a class="site-navbar__brand-lg" href="javascript:;">卡池</a>
-        <a class="site-navbar__brand-mini" href="javascript:;">卡池</a>
+        <a class="site-navbar__brand-lg" href="javascript:;">{{ $t('卡池') }}</a>
+        <a class="site-navbar__brand-mini" href="javascript:;">{{ $t('卡池') }}</a>
       </h1>
     </div>
-    <div class="site-navbar__body clearfix">
+    <div class="site-navbar__body clearfix"
+         style="display: flex;flex-direction: row;align-content: center;">
       <el-menu
         class="site-navbar__menu"
         mode="horizontal">
@@ -14,6 +15,12 @@
           <icon-svg name="zhedie"></icon-svg>
         </el-menu-item>
       </el-menu>
+      <div style=" flex: 1;text-align: right;margin: auto;font-size: large;">
+        <el-radio-group v-model="selectValue" @change="langChange">
+          <el-radio label="zh">简体中文</el-radio>
+          <el-radio label="km">កម្ពុជា។</el-radio>
+        </el-radio-group>
+      </div>
       <el-menu
         class="site-navbar__menu site-navbar__menu--right"
         mode="horizontal">
@@ -59,7 +66,8 @@
   export default {
     data () {
       return {
-        updatePassowrdVisible: false
+        updatePassowrdVisible: false,
+        selectValue: ''
       }
     },
     components: {
@@ -80,6 +88,9 @@
       userName: {
         get () { return this.$store.state.user.name }
       }
+    },
+    created () {
+      this.selectValue = localStorage.lang === undefined ? 'zh' : localStorage.lang
     },
     methods: {
       // 修改密码
@@ -107,6 +118,12 @@
             }
           })
         }).catch(() => {})
+      },
+      // 语言切换
+      langChange (e) {
+        console.log(e)
+        localStorage.setItem('lang', e)
+        this.$i18n.locale = e
       }
     }
   }

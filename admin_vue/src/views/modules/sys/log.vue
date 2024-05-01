@@ -5,7 +5,7 @@
         <el-input v-model="dataForm.key" placeholder="用户名／用户操作" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="getDataList()">查询</el-button>
+        <el-button @click="getDataList()">{{$t("查询")}}</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -66,7 +66,7 @@
         header-align="center"
         align="center"
         width="180"
-        label="创建时间">
+        :label="$t('创建时间')">
       </el-table-column>
     </el-table>
     <el-pagination

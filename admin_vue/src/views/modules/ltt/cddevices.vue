@@ -2,82 +2,79 @@
   <div class="mod-config">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-input v-model="dataForm.fq" placeholder="参数名" clearable></el-input>
+        <el-input v-model="dataForm.packageVersion" :placeholder="$t('版本号')" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="dataForm.packageVersion" placeholder="版本号" clearable></el-input>
+        <el-input v-model="dataForm.phone" :placeholder="$t('手机号')" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="dataForm.phone" placeholder="手机号" clearable></el-input>
+        <el-input v-model="dataForm.iccid" :placeholder="$t('设备编码')" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="dataForm.iccid" placeholder="设备编码" clearable></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-select v-model="online" placeholder="在线" clearable>
+        <el-select v-model="online" :placeholder="$t('在线')" clearable>
           <el-option
             v-for="item in options"
             :key="item.value"
-            :label="item.label"
+            :label="$t(item.label)"
             :value="item.value">
           </el-option>
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-select v-model="workType" placeholder="工作流程" clearable>
+        <el-select v-model="workType" :placeholder="$t('工作流程')" clearable>
           <el-option
             v-for="item in workOptions"
             :key="item.value"
-            :label="item.label"
+            :label="$t(item.label)"
             :value="item.value">
           </el-option>
         </el-select>
       </el-form-item>
 
       <el-form-item>
-        <el-select v-model="groupId" placeholder="分组" clearable>
+        <el-select v-model="groupId" :placeholder="$t('分组')" clearable>
           <el-option
             v-for="item in dataListGroup"
             :key="item.id"
-            :label="item.groupName"
+            :label="translateGroup(item.groupName)"
             :value="item.id">
           </el-option>
         </el-select>
       </el-form-item>
 
       <el-form-item>
-        <el-select v-model="getTimeType" placeholder="取码时间筛选" clearable>
+        <el-select v-model="getTimeType" :placeholder="$t('取码时间筛选')" clearable>
           <el-option
             v-for="item in getTimeOptions"
             :key="item.value"
-            :label="item.label"
+            :label="$t(item.label)"
             :value="item.value">
           </el-option>
         </el-select>
       </el-form-item>
 
       <el-form-item>
-        <el-select v-model="sortIndex" placeholder="码排序" clearable>
+        <el-select v-model="sortIndex" :placeholder="$t('码排序')" clearable>
           <el-option
             v-for="item in sortIndexOptions"
             :key="item.value"
-            :label="item.label"
+            :label="$t(item.label)"
             :value="item.value">
           </el-option>
         </el-select>
       </el-form-item>
 
       <el-form-item>
-        <el-button @click="getDataList()">查询</el-button>
-        <el-button type="primary" @click="cddevicesUpdateAppCardHandle()" :disabled="dataListSelections.length <= 0">app更新</el-button>
-        <el-button type="primary" @click="initHandle()" :disabled="dataListSelections.length <= 0">批量初始化</el-button>
-        <el-button type="primary" @click="withBlack()" :disabled="dataListSelections.length <= 0">号码拉黑</el-button>
-        <el-button type="primary" @click="getCode()" :disabled="dataListSelections.length <= 0">项目切换</el-button>
-        <el-button type="primary" @click="rebootHandler()" :disabled="dataListSelections.length <= 0">批量重启</el-button>
-        <el-button type="primary" @click="updateBatchHandler(null,1)" :disabled="dataListSelections.length <= 0">批量闲置</el-button>
-        <el-button type="primary" @click="updateBatchHandler(null,3)" :disabled="dataListSelections.length <= 0">批量工作</el-button>
-        <el-button type="primary" @click="releaseMobileAllHandler()" :disabled="dataListSelections.length <= 0">释放卡</el-button>
-        <el-button type="primary" @click="cddevicesGroupChangeHandle()" :disabled="dataListSelections.length <= 0">分组</el-button>
+        <el-button @click="getDataList()">{{$t("查询")}}</el-button>
+        <el-button type="primary" @click="cddevicesUpdateAppCardHandle()" :disabled="dataListSelections.length <= 0">{{$t('app更新')}}</el-button>
+        <el-button type="primary" @click="initHandle()" :disabled="dataListSelections.length <= 0">{{$t('批量初始化')}}</el-button>
+        <el-button type="primary" @click="withBlack()" :disabled="dataListSelections.length <= 0">{{$t('号码拉黑')}}</el-button>
+        <el-button type="primary" @click="getCode()" :disabled="dataListSelections.length <= 0">{{$t('项目切换')}}</el-button>
+        <el-button type="primary" @click="rebootHandler()" :disabled="dataListSelections.length <= 0">{{$t('批量重启')}}</el-button>
+        <el-button type="primary" @click="updateBatchHandler(null,1)" :disabled="dataListSelections.length <= 0">{{$t('批量闲置')}}</el-button>
+        <el-button type="primary" @click="updateBatchHandler(null,3)" :disabled="dataListSelections.length <= 0">{{$t('批量工作')}}</el-button>
+        <el-button type="primary" @click="releaseMobileAllHandler()" :disabled="dataListSelections.length <= 0">{{$t('释放卡')}}</el-button>
+        <el-button type="primary" @click="cddevicesGroupChangeHandle()" :disabled="dataListSelections.length <= 0">{{$t('分组')}}</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -96,33 +93,33 @@
         prop="number"
         header-align="center"
         align="center"
-        label="编号">
+        :label="$t('编号')">
       </el-table-column>
       <el-table-column
         prop="deviceId"
         header-align="center"
         align="center"
-        label="设备id">
+        :label="$t('设备id')">
       </el-table-column>
       <el-table-column
         prop="packageVersion"
         header-align="center"
         align="center"
-        label="版本号">
+        :label="$t('版本号')">
       </el-table-column>
 
       <el-table-column
         prop="phoneGetTime"
         header-align="center"
         align="center"
-        label="取码时间">
+        :label="$t('取码时间')">
       </el-table-column>
 
       <el-table-column
         prop="workFq"
         header-align="center"
         align="center"
-        label="当前板">
+        :label="$t('当前板')">
         <template slot-scope="scope">
           {{scope.row.heartbeatRequest == null ? 1 : scope.row.heartbeatRequest.workFq}}
         </template>
@@ -131,7 +128,7 @@
         prop="fq"
         header-align="center"
         align="center"
-        label="板子数">
+        :label="$t('板子数')">
         <template slot-scope="scope">
           {{scope.row.heartbeatRequest == null ? 1 : scope.row.heartbeatRequest.fq}}
         </template>
@@ -140,7 +137,7 @@
         prop="initSuccessNumber"
         header-align="center"
         align="center"
-        label="初始化比例">
+        :label="$t('初始化比例')">
         <template slot-scope="scope">
           ({{scope.row.initSuccessNumber}}/{{scope.row.initTotalNumber}})
         </template>
@@ -149,34 +146,40 @@
         prop="onlineStr"
         header-align="center"
         align="center"
-        label="是否在线">
+        :label="$t('是否在线')">
+        <template slot-scope="scope">
+          {{$t(scope.row.onlineStr)}}
+        </template>
       </el-table-column>
       <el-table-column
         prop="workTypeStr"
         header-align="center"
         align="center"
-        label="工作流程">
+        :label="$t('工作流程')">
+        <template slot-scope="scope">
+          {{$t(scope.row.workTypeStr)}}
+        </template>
       </el-table-column>
 
       <el-table-column
         prop="userId"
         header-align="center"
         align="center"
-        label="用户id">
+        :label="$t('用户')">
       </el-table-column>
 
       <el-table-column
         prop="projectId"
         header-align="center"
         align="center"
-        label="项目id">
+        :label="$t('项目id')">
       </el-table-column>
 
       <el-table-column
         prop="phone"
         header-align="center"
         align="center"
-        label="phone">
+        :label="$t('phone')">
       </el-table-column>
       <el-table-column
         prop="iccid"
@@ -192,12 +195,12 @@
         width="150"
         label="操作">
         <template slot-scope="scope">
-          <el-button type="text" size="small" @click="initHandle(scope.row.id)">初始化</el-button>
-          <el-button type="text" size="small" @click="rebootHandler(scope.row.id)">重启</el-button>
-          <el-button type="text" size="small" @click="updateBatchHandler(scope.row.id,1)">闲置</el-button>
-          <el-button type="text" size="small" @click="updateBatchHandler(scope.row.id,3)">工作</el-button>
-          <el-button type="text" size="small" @click="cddevicesChangeCardHandle(scope.row.id)">切换卡</el-button>
-          <el-button type="text" size="small" @click="cardListVisibleHandle(scope.row.deviceId)">卡详情</el-button>
+          <el-button type="text" size="small" @click="initHandle(scope.row.id)">{{$t('初始化')}}</el-button>
+          <el-button type="text" size="small" @click="rebootHandler(scope.row.id)">{{$t('重启')}}</el-button>
+          <el-button type="text" size="small" @click="updateBatchHandler(scope.row.id,1)">{{$t('闲置')}}</el-button>
+          <el-button type="text" size="small" @click="updateBatchHandler(scope.row.id,3)">{{$t('工作')}}</el-button>
+          <el-button type="text" size="small" @click="cddevicesChangeCardHandle(scope.row.id)">{{$t('切换卡')}}</el-button>
+          <el-button type="text" size="small" @click="cardListVisibleHandle(scope.row.deviceId)">{{$t('卡详情')}}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -334,11 +337,18 @@ export default {
       var ids = id ? [id] : this.dataListSelections.map(item => {
         return item.id
       })
-      this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '修改状态' : '批量修改状态'}]操作?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
+      this.$confirm(
+        `${this.$t('确定')}${this.$t('进行')}
+        ${
+          id ? this.$t('修改状态') : this.$t('批量修改状态')
+        }${this.$t('操作')}?`,
+          this.$t('提示'),
+        {
+          confirmButtonText: this.$t('确定'),
+          cancelButtonText: this.$t('取消'),
+          type: 'warning'
+        }
+      ).then(() => {
         this.$http({
           url: this.$http.adornUrl('/ltt/cddevices/updateBatch'),
           method: 'post',
@@ -366,11 +376,18 @@ export default {
       var ids = id ? [id] : this.dataListSelections.map(item => {
         return item.id
       })
-      this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '释放' : '批量释放状态'}]操作?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
+      this.$confirm(
+        `${this.$t('确定')}${this.$t('进行')}
+        ${
+          id ? this.$t('释放') : this.$t('批量释放状态')
+        }${this.$t('操作')}?`,
+        this.$t('提示'),
+        {
+          confirmButtonText: this.$t('确定'),
+          cancelButtonText: this.$t('取消'),
+          type: 'warning'
+        }
+      ).then(() => {
         this.$http({
           url: this.$http.adornUrl('/ltt/cdcardlock/releaseMobileAll'),
           method: 'post',
@@ -398,11 +415,18 @@ export default {
       var ids = id ? [id] : this.dataListSelections.map(item => {
         return item.id
       })
-      this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '重启' : '批量重启'}]操作?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
+      this.$confirm(
+        `${this.$t('确定')}${this.$t('进行')}
+        ${
+          id ? this.$t('重启') : this.$t('批量重启')
+        }${this.$t('操作')}?`,
+        this.$t('提示'),
+        {
+          confirmButtonText: this.$t('确定'),
+          cancelButtonText: this.$t('取消'),
+          type: 'warning'
+        }
+      ).then(() => {
         this.$http({
           url: this.$http.adornUrl('/ltt/cddevices/reboot'),
           method: 'post',
@@ -451,11 +475,18 @@ export default {
       var ids = id ? [id] : this.dataListSelections.map(item => {
         return item.id
       })
-      this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '重置接码' : '批量重置接码'}]操作?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
+      this.$confirm(
+        `${this.$t('确定')}${this.$t('进行')}
+        ${
+          id ? this.$t('重置接码') : this.$t('批量重置接码')
+        }${this.$t('操作')}?`,
+        this.$t('提示'),
+        {
+          confirmButtonText: this.$t('确定'),
+          cancelButtonText: this.$t('取消'),
+          type: 'warning'
+        }
+      ).then(() => {
         this.$http({
           url: this.$http.adornUrl('/ltt/cddevices/getCode'),
           method: 'post',
@@ -480,11 +511,18 @@ export default {
       var ids = id ? [id] : this.dataListSelections.map(item => {
         return item.id
       })
-      this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '初始化' : '批量初始化'}]操作?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
+      this.$confirm(
+        `${this.$t('确定')}${this.$t('进行')}
+        ${
+          id ? this.$t('初始化') : this.$t('批量初始化')
+        }${this.$t('操作')}?`,
+        this.$t('提示'),
+        {
+          confirmButtonText: this.$t('确定'),
+          cancelButtonText: this.$t('取消'),
+          type: 'warning'
+        }
+      ).then(() => {
         this.$http({
           url: this.$http.adornUrl('/ltt/cddevices/initCard3'),
           method: 'post',
@@ -509,11 +547,18 @@ export default {
       var ids = id ? [id] : this.dataListSelections.map(item => {
         return item.id
       })
-      this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '初始化' : '批量初始化'}]操作?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
+      this.$confirm(
+        `${this.$t('确定')}${this.$t('进行')}
+        ${
+          id ? this.$t('初始化') : this.$t('批量初始化')
+        }${this.$t('操作')}?`,
+        this.$t('提示'),
+        {
+          confirmButtonText: this.$t('确定'),
+          cancelButtonText: this.$t('取消'),
+          type: 'warning'
+        }
+      ).then(() => {
         this.$http({
           url: this.$http.adornUrl('/ltt/cddevices/withBlack'),
           method: 'post',
@@ -538,11 +583,18 @@ export default {
       var ids = id ? [id] : this.dataListSelections.map(item => {
         return item.id
       })
-      this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '初始化' : '批量初始化'}]操作?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
+      this.$confirm(
+        `${this.$t('确定')}${this.$t('进行')}
+        ${
+          id ? this.$t('初始化') : this.$t('批量初始化')
+        }${this.$t('操作')}?`,
+        this.$t('提示'),
+        {
+          confirmButtonText: this.$t('确定'),
+          cancelButtonText: this.$t('取消'),
+          type: 'warning'
+        }
+      ).then(() => {
         this.$http({
           url: this.$http.adornUrl('/ltt/cddevices/phoneDeleteAll'),
           method: 'post',
@@ -678,11 +730,18 @@ export default {
       var ids = id ? [id] : this.dataListSelections.map(item => {
         return item.id
       })
-      this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
+      this.$confirm(
+        `${this.$t('确定')}${this.$t('进行')}
+        ${
+          id ? this.$t('删除') : this.$t('批量删除')
+        }${this.$t('操作')}?`,
+        this.$t('提示'),
+        {
+          confirmButtonText: this.$t('确定'),
+          cancelButtonText: this.$t('取消'),
+          type: 'warning'
+        }
+      ).then(() => {
         this.$http({
           url: this.$http.adornUrl('/ltt/cddevices/delete'),
           method: 'post',
@@ -731,6 +790,17 @@ export default {
           }
         })
       })
+    },
+    translateGroup (groupName) {
+      // 动态地从 vue-i18n 的资源文件中获取翻译，并插入 'group' 的翻译
+      console.log(groupName)
+      console.log(this.$t(groupName))
+      var temp = '组'
+      groupName = this.$t(groupName)
+      if (!groupName.includes(temp)) {
+        return groupName
+      }
+      return this.$t(groupName.replace(temp, '-' + this.$t(temp)))
     }
   }
 }

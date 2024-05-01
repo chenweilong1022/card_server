@@ -8,7 +8,7 @@
         class="site-sidebar__menu">
         <el-menu-item index="home" @click="$router.push({ name: 'home' })">
           <icon-svg name="shouye" class="site-sidebar__menu-icon"></icon-svg>
-          <span slot="title">首页</span>
+          <span slot="title">{{$t('首页')}}</span>
         </el-menu-item>
         <!--<el-submenu index="demo">-->
           <!--<template slot="title">-->

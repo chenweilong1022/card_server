@@ -4,7 +4,7 @@
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-    <el-form-item label="设备id" prop="iccid">
+    <el-form-item :label="$t('设备id')" prop="iccid">
       <el-input v-model="dataForm.iccid" placeholder="设备id"></el-input>
     </el-form-item>
 

@@ -4,25 +4,25 @@
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-    <el-form-item label="设备id" prop="deviceId">
+    <el-form-item :label="$t('设备id')" prop="deviceId">
       <el-input v-model="dataForm.deviceId" placeholder="设备id"></el-input>
     </el-form-item>
-    <el-form-item label="板子" prop="boardIndexed">
+    <el-form-item :label="$t('板子')" prop="boardIndexed">
       <el-input v-model="dataForm.boardIndexed" placeholder="板子"></el-input>
     </el-form-item>
-    <el-form-item label="卡下标" prop="indexed">
+    <el-form-item :label="$t('卡下标')" prop="indexed">
       <el-input v-model="dataForm.indexed" placeholder="卡下标"></el-input>
     </el-form-item>
-    <el-form-item label="手机号" prop="phone">
-      <el-input v-model="dataForm.phone" placeholder="手机号"></el-input>
+    <el-form-item :label="$t('手机号')" prop="phone">
+      <el-input v-model="dataForm.phone" :placeholder="$t('手机号')"></el-input>
     </el-form-item>
-    <el-form-item label="卡的iccid" prop="iccid">
+    <el-form-item :label="$t('卡的iccid')" prop="iccid">
       <el-input v-model="dataForm.iccid" placeholder="卡的iccid"></el-input>
     </el-form-item>
     <el-form-item label="删除标志" prop="deleteFlag">
       <el-input v-model="dataForm.deleteFlag" placeholder="删除标志"></el-input>
     </el-form-item>
-    <el-form-item label="创建时间" prop="createTime">
+    <el-form-item :label="$t('创建时间')" prop="createTime">
       <el-input v-model="dataForm.createTime" placeholder="创建时间"></el-input>
     </el-form-item>
     </el-form>

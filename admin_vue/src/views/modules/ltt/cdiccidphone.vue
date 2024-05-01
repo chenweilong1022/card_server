@@ -36,7 +36,7 @@
       </el-form-item>
 
       <el-form-item>
-        <el-button @click="getDataList()">查询</el-button>
+        <el-button @click="getDataList()">{{$t("查询")}}</el-button>
         <el-button @click="exportTxt()">导出</el-button>
         <el-button @click="refreshPhoneHandler()">更新手机号</el-button>
       </el-form-item>
@@ -57,13 +57,13 @@
         prop="phone"
         header-align="center"
         align="center"
-        label="手机号">
+        :label="$t('手机号')">
       </el-table-column>
       <el-table-column
         prop="iccid"
         header-align="center"
         align="center"
-        label="卡的iccid">
+        :label="$t('卡的iccid')">
       </el-table-column>
       <el-table-column
         prop="ussdMsg"

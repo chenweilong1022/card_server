@@ -49,7 +49,7 @@
       </el-form-item>
 
 
-      <el-form-item label="项目id" prop="projectId"  v-if="type === 2">
+      <el-form-item :label="$t('项目id')" prop="projectId"  v-if="type === 2">
         <el-select v-model="dataForm.projectId" placeholder="平台" clearable>
           <el-option
             v-for="item in projectDataList"
@@ -62,7 +62,7 @@
       <el-form-item label="手机号前缀" prop="phonePre"  v-if="type === 2">
         <el-input v-model="dataForm.phonePre" placeholder="手机号前缀"></el-input>
       </el-form-item>
-      <el-form-item label="用户id" prop="userId" v-if="type === 2">
+      <el-form-item :label="$t('用户')" prop="userId" v-if="type === 2">
         <el-input v-model="dataForm.userId" placeholder="用户id" readonly></el-input>
       </el-form-item>
       <el-form-item label="取码类型" prop="codeAcquisitionType" v-if="type === 2">

@@ -13,7 +13,7 @@
       </el-form-item>
       <el-form-item label="ussd" prop="ussd">
 <!--        <el-input v-model="dataForm.ussd" placeholder="ussd"></el-input>-->
-        <el-select v-model="dataForm.ussd" placeholder="工作流程" clearable>
+        <el-select v-model="dataForm.ussd" :placeholder="$t('工作流程')" clearable>
           <el-option
             v-for="item in bh"
             :key="item"

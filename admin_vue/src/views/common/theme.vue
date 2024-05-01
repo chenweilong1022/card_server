@@ -13,6 +13,12 @@
         <el-radio label="dark" border>dark</el-radio>
       </el-radio-group>
     </el-form-item>
+    <el-form-item label="语言">
+      <el-radio-group v-model="selectValue" @change="langChange">
+        <el-radio label="zh">简体中文</el-radio>
+        <el-radio label="km">កម្ពុជា។</el-radio>
+      </el-radio-group>
+    </el-form-item>
   </el-form>
 </template>
 
@@ -26,6 +32,22 @@
       sidebarLayoutSkin: {
         get () { return this.$store.state.common.sidebarLayoutSkin },
         set (val) { this.$store.commit('common/updateSidebarLayoutSkin', val) }
+      }
+    },
+    created () {
+      this.selectValue = localStorage.lang === undefined ? 'zh' : localStorage.lang
+    },
+    data () {
+      return {
+        selectValue: ''
+      }
+    },
+    methods: {
+      // 语言切换
+      langChange (e) {
+        console.log(e)
+        localStorage.setItem('lang', e)
+        this.$i18n.locale = e
       }
     }
   }
