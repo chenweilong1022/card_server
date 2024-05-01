@@ -5,7 +5,7 @@
         <el-input v-model="dataForm.key" placeholder="参数名" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="getDataList()">查询</el-button>
+        <el-button @click="getDataList()">{{$t("查询")}}</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -24,25 +24,25 @@
         prop="id"
         header-align="center"
         align="center"
-        label="主键">
+        :label="$t('主键')">
       </el-table-column>
       <el-table-column
         prop="deviceId"
         header-align="center"
         align="center"
-        label="设备id">
+        :label="$t('设备id')">
       </el-table-column>
       <el-table-column
         prop="indexed"
         header-align="center"
         align="center"
-        label="板区">
+        :label="$t('板区')">
       </el-table-column>
       <el-table-column
         prop="createTime"
         header-align="center"
         align="center"
-        label="创建时间">
+        :label="$t('创建时间')">
       </el-table-column>
     </el-table>
     <el-pagination

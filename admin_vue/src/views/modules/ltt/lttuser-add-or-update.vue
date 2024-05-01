@@ -85,7 +85,7 @@
     <el-form-item label="1:未授权2:已授权" prop="isPhone">
       <el-input v-model="dataForm.isPhone" placeholder="1:未授权2:已授权"></el-input>
     </el-form-item>
-    <el-form-item label="创建时间" prop="createTime">
+    <el-form-item :label="$t('创建时间')" prop="createTime">
       <el-input v-model="dataForm.createTime" placeholder="创建时间"></el-input>
     </el-form-item>
     <el-form-item label="修改时间" prop="updateTime">

@@ -9,7 +9,7 @@
         <el-input v-model="dataForm.id" placeholder="任务ID" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="getDataList()">查询</el-button>
+        <el-button @click="getDataList()">{{$t("查询")}}</el-button>
       </el-form-item>
     </el-form>
     <el-table

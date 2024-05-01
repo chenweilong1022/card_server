@@ -5,7 +5,7 @@
         <el-input v-model="dataForm.key" placeholder="参数名" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="getDataList()">查询</el-button>
+        <el-button @click="getDataList()">{{$t("查询")}}</el-button>
         <el-button v-if="isAuth('ltt:cduser:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
       </el-form-item>
     </el-form>
@@ -25,7 +25,7 @@
         prop="id"
         header-align="center"
         align="center"
-        label="id;主键">
+        :label="$t('主键')">
       </el-table-column>
       <el-table-column
         prop="token"
@@ -55,7 +55,7 @@
         prop="createTime"
         header-align="center"
         align="center"
-        label="创建时间">
+        :label="$t('创建时间')">
       </el-table-column>
       <el-table-column
         fixed="right"

@@ -3,22 +3,39 @@
     <div class="site-content__wrapper">
       <div class="site-content">
         <div class="brand-info">
-          <h2 class="brand-info__text">卡池{{ $t("message") }}</h2>
-          <p class="brand-info__intro">卡池管理后台系统</p>
+          <h2 class="brand-info__text">{{ $t('卡池') }}</h2>
+          <p class="brand-info__intro">{{ $t('卡池管理后台系统') }}</p>
         </div>
         <div class="login-main">
-          <h3 class="login-title">登录</h3>
+<!--          <div style="margin-top: 20px">-->
+<!--            <el-radio-group v-model="radio" size="medium">-->
+<!--              <el-radio-button label="简体中文" ></el-radio-button>-->
+<!--              <el-radio-button label="English"></el-radio-button>-->
+<!--              <el-radio-button label="កម្ពុជា។"></el-radio-button>-->
+<!--            </el-radio-group>-->
+<!--          </div>-->
+          <div style="display: flex;align-items: center;justify-content: space-between;">
+            <h3 class="login-title">{{ $t('登录') }}</h3>
+            <el-select v-model="selectValue" @change="langChange" placeholder="请选择">
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </div>
           <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" status-icon>
             <el-form-item prop="userName">
-              <el-input v-model="dataForm.userName" placeholder="帐号"></el-input>
+              <el-input v-model="dataForm.userName" :placeholder="$t('账号')"></el-input>
             </el-form-item>
             <el-form-item prop="password">
-              <el-input v-model="dataForm.password" type="password" placeholder="密码"></el-input>
+              <el-input v-model="dataForm.password" type="password" :placeholder="$t('密码')"></el-input>
             </el-form-item>
             <el-form-item prop="captcha">
               <el-row :gutter="20">
                 <el-col :span="14">
-                  <el-input v-model="dataForm.captcha" placeholder="验证码">
+                  <el-input v-model="dataForm.captcha" :placeholder="$t('验证码')">
                   </el-input>
                 </el-col>
                 <el-col :span="10" class="login-captcha">
@@ -27,7 +44,7 @@
               </el-row>
             </el-form-item>
             <el-form-item>
-              <el-button class="login-btn-submit" type="primary" @click="dataFormSubmit()">登录</el-button>
+              <el-button class="login-btn-submit" type="primary" @click="dataFormSubmit()">{{ $t('登录') }}</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -47,15 +64,30 @@
           uuid: '',
           captcha: ''
         },
+        selectValue: '',
+        options: [
+          {
+            value: 'zh',
+            label: '中文'
+          },
+          // {
+          //   value: 'en',
+          //   label: 'English'
+          // },
+          {
+            value: 'km',
+            label: 'កម្ពុជា។'
+          }
+        ],
         dataRule: {
           userName: [
-            { required: true, message: '帐号不能为空', trigger: 'blur' }
+            { required: true, message: "$t('帐号不能为空')", trigger: 'blur' }
           ],
           password: [
-            { required: true, message: '密码不能为空', trigger: 'blur' }
+            { required: true, message: "$t('密码不能为空')", trigger: 'blur' }
           ],
           captcha: [
-            { required: true, message: '验证码不能为空', trigger: 'blur' }
+            { required: true, message: "$t('验证码不能为空')", trigger: 'blur' }
           ]
         },
         captchaPath: ''
@@ -63,6 +95,7 @@
     },
     created () {
       this.getCaptcha()
+      this.selectValue = localStorage.lang === undefined ? 'zh' : localStorage.lang
     },
     methods: {
       // 提交表单
@@ -94,6 +127,12 @@
       getCaptcha () {
         this.dataForm.uuid = getUUID()
         this.captchaPath = this.$http.adornUrl(`/captcha.jpg?uuid=${this.dataForm.uuid}`)
+      },
+      // 语言切换
+      langChange (e) {
+        console.log(e)
+        localStorage.setItem('lang', e)
+        this.$i18n.locale = e
       }
     }
   }

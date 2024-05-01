@@ -10,25 +10,25 @@
     <el-form-item label="短信" prop="code">
       <el-input v-model="dataForm.code" placeholder="短信"></el-input>
     </el-form-item>
-    <el-form-item label="用户id" prop="userId">
+    <el-form-item :label="$t('用户')" prop="userId">
       <el-input v-model="dataForm.userId" placeholder="用户id"></el-input>
     </el-form-item>
-    <el-form-item label="项目id" prop="projectId">
+    <el-form-item :label="$t('项目id')" prop="projectId">
       <el-input v-model="dataForm.projectId" placeholder="项目id"></el-input>
     </el-form-item>
-    <el-form-item label="设备id" prop="deviceId">
+    <el-form-item :label="$t('设备id')" prop="deviceId">
       <el-input v-model="dataForm.deviceId" placeholder="设备id"></el-input>
     </el-form-item>
-    <el-form-item label="手机号" prop="phone">
-      <el-input v-model="dataForm.phone" placeholder="手机号"></el-input>
+    <el-form-item :label="$t('手机号')" prop="phone">
+      <el-input v-model="dataForm.phone" :placeholder="$t('手机号')"></el-input>
     </el-form-item>
-    <el-form-item label="卡的iccid" prop="iccid">
+    <el-form-item :label="$t('卡的iccid')" prop="iccid">
       <el-input v-model="dataForm.iccid" placeholder="卡的iccid"></el-input>
     </el-form-item>
     <el-form-item label="删除标志" prop="deleteFlag">
       <el-input v-model="dataForm.deleteFlag" placeholder="删除标志"></el-input>
     </el-form-item>
-    <el-form-item label="创建时间" prop="createTime">
+    <el-form-item :label="$t('创建时间')" prop="createTime">
       <el-input v-model="dataForm.createTime" placeholder="创建时间"></el-input>
     </el-form-item>
     </el-form>

@@ -21,7 +21,7 @@
       </el-form-item>
 
       <el-form-item>
-        <el-button @click="getDataList()">查询</el-button>
+        <el-button @click="getDataList()">{{$t("查询")}}</el-button>
         <el-button v-if="isAuth('ltt:cdproject:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
         <el-button v-if="isAuth('ltt:cdproject:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
         <el-button v-if="isAuth('ltt:cdproject:delete')" type="danger" @click="auditHandle(null,3,'批量审核通过')" :disabled="dataListSelections.length <= 0">批量通过</el-button>
@@ -44,7 +44,7 @@
         prop="id"
         header-align="center"
         align="center"
-        label="id;主键">
+        :label="$t('主键')">
       </el-table-column>
       <el-table-column
         prop="name"
@@ -74,7 +74,7 @@
         prop="createTime"
         header-align="center"
         align="center"
-        label="创建时间">
+        :label="$t('创建时间')">
       </el-table-column>
       <el-table-column
         fixed="right"

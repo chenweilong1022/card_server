@@ -4,13 +4,13 @@
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-    <el-form-item label="手机号" prop="phone">
-      <el-input v-model="dataForm.phone" placeholder="手机号"></el-input>
+    <el-form-item :label="$t('手机号')" prop="phone">
+      <el-input v-model="dataForm.phone" :placeholder="$t('手机号')"></el-input>
     </el-form-item>
     <el-form-item label="删除标志" prop="deleteFlag">
       <el-input v-model="dataForm.deleteFlag" placeholder="删除标志"></el-input>
     </el-form-item>
-    <el-form-item label="创建时间" prop="createTime">
+    <el-form-item :label="$t('创建时间')" prop="createTime">
       <el-input v-model="dataForm.createTime" placeholder="创建时间"></el-input>
     </el-form-item>
     </el-form>

@@ -16,8 +16,8 @@
       <el-form-item label="邮箱" prop="email">
         <el-input v-model="dataForm.email" placeholder="邮箱"></el-input>
       </el-form-item>
-      <el-form-item label="手机号" prop="mobile">
-        <el-input v-model="dataForm.mobile" placeholder="手机号"></el-input>
+      <el-form-item :label="$t('手机号')" prop="mobile">
+        <el-input v-model="dataForm.mobile" :placeholder="$t('手机号')"></el-input>
       </el-form-item>
       <el-form-item label="角色" size="mini" prop="roleIdList">
         <el-checkbox-group v-model="dataForm.roleIdList">

@@ -5,7 +5,7 @@
         <el-input v-model="dataForm.key" placeholder="参数名" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="getDataList()">查询</el-button>
+        <el-button @click="getDataList()">{{$t("查询")}}</el-button>
         <el-button v-if="isAuth('ltt:cdprojectsmsrecord:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
         <el-button v-if="isAuth('ltt:cdprojectsmsrecord:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
@@ -26,7 +26,7 @@
         prop="id"
         header-align="center"
         align="center"
-        label="主键">
+        :label="$t('主键')">
       </el-table-column>
       <el-table-column
         prop="key"
@@ -44,31 +44,31 @@
         prop="userId"
         header-align="center"
         align="center"
-        label="用户id">
+        :label="$t('用户')">
       </el-table-column>
       <el-table-column
         prop="projectId"
         header-align="center"
         align="center"
-        label="项目id">
+        :label="$t('项目id')">
       </el-table-column>
       <el-table-column
         prop="deviceId"
         header-align="center"
         align="center"
-        label="设备id">
+        :label="$t('设备id')">
       </el-table-column>
       <el-table-column
         prop="phone"
         header-align="center"
         align="center"
-        label="手机号">
+        :label="$t('手机号')">
       </el-table-column>
       <el-table-column
         prop="iccid"
         header-align="center"
         align="center"
-        label="卡的iccid">
+        :label="$t('卡的iccid')">
       </el-table-column>
       <el-table-column
         prop="deleteFlag"
@@ -80,7 +80,7 @@
         prop="createTime"
         header-align="center"
         align="center"
-        label="创建时间">
+        :label="$t('创建时间')">
       </el-table-column>
       <el-table-column
         fixed="right"
