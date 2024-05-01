@@ -1,13 +1,19 @@
 package io.renren.modules.ltt.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.github.benmanes.caffeine.cache.Cache;
 import io.renren.common.validator.Assert;
 import io.renren.datasources.annotation.Game;
+import io.renren.modules.ltt.entity.CdRechargedPhoneEntity;
 import io.renren.modules.ltt.enums.ExpireTimeStatus;
 import io.renren.modules.ltt.enums.ExportStatus;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -25,15 +31,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
 @Service("cdIccidPhoneService")
 @Game
+@Slf4j
 public class CdIccidPhoneServiceImpl extends ServiceImpl<CdIccidPhoneDao, CdIccidPhoneEntity> implements CdIccidPhoneService {
 
     @Override
@@ -132,6 +136,26 @@ public class CdIccidPhoneServiceImpl extends ServiceImpl<CdIccidPhoneDao, CdIcci
                 exportList.add(phone);
             }
         }
+    }
+
+
+    @Resource(name = "mapCache")
+    private Cache<String, Map<String,String>> mapCache;
+    @Resource(name = "mapDateCache")
+    private Cache<String, Map<String,Date>> mapDateCache;
+
+    //缓存所有已经充值过的手机号
+    @EventListener
+    @Order(value = 9998)
+    public void handlerApplicationReadyEvent1(ApplicationReadyEvent event) {
+        log.info("123");
+        List<CdIccidPhoneEntity> list = this.list();
+        log.info("456");
+        Map<String, String> stringStringMap = list.stream().collect(Collectors.toMap(CdIccidPhoneEntity::getIccid, CdIccidPhoneEntity::getPhone,(a,b) -> a));
+        mapCache.put("mapCache",stringStringMap);
+
+        Map<String, Date> collect = list.stream().filter(item -> ObjectUtil.isNotNull(item.getExpireTime())).collect(Collectors.toMap(CdIccidPhoneEntity::getIccid, CdIccidPhoneEntity::getExpireTime,(a,b) -> a));
+        mapDateCache.put("mapDateCache",collect);
     }
 
 }

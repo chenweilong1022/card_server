@@ -1,12 +1,12 @@
 project:
     host:
-        name: ${PROJECT_HOST_NAME:127.0.0.1}
+        name: ${PROJECT_HOST_NAME:localhost}
     mysql:
-        hostname: ${PROJECT_MYSQL_HOSTNAME:127.0.0.1}
-        port: ${PROJECT_MYSQL_PORT:3306}
+        hostname: ${PROJECT_MYSQL_HOSTNAME:localhost}
+        port: ${PROJECT_MYSQL_PORT:3308}
         url: ${project.mysql.hostname}:${project.mysql.port}
         username: ${PROJECT_MYSQL_USERNAME:root}
-        password: ${PROJECT_MYSQL_PASSWORD:123456}
+        password: ${PROJECT_MYSQL_PASSWORD:SEW2018!}
     admin:
         mysql:
             hostname: ${PROJECT_ADMIN_MYSQL_HOSTNAME:${project.mysql.hostname}}
@@ -14,18 +14,18 @@ project:
             url: ${project.admin.mysql.hostname}:${project.admin.mysql.port}
             username: ${PROJECT_ADMIN_MYSQL_USERNAME:${project.mysql.username}}
             password: ${PROJECT_ADMIN_MYSQL_PASSWORD:${project.mysql.password}}
-    auth:
+    game:
         mysql:
-            hostname: ${PROJECT_AUTH_MYSQL_HOSTNAME:${project.mysql.hostname}}
-            #            port: ${PROJECT_AUTH_MYSQL_PORT:${project.mysql.port}}
-            port: ${PROJECT_AUTH_MYSQL_PORT:23306}
-            url: ${project.auth.mysql.hostname}:${project.auth.mysql.port}
-            username: ${PROJECT_AUTH_MYSQL_USERNAME:${project.mysql.username}}
-            password: ${PROJECT_AUTH_MYSQL_PASSWORD:${project.mysql.password}}
+            hostname: ${PROJECT_GAME_MYSQL_HOSTNAME:${project.mysql.hostname}}
+            port: ${PROJECT_GAME_MYSQL_PORT:${project.mysql.port}}
+            #            port: ${PROJECT_GAME_MYSQL_PORT:23306}
+            url: ${project.game.mysql.hostname}:${project.game.mysql.port}
+            username: ${PROJECT_GAME_MYSQL_USERNAME:${project.mysql.username}}
+            password: ${PROJECT_GAME_MYSQL_PASSWORD:${project.mysql.password}}
     log:
-        file: ${PROJECT_LOG_PATH:/home/web/same_bpool/logs/}
+        file: ${PROJECT_LOG_PATH:D:/Users/Admin/IdeaProjects/card_server/logs/}
     file:
-        saveurl: ${PROJECT_FILE_SAVEURL:/home/web/same_bpool/file/}
+        saveurl: ${PROJECT_FILE_SAVEURL:D:/Users/Admin/IdeaProjects/card_server/file/}
 logging:
     file: ${project.log.file}/logs.log
 file:
@@ -63,13 +63,14 @@ spring:
             datasource:
                 # admin 数据源配置
                 admin:
-                    url: jdbc:mysql://${project.admin.mysql.url}/admin?useUnicode=true&characterEncoding=UTF-8&useSSL=false&useTimezone=true&serverTimezone=GMT%2B8
+                    url: jdbc:mysql://${project.admin.mysql.url}/card?useUnicode=true&characterEncoding=UTF-8&useSSL=false&useTimezone=true&serverTimezone=GMT%2B8&rewriteBatchedStatements=true&allowPublicKeyRetrieval=true
                     driver-class-name: com.mysql.cj.jdbc.Driver
                     username: ${project.admin.mysql.username}
                     password: ${project.admin.mysql.password}
-                # auth 数据源配置
-                auth:
-                    url: jdbc:mysql://${project.auth.mysql.url}/auth?useUnicode=true&characterEncoding=UTF-8&useSSL=false&useTimezone=true&serverTimezone=GMT%2B8
+                # game 数据源配置
+                game:
+                    url: jdbc:mysql://${project.game.mysql.url}/card?useUnicode=true&characterEncoding=UTF-8&useSSL=false&useTimezone=true&serverTimezone=GMT%2B8&rewriteBatchedStatements=true&allowPublicKeyRetrieval=true
                     driver-class-name: com.mysql.cj.jdbc.Driver
-                    username: ${project.auth.mysql.username}
-                    password: ${project.auth.mysql.password}
+                    username: ${project.game.mysql.username}
+                    password: ${project.game.mysql.password}
+
