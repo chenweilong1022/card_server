@@ -11,6 +11,7 @@ import io.renren.modules.ltt.entity.CdIccidPhoneEntity;
 import io.renren.modules.ltt.service.CdIccidPhoneService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -28,8 +29,8 @@ import java.util.List;
 @Component
 @Slf4j
 @EnableAsync
+@Profile({"prod"})
 public class ExpireTimeTask {
-
 
     @Autowired
     private CdIccidPhoneService cdIccidPhoneService;
