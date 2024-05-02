@@ -74,6 +74,7 @@
         <el-button type="primary" @click="updateBatchHandler(null,1)" :disabled="dataListSelections.length <= 0">{{$t('批量闲置')}}</el-button>
         <el-button type="primary" @click="updateBatchHandler(null,3)" :disabled="dataListSelections.length <= 0">{{$t('批量工作')}}</el-button>
         <el-button type="primary" @click="releaseMobileAllHandler()" :disabled="dataListSelections.length <= 0">{{$t('释放卡')}}</el-button>
+        <el-button type="primary" @click="findNoTimeHandler()" :disabled="dataListSelections.length <= 0">查找无时间</el-button>
         <el-button type="primary" @click="cddevicesGroupChangeHandle()" :disabled="dataListSelections.length <= 0">{{$t('分组')}}</el-button>
       </el-form-item>
     </el-form>
@@ -395,6 +396,42 @@ export default {
             'ids': ids,
             'token': '545148dc498842ca8cea980b1a677b27'
           }
+        }).then(({data}) => {
+          if (data && data.code === 0) {
+            this.$message({
+              message: '操作成功',
+              type: 'success',
+              duration: 1500,
+              onClose: () => {
+                this.getDataList()
+              }
+            })
+          } else {
+            this.$message.error(data.msg)
+          }
+        })
+      })
+    },
+    findNoTimeHandler (id) {
+      var ids = id ? [id] : this.dataListSelections.map(item => {
+        return item.id
+      })
+      this.$confirm(
+        `${this.$t('确定')}${this.$t('进行')}
+        ${
+          id ? '查找无时间' : '查找无时间'
+        }${this.$t('操作')}?`,
+        this.$t('提示'),
+        {
+          confirmButtonText: this.$t('确定'),
+          cancelButtonText: this.$t('取消'),
+          type: 'warning'
+        }
+      ).then(() => {
+        this.$http({
+          url: this.$http.adornUrl('/ltt/cddevices/findNoTime'),
+          method: 'post',
+          data: this.$http.adornData(ids, false)
         }).then(({data}) => {
           if (data && data.code === 0) {
             this.$message({
