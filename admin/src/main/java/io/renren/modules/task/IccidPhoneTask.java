@@ -46,10 +46,10 @@ public class IccidPhoneTask {
         Boolean run = booleanCache.getIfPresent("run");
         if (Boolean.TRUE.equals(run)) {
             List<CdIccidPhoneEntity> list = cdIccidPhoneService.list();
-            Map<String, String> stringStringMap = list.stream().collect(Collectors.toMap(CdIccidPhoneEntity::getIccid, CdIccidPhoneEntity::getPhone));
+            Map<String, String> stringStringMap = list.stream().collect(Collectors.toMap(CdIccidPhoneEntity::getIccid, CdIccidPhoneEntity::getPhone,(a,b) -> a));
             mapCache.put("mapCache",stringStringMap);
 
-            Map<String, Date> collect = list.stream().collect(Collectors.toMap(CdIccidPhoneEntity::getIccid, CdIccidPhoneEntity::getExpireTime));
+            Map<String, Date> collect = list.stream().collect(Collectors.toMap(CdIccidPhoneEntity::getIccid, CdIccidPhoneEntity::getExpireTime,(a,b) -> a));
             mapDateCache.put("mapDateCache",collect);
 
             booleanCache.put("run",Boolean.FALSE);
