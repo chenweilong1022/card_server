@@ -24,6 +24,8 @@
                         phone
                         WHEN '无卡' THEN
                             NULL
+                        WHEN 'timeout' THEN
+                            NULL
                         WHEN '无信号' THEN
                             NULL
                         ELSE iccid
