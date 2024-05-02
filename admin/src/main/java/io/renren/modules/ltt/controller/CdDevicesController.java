@@ -254,6 +254,16 @@ public class CdDevicesController {
     }
 
     /**
+     * findNoTime
+     */
+    @RequestMapping("/findNoTime")
+    @RequiresPermissions("ltt:cddevices:delete")
+    public R findNoTime(@RequestBody Integer[] ids){
+        cdDevicesService.findNoTime(Arrays.asList(ids));
+        return R.ok();
+    }
+
+    /**
      * 更新app
      */
     @RequestMapping("/updateApp")
