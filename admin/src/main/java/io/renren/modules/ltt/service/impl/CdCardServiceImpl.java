@@ -1,8 +1,11 @@
 package io.renren.modules.ltt.service.impl;
 
+import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import com.github.benmanes.caffeine.cache.Cache;
+import io.renren.common.utils.DateThParse;
 import io.renren.datasources.annotation.Game;
 import io.renren.modules.app.dto.AppCdBoardUpdateBoardDTO;
 import io.renren.modules.app.dto.AppCdCardUpdateIccidDTO;
@@ -30,6 +33,7 @@ import io.renren.modules.ltt.service.CdCardService;
 import io.renren.modules.ltt.conver.CdCardConver;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -46,6 +50,8 @@ public class CdCardServiceImpl extends ServiceImpl<CdCardDao, CdCardEntity> impl
     private CdIccidPhoneService cdIccidPhoneService;
     @Autowired
     private CdDevicesService cdDevicesService;
+    @Resource(name = "booleanCache")
+    private Cache<String, Boolean> booleanCache;
 
 
     @Override
@@ -108,16 +114,6 @@ public class CdCardServiceImpl extends ServiceImpl<CdCardDao, CdCardEntity> impl
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void uploadIccid(AppCdCardUpdateIccidDTO iccidDTO) {
-
-//        CdCardEntity update = new CdCardEntity();
-//        update.setIccid(iccidDTO.getIccid());
-//        update.setPhone(iccidDTO.getPhone());
-//        this.update(update,new QueryWrapper<CdCardEntity>()
-//                .lambda().eq(CdCardEntity::getDeviceId,iccidDTO.getDeviceId())
-//                .eq(CdCardEntity::getBoardIndexed,iccidDTO.getBoardIndexed())
-//                .eq(CdCardEntity::getIndexed,iccidDTO.getIndexed())
-//        );
-//
         CdIccidPhoneEntity one = cdIccidPhoneService.getOne(new QueryWrapper<CdIccidPhoneEntity>().lambda()
                 .eq(CdIccidPhoneEntity::getPhone,iccidDTO.getPhone())
         );
@@ -126,10 +122,18 @@ public class CdCardServiceImpl extends ServiceImpl<CdCardDao, CdCardEntity> impl
             save.setIccid(iccidDTO.getIccid());
             save.setPhone(iccidDTO.getPhone());
             save.setUssdMsg(iccidDTO.getExpireTimeStr());
+            if (StrUtil.isNotEmpty(save.getUssdMsg())) {
+                DateTime parse = DateThParse.parse(save.getUssdMsg());
+                save.setExpireTime(parse);
+            }
             cdIccidPhoneService.save(save);
         }else {
             one.setIccid(iccidDTO.getIccid());
             one.setUssdMsg(iccidDTO.getExpireTimeStr());
+            if (StrUtil.isNotEmpty(one.getUssdMsg())) {
+                DateTime parse = DateThParse.parse(one.getUssdMsg());
+                one.setExpireTime(parse);
+            }
             cdIccidPhoneService.updateById(one);
         }
     }
@@ -200,6 +204,8 @@ public class CdCardServiceImpl extends ServiceImpl<CdCardDao, CdCardEntity> impl
             one.setWorkType(WorkType.WorkType3.getKey());
             cdDevicesService.updateById(one);
         }
+
+        booleanCache.put("run",Boolean.TRUE);
     }
 
 

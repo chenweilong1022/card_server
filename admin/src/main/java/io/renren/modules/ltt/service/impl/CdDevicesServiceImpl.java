@@ -8,6 +8,7 @@ import cn.hutool.core.util.StrUtil;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.google.common.collect.Lists;
 import io.renren.common.utils.ConfigConstant;
+import io.renren.common.utils.R;
 import io.renren.datasources.annotation.Game;
 import io.renren.modules.app.dto.TaskDto;
 import io.renren.modules.ltt.dto.CdCardLockDTO;
@@ -22,6 +23,7 @@ import io.renren.modules.ltt.vo.GroupByDeviceIdVO;
 import io.renren.modules.ltt.vo.UpdateAppVO;
 import io.renren.modules.netty.codec.Invocation;
 import io.renren.modules.netty.message.changecard.ChangeCardResponse;
+import io.renren.modules.netty.message.findnotime.FindNoTimeResponse;
 import io.renren.modules.netty.message.heartbeat.HeartbeatRequest;
 import io.renren.modules.netty.message.initcard.InitCard2Response;
 import io.renren.modules.netty.message.initcard.InitCardResponse;
@@ -385,6 +387,33 @@ public class CdDevicesServiceImpl extends ServiceImpl<CdDevicesDao, CdDevicesEnt
             cdDevicesEntities.add(cdDevicesEntity);
         }
         return this.updateBatchById(cdDevicesEntities);
+    }
+
+    @Resource(name = "mapDateCache")
+    private Cache<String, Map<String,Date>> mapDateCache;
+
+    @Override
+    public void findNoTime(List<Integer> ids) {
+        List<CdDevicesEntity> cdDevicesEntities = this.listByIds(ids);
+        Map<String, Date> mapCache1 = mapDateCache.getIfPresent("mapDateCache");
+        for (CdDevicesEntity cdDevicesEntity : cdDevicesEntities) {
+            //找没有时间的卡
+            FindNoTimeResponse taskDto = new FindNoTimeResponse();
+            taskDto.setDeviceId(cdDevicesEntity.getIccid());
+            //获取设备下所有的iccid
+            List<CdCardEntity> list = cdCardService.list(new QueryWrapper<CdCardEntity>().lambda()
+                    .eq(CdCardEntity::getDeviceId,cdDevicesEntity.getIccid())
+            );
+            List<String> iccids = new ArrayList<>();
+             for (CdCardEntity cdCardEntity : list) {
+                Date date = mapCache1.get(cdCardEntity.getIccid());
+                if (ObjectUtil.isNull(date)) {
+                    iccids.add(cdCardEntity.getIccid());
+                }
+            }
+            taskDto.setIccids(iccids);
+            nettyChannelManager.send(cdDevicesEntity.getIccid(),new Invocation(FindNoTimeResponse.TYPE, taskDto));
+        }
     }
 
 }

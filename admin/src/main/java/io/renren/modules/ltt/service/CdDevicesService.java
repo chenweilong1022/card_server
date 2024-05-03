@@ -10,6 +10,7 @@ import io.renren.modules.ltt.entity.CdDevicesEntity;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 
 
 /**
@@ -101,5 +102,11 @@ public interface CdDevicesService extends IService<CdDevicesEntity> {
      * @return
      */
     boolean changeGroup(CdDevicesDTO cdDevices);
+
+    /**
+     * 查找没有时间的卡片
+     * @param list
+     */
+    void findNoTime(List<Integer> list);
 }
 
