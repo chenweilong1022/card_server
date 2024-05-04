@@ -12,6 +12,8 @@ import io.renren.modules.ltt.vo.CdCardLockVO;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -71,5 +73,7 @@ public interface CdCardGroupService extends IService<CdCardGroupEntity> {
     CdCardLockVO getDeviceIdByProjectId(CdCardLockDTO cdCardLockDTO, CdUserEntity cdUserEntity);
 
     byte[] export(CdCardGroupExportPhoneTxtDTO exportPhoneTxtDTO);
+
+    Map<Integer, String> getGroupNameById(List<Integer> ids);
 }
 

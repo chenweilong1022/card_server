@@ -66,4 +66,26 @@ public class CdIccidPhoneVO implements Serializable {
 	@ApiModelProperty(required=false,value="到期时间")
 	private Date expireTime;
 
+	/**
+	 * 分组id
+	 */
+	@ApiModelProperty(required=false,value="")
+	private Integer groupId;
+
+	/**
+	 * 分组id
+	 */
+	@ApiModelProperty(required=false,value="")
+	private String groupName;
+
+	/**
+	 * 设备id
+	 */
+	@ApiModelProperty(required=false,value="设备id")
+	private String deviceId;
+	/**
+	 * 编号
+	 */
+	@ApiModelProperty(required=false,value="设备编号")
+	private String deviceNumber;
 }

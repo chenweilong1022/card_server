@@ -4,7 +4,6 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONUtil;
 import com.github.benmanes.caffeine.cache.Cache;
 import io.renren.common.utils.ConfigConstant;
 import io.renren.common.utils.StrUtils;
@@ -18,7 +17,6 @@ import io.renren.modules.ltt.enums.CodeAcquisitionType;
 import io.renren.modules.ltt.enums.Lock;
 import io.renren.modules.ltt.service.CdCardLockService;
 import io.renren.modules.ltt.vo.CdCardLockVO;
-import io.renren.modules.ltt.vo.GetListByIdsVO;
 import io.renren.modules.ltt.vo.GroupByDeviceIdVO;
 import io.renren.modules.sys.entity.ProjectWorkEntity;
 import lombok.extern.slf4j.Slf4j;
@@ -39,12 +37,10 @@ import io.renren.modules.ltt.conver.CdCardGroupConver;
 
 import javax.annotation.Resource;
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
 
@@ -166,6 +162,16 @@ public class CdCardGroupServiceImpl extends ServiceImpl<CdCardGroupDao, CdCardGr
         List<String> strings = cdCardDao.listPhoneByGroupId(exportPhoneTxtDTO.getId());
         String collect = strings.stream().map(phone -> phone + "\n").collect(Collectors.joining());
         return StrUtil.bytes(collect);
+    }
+
+    @Override
+    public Map<Integer, String> getGroupNameById(List<Integer> ids) {
+        if (CollUtil.isEmpty(ids)) {
+            return Collections.emptyMap();
+        }
+        return baseMapper.selectList(new QueryWrapper<CdCardGroupEntity>().lambda()
+                .in(CdCardGroupEntity::getId, ids)).stream().collect(Collectors
+                .toMap(CdCardGroupEntity::getId, CdCardGroupEntity::getGroupName));
     }
 
 }

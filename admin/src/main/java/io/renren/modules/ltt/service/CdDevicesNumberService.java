@@ -8,6 +8,8 @@ import io.renren.modules.ltt.entity.CdDevicesNumberEntity;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -58,5 +60,7 @@ public interface CdDevicesNumberService extends IService<CdDevicesNumberEntity> 
      */
     @Override
     boolean removeByIds(Collection<? extends Serializable> ids);
+
+    Map<String, String> getDeviceNumberById(List<String> deviceIdList);
 }
 
