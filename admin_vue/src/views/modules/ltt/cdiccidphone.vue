@@ -2,7 +2,7 @@
   <div class="mod-config">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-input v-model="dataForm.key" placeholder="参数名" clearable></el-input>
+        <el-input v-model="phone" placeholder="手机号" clearable></el-input>
       </el-form-item>
       <el-form-item>
         <el-date-picker
@@ -31,6 +31,16 @@
             :key="item.value"
             :label="item.label"
             :value="item.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item>
+        <el-select v-model="groupId" :placeholder="$t('分组')" clearable>
+          <el-option
+            v-for="item in dataListGroup"
+            :key="item.id"
+            :label="item.groupName"
+            :value="item.id">
           </el-option>
         </el-select>
       </el-form-item>
@@ -64,6 +74,18 @@
         header-align="center"
         align="center"
         :label="$t('卡的iccid')">
+      </el-table-column>
+      <el-table-column
+        prop="groupName"
+        header-align="center"
+        align="center"
+        label="分组名称">
+      </el-table-column>
+      <el-table-column
+        prop="deviceNumber"
+        header-align="center"
+        align="center"
+        label="设备编号">
       </el-table-column>
       <el-table-column
         prop="ussdMsg"
@@ -133,9 +155,12 @@
           endTime: null
         },
         dataList: [],
+        dataListGroup: [],
         pageIndex: 1,
         exportStatus: 1,
         expireTimeStatus: 1,
+        groupId: null,
+        phone: null,
         pageSize: 10,
         totalPage: 0,
         dataListLoading: false,
@@ -148,6 +173,7 @@
     },
     activated () {
       this.getDataList()
+      this.getGroupDataList()
     },
     methods: {
       exportTxt () {
@@ -171,6 +197,8 @@
             'key': this.dataForm.key,
             'exportStatus': this.exportStatus,
             'expireTimeStatus': this.expireTimeStatus,
+            'groupId': this.groupId,
+            'phone': this.phone,
             'endTime': this.dataForm.endTime
           })
         }).then(({data}) => {
@@ -195,6 +223,22 @@
             type: 'success',
             duration: 1500
           })
+        })
+      },
+      getGroupDataList () {
+        this.$http({
+          url: this.$http.adornUrl('/ltt/cdcardgroup/list'),
+          method: 'get',
+          params: this.$http.adornParams({
+            'page': 1,
+            'limit': 100
+          })
+        }).then(({data}) => {
+          if (data && data.code === 0) {
+            this.dataListGroup = data.page.list
+          } else {
+            this.dataListGroup = []
+          }
         })
       },
       // 每页数

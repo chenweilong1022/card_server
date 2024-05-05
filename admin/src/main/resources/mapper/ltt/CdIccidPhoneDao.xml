@@ -12,5 +12,58 @@
         <result property="createTime" column="create_time"/>
     </resultMap>
 
+    <select id="queryPageCount" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        FROM
+        cd_iccid_phone p
+        LEFT JOIN cd_card c ON p.iccid = c.iccid
+        LEFT JOIN cd_devices d ON c.device_id = d.iccid
+        <where>
+            <include refid="page_where_if"/>
+        </where>
+    </select>
 
+    <select id="queryPage" resultType="io.renren.modules.ltt.vo.CdIccidPhoneVO">
+        SELECT
+        p.id,
+        p.phone,
+        p.iccid,
+        p.create_time as createTime,
+        p.ussd_msg as ussdMsg,
+        p.export_status as exportStatus,
+        p.expire_time as expireTime,
+        c.device_id as deviceId,
+        d.group_id as  groupId
+        FROM
+        cd_iccid_phone p
+        LEFT JOIN cd_card c ON p.iccid = c.iccid
+        LEFT JOIN cd_devices d ON c.device_id = d.iccid
+        <where>
+            <include refid="page_where_if"/>
+        </where>
+        order by p.expire_time
+        limit #{pageStart},#{limit}
+    </select>
+
+    <sql id="page_where_if">
+        <if test="exportStatus != null">
+            and p.export_status = #{exportStatus}
+        </if>
+        <if test="endTime != null">
+            and p.expire_time = #{endTime}
+        </if>
+        <if test="expireTimeStatus != null and expireTimeStatus == 0">
+            and p.expire_time is null
+        </if>
+        <if test="expireTimeStatus != null and expireTimeStatus == 1">
+            and p.expire_time is not null
+        </if>
+        <if test="groupId != null">
+            and d.group_id = #{groupId}
+        </if>
+        <if test="phone != null">
+            and p.phone = #{phone}
+        </if>
+    </sql>
 </mapper>

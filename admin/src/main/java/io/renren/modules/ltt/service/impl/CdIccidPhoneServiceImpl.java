@@ -1,6 +1,7 @@
 package io.renren.modules.ltt.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -10,7 +11,10 @@ import io.renren.datasources.annotation.Game;
 import io.renren.modules.ltt.entity.CdRechargedPhoneEntity;
 import io.renren.modules.ltt.enums.ExpireTimeStatus;
 import io.renren.modules.ltt.enums.ExportStatus;
+import io.renren.modules.ltt.service.CdCardGroupService;
+import io.renren.modules.ltt.service.CdDevicesNumberService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.annotation.Order;
@@ -40,25 +44,45 @@ import java.util.stream.Collectors;
 @Slf4j
 public class CdIccidPhoneServiceImpl extends ServiceImpl<CdIccidPhoneDao, CdIccidPhoneEntity> implements CdIccidPhoneService {
 
+    @Resource
+    private CdCardGroupService cdCardGroupService;
+
+    @Resource
+    private CdDevicesNumberService cdDevicesNumberService;
+
     @Override
     public PageUtils<CdIccidPhoneVO> queryPage(CdIccidPhoneDTO cdIccidPhone) {
-
-        LambdaQueryWrapper<CdIccidPhoneEntity> cdIccidPhoneEntityLambdaQueryWrapper = new QueryWrapper<CdIccidPhoneEntity>().lambda()
-                .eq(ObjectUtil.isNotNull(cdIccidPhone.getExportStatus()), CdIccidPhoneEntity::getExportStatus, cdIccidPhone.getExportStatus())
-                .lt(ObjectUtil.isNotNull(cdIccidPhone.getEndTime()), CdIccidPhoneEntity::getExpireTime, cdIccidPhone.getEndTime())
-                .orderByAsc(CdIccidPhoneEntity::getExpireTime);
-        //如果是没有时间查询没有时间的
-        if (ExpireTimeStatus.NO.getKey().equals(cdIccidPhone.getExpireTimeStatus())) {
-            cdIccidPhoneEntityLambdaQueryWrapper.isNull(CdIccidPhoneEntity::getExpireTime);
-        } else if (ExpireTimeStatus.YES.getKey().equals(cdIccidPhone.getExpireTimeStatus())) {
-            cdIccidPhoneEntityLambdaQueryWrapper.isNotNull(CdIccidPhoneEntity::getExpireTime);
+        cdIccidPhone.setPageStart((cdIccidPhone.getPage() - 1) * cdIccidPhone.getLimit());
+        Integer count = baseMapper.queryPageCount(cdIccidPhone);
+        List<CdIccidPhoneVO> resultList = Collections.emptyList();
+        if (count > 0) {
+            resultList = baseMapper.queryPage(cdIccidPhone);
         }
-        IPage<CdIccidPhoneEntity> page = baseMapper.selectPage(
-                new Query<CdIccidPhoneEntity>(cdIccidPhone).getPage(),
-                cdIccidPhoneEntityLambdaQueryWrapper
-        );
 
-        return PageUtils.<CdIccidPhoneVO>page(page).setList(CdIccidPhoneConver.MAPPER.conver(page.getRecords()));
+        if (CollectionUtil.isNotEmpty(resultList)) {
+            List<Integer> groupIdList = resultList.stream().filter(i -> i.getGroupId() != null)
+                    .map(CdIccidPhoneVO::getGroupId).distinct().collect(Collectors.toList());
+
+            //查询分组名称
+            Map<Integer, String> groupNameMap = cdCardGroupService.getGroupNameById(groupIdList);
+
+            //设备编号名称
+            List<String> deviceIdList = resultList.stream().filter(i -> StringUtils.isNotEmpty(i.getDeviceId()))
+                    .map(CdIccidPhoneVO::getDeviceId).distinct().collect(Collectors.toList());
+            Map<String, String> deviceNumberMap = cdDevicesNumberService.getDeviceNumberById(deviceIdList);
+
+            for (CdIccidPhoneVO cdIccidPhoneVO : resultList) {
+                if (cdIccidPhoneVO.getGroupId()!=null){
+                    cdIccidPhoneVO.setGroupName(groupNameMap.get(cdIccidPhoneVO.getGroupId()));
+                }
+                if (StringUtils.isNotEmpty(cdIccidPhoneVO.getDeviceId())){
+                    cdIccidPhoneVO.setDeviceNumber(deviceNumberMap.get(cdIccidPhoneVO.getDeviceId()));
+                }
+            }
+
+        }
+
+        return new PageUtils(resultList, count, cdIccidPhone.getLimit(), cdIccidPhone.getPage());
     }
     @Override
     public CdIccidPhoneVO getById(Integer id) {

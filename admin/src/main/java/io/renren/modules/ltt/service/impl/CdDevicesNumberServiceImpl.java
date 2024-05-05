@@ -1,5 +1,6 @@
 package io.renren.modules.ltt.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import io.renren.datasources.annotation.Game;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -17,6 +18,10 @@ import io.renren.modules.ltt.conver.CdDevicesNumberConver;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service("cdDevicesNumberService")
@@ -59,4 +64,13 @@ public class CdDevicesNumberServiceImpl extends ServiceImpl<CdDevicesNumberDao, 
         return super.removeByIds(ids);
     }
 
+    @Override
+    public Map<String, String> getDeviceNumberById(List<String> deviceIdList) {
+        if (CollUtil.isEmpty(deviceIdList)) {
+            return Collections.emptyMap();
+        }
+        return baseMapper.selectList(new QueryWrapper<CdDevicesNumberEntity>().lambda()
+                .in(CdDevicesNumberEntity::getDeviceId, deviceIdList)).stream().collect(Collectors
+                .toMap(CdDevicesNumberEntity::getDeviceId, CdDevicesNumberEntity::getNumber, (a, b) -> b));
+    }
 }

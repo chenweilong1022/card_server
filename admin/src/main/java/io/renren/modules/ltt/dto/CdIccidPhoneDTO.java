@@ -1,6 +1,7 @@
 package io.renren.modules.ltt.dto;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.renren.common.base.dto.PageParam;
@@ -80,4 +81,13 @@ public class CdIccidPhoneDTO extends PageParam implements Serializable {
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date endTime;
 
+	@TableField(exist = false)
+	@ApiModelProperty(required=false,value="分页开始 sql使用",hidden = true)
+	private Integer pageStart;
+
+	/**
+	 * 分组id
+	 */
+	@ApiModelProperty(required=false,value="")
+	private Integer groupId;
 }
